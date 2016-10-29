@@ -1,7 +1,7 @@
 # MPC algorithm
 
 
-
+MPC R Codes includes an R script to implement the quantile regression example in 
 
 
 To install the BayesBD package you will need:
