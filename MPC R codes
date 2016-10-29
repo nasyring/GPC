@@ -1,4 +1,4 @@
-# Title: GPS Algorithm
+# Title: MPC Algorithm
 # Reference: https://arxiv.org/abs/1509.00922
 # Author: Nicholas Syring
 # Contact: nasyrin@gmail.com
@@ -6,7 +6,7 @@
 # Instructions:
 # 1. Have the quantreg package installed
 # 2. Run all code below up to "# Example"
-# 3. Running the code under "Example" will replicate the GPS results in Table 1 of the reference above.
+# 3. Running the code under "Example" will replicate the MPC results in Table 1 of the reference above.
 #    Make the corresponding changes to the number of data points "n", the number of simulation runs "reps",
 #    the number of bootstrap resamples "B", and the number of posterior samples "M".
 
