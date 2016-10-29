@@ -1,1 +1,1 @@
-# Gibbs-GPS
+# MPC algorithm
