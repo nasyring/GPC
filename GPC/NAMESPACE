@@ -1,0 +1,4 @@
+useDynLib(GPC)
+importFrom(Rcpp, evalCpp)
+importFrom("utils", "read.table")
+exportPattern("^[[:alpha:]]+")
