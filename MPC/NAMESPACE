@@ -1,4 +1,0 @@
-useDynLib(MPC)
-importFrom(Rcpp, evalCpp)
-importFrom("utils", "read.table")
-exportPattern("^[[:alpha:]]+")
