@@ -53,7 +53,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< SEXP & >::type data_boot(data_bootSEXP);
     Rcpp::traits::input_parameter< SEXP & >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< SEXP & >::type B_resamp(B_resampSEXP);
-    __result = Rcpp::wrap(MPC_varmix(nn, data, data_boot, alpha, B_resamp));
+    __result = Rcpp::wrap(GPC_varmix(nn, data, data_boot, alpha, B_resamp));
     return __result;
 END_RCPP
 }
