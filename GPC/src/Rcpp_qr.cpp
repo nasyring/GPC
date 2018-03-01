@@ -352,7 +352,7 @@ theta3old[0] = bootmean3(0);
 		theta0new = Rcpp::rnorm(1, theta0old[0], 0.5);
 		loglikdiff = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -w * 0.5*  pow(ddata(k,0)-theta0new*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
+			loglikdiff = loglikdiff -w * 0.5*  pow(ddata(k,0)-theta0new*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
 		}
 		r = Rcpp::dnorm(theta0new, theta0old[0],.5)/Rcpp::dnorm(theta0old,theta0new[0],.5);
 		loglikdiff[0] = loglikdiff[0] + log(r(0));
