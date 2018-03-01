@@ -235,7 +235,7 @@ arma::colvec bootmean2		= arma::colvec(1);
 arma::colvec bootmean3		= arma::colvec(1);
 arma::colvec bootmean4		= arma::colvec(1);
 double sumcover = 0.0;
-/*
+
 for (int i=0; i<B; i++) {
 	bootmean0 = bootmean0 + thetaboot(i,0);
 	bootmean1 = bootmean1 + thetaboot(i,1);
@@ -249,7 +249,7 @@ bootmean2 = bootmean2/B;
 bootmean3 = bootmean3/B;
 bootmean4 = bootmean4/B;
 
-
+/*
 
 while(go) {
 for (int i=0; i<B; i++) {
