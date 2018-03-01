@@ -217,7 +217,7 @@ NumericVector theta1new;
 NumericVector theta2old;
 NumericVector theta2new;
 NumericVector theta3old;
-NumericVector theta4old;
+NumericVector theta3new;
 NumericVector loglikdiff;
 arma::colvec r			= arma::colvec(1);r.fill(0.0);
 arma::colvec uu 		= arma::colvec(1);
@@ -418,10 +418,6 @@ theta3old[0] = bootmean3(0);
 	sort1 = sort(postsamples1f);
 	sort2 = sort(postsamples2f);
 	sort3 = sort(postsamples3f);
-	double fvar = 0.0;
-		for(int k=0; k<2*M; k++){
-			fvar = fvar+(postsamples4f(k)/(2*M)); 
-		}
 	l0 = sort0(0.025*2*M);
 	u0 = sort0(0.975*2*M);
 	l1 = sort1(0.025*2*M);
@@ -432,9 +428,7 @@ theta3old[0] = bootmean3(0);
 	u3 = sort3(0.975*2*M);
 
 
-result = Rcpp::List::create(Rcpp::Named("l0") = l0,Rcpp::Named("u0") = u0,Rcpp::Named("l1") = l1,Rcpp::Named("u1") = u1,Rcpp::Named("l2") = l2,Rcpp::Named("u2") = u2,Rcpp::Named("l3") = l3,Rcpp::Named("u3") = u3,Rcpp::Named("w") = w,Rcpp::Named("diff") = diff,Rcpp::Named("t") = t,Rcpp::Named("postvar")=fvar);
-
-//result = Rcpp::List::create(Rcpp::Named("output") = 101);
+result = Rcpp::List::create(Rcpp::Named("l0") = l0,Rcpp::Named("u0") = u0,Rcpp::Named("l1") = l1,Rcpp::Named("u1") = u1,Rcpp::Named("l2") = l2,Rcpp::Named("u2") = u2,Rcpp::Named("l3") = l3,Rcpp::Named("u3") = u3,Rcpp::Named("w") = w,Rcpp::Named("diff") = diff,Rcpp::Named("t") = t);
 return result;
 }
 
