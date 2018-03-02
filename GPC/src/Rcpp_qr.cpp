@@ -210,6 +210,22 @@ double l2;
 double l3;
 double u2;
 double u3;
+double l090;
+double l190;
+double u090;
+double u190;
+double l290;
+double l390;
+double u290;
+double u390;
+double l080;
+double l180;
+double u080;
+double u180;
+double l280;
+double l380;
+double u280;
+double u380;
 NumericVector theta0old;
 NumericVector theta0new;
 NumericVector theta1old;
@@ -426,9 +442,27 @@ theta3old[0] = bootmean3(0);
 	u2 = sort2(0.975*2*M);
 	l3 = sort3(0.025*2*M);
 	u3 = sort3(0.975*2*M);
+	l090 = sort0(0.05*2*M);
+	u090 = sort0(0.95*2*M);
+	l190 = sort1(0.05*2*M);
+	u190 = sort1(0.95*2*M);
+	l290 = sort2(0.05*2*M);
+	u290 = sort2(0.95*2*M);
+	l390 = sort3(0.05*2*M);
+	u390 = sort3(0.95*2*M);
+	l080 = sort0(0.10*2*M);
+	u080 = sort0(0.90*2*M);
+	l180 = sort1(0.10*2*M);
+	u180 = sort1(0.90*2*M);
+	l280 = sort2(0.10*2*M);
+	u280 = sort2(0.90*2*M);
+	l380 = sort3(0.10*2*M);
+	u380 = sort3(0.90*2*M);
 
 
-result = Rcpp::List::create(Rcpp::Named("l0") = l0,Rcpp::Named("u0") = u0,Rcpp::Named("l1") = l1,Rcpp::Named("u1") = u1,Rcpp::Named("l2") = l2,Rcpp::Named("u2") = u2,Rcpp::Named("l3") = l3,Rcpp::Named("u3") = u3,Rcpp::Named("w") = w,Rcpp::Named("diff") = diff,Rcpp::Named("t") = t);
+result = Rcpp::List::create(Rcpp::Named("l0") = l0,Rcpp::Named("u0") = u0,Rcpp::Named("l1") = l1,Rcpp::Named("u1") = u1,Rcpp::Named("l2") = l2,Rcpp::Named("u2") = u2,Rcpp::Named("l3") = l3,Rcpp::Named("u3") = u3,Rcpp::Named("w") = w,Rcpp::Named("diff") = diff,Rcpp::Named("t") = t,
+			   Rcpp::Named("l090") = l090,Rcpp::Named("u090") = u090,Rcpp::Named("l190") = l190,Rcpp::Named("u190") = u190,Rcpp::Named("l290") = l290,Rcpp::Named("u290") = u290,Rcpp::Named("l390") = l390,Rcpp::Named("u390") = u390,
+			   Rcpp::Named("l080") = l080,Rcpp::Named("u080") = u080,Rcpp::Named("l180") = l180,Rcpp::Named("u180") = u180,Rcpp::Named("l280") = l280,Rcpp::Named("u280") = u280,Rcpp::Named("l380") = l380,Rcpp::Named("u380") = u380);
 return result;
 }
 
@@ -617,7 +651,7 @@ orig_sd2 = sd1;
 NumericVector cvg = Rcpp::NumericVector(B);cvg.fill(0.0);
 double sumcover = 0.0;
 double m1 = mu1;double m2 = mu2; double s1 = sd1; double s2 = sd2;
-double w = 1.0;
+double w = 0.83;
 bool go2 = TRUE;
 NumericVector bootmu1 = Rcpp::NumericVector(B);bootmu1.fill(0.0);
 NumericVector bootmu2 = Rcpp::NumericVector(B);bootmu2.fill(0.0);
