@@ -328,7 +328,7 @@ for (int i=0; i<B; i++) {
 		theta4new[0] = fmax(theta4new[0],1.0);
 		loglikdiff = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -0.5*w*std::log(theta4new) + 0.5*w*std::log(theta4old) -w * 0.5*(1/theta4new)* pow(databoot(k,i)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)*pow(databoot(k,i)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
+			loglikdiff = loglikdiff -0.5*w*log(theta4new) + 0.5*w*log(theta4old) -w * 0.5*(1/theta4new)* pow(databoot(k,i)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)*pow(databoot(k,i)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
 		}
 		r = Rcpp::dnorm(theta4new, theta4old[0],1.0) / Rcpp::dnorm(theta4old,theta4new[0],1.0);
 		loglikdiff[0] = loglikdiff[0] + log(r(0));
