@@ -328,13 +328,13 @@ for (int i=0; i<B; i++) {
 		}else if(j>99){
 			postsamples3(j-100) = theta3old[0];	
 		}
-		theta4new = Rcpp::rnorm(1, theta4old[0], 0.5);
+		theta4new = Rcpp::rnorm(1, theta4old[0], 0.1);
 		if(theta4new[0]>0){
 		loglikdiff = 0.0;
 		for(int k=0; k<n; k++){
 			loglikdiff = loglikdiff -1.5*log(theta4new)/n+1.5*log(theta4old)/n-0.5*w*log(theta4new) + 0.5*w*log(theta4old) -w * 0.5*(1/theta4new)* pow(databoot(k,i)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)*pow(databoot(k,i)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
 		}
-		r = Rcpp::dnorm(theta4new, theta4old[0],0.5) / Rcpp::dnorm(theta4old,theta4new[0],0.5);
+		r = Rcpp::dnorm(theta4new, theta4old[0],0.1) / Rcpp::dnorm(theta4old,theta4new[0],0.1);
 		loglikdiff[0] = loglikdiff[0] + log(r(0));
 		loglikdiff[0] = fmin(std::exp(loglikdiff[0]), 1.0);
 		uu = Rcpp::runif(1);
@@ -377,7 +377,7 @@ if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
 	go = FALSE;
 } else {
 	t = t+1;
-	w = fmax(w + (pow(1+t,-0.51)*2*diff),0.5);
+	w = fmax(w + (pow(1+t,-0.51)*2*diff),0.6);
 }
 }
 
@@ -459,13 +459,13 @@ theta4old[0] = bootmean4(0);
 		else if(j>999){
 			postsamples3f(j-1000) = theta3old[0];	
 		}
-		theta4new = Rcpp::rnorm(1, theta4old[0], 0.5);
+		theta4new = Rcpp::rnorm(1, theta4old[0], 0.1);
 		if(theta4new[0]>0){
 		loglikdiff = 0.0;
 		for(int k=0; k<n; k++){
 			loglikdiff = loglikdiff -0.5*w*log(theta4new) + 0.5*w*log(theta4old) -w * 0.5*(1/theta4new)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)*pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
 		}
-		r = Rcpp::dnorm(theta4new, theta4old[0],0.5) / Rcpp::dnorm(theta4old,theta4new[0],0.5);
+		r = Rcpp::dnorm(theta4new, theta4old[0],0.1) / Rcpp::dnorm(theta4old,theta4new[0],0.1);
 		loglikdiff[0] = loglikdiff[0] + log(r(0));
 		loglikdiff[0] = fmin(std::exp(loglikdiff[0]), 1.0);
 		uu = Rcpp::runif(1);
