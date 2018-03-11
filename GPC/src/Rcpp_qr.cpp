@@ -349,7 +349,7 @@ for (int i=0; i<B; i++) {
 		}
 		}else {
 			if(j>99){
-			postsamples0(j-100) = theta0old[0];	
+			postsamples4(j-100) = theta4old[0];	
 		}	
 		}
 	}
@@ -480,7 +480,7 @@ theta4old[0] = bootmean4(0);
 		}
 		}else {
 		if(j>999){
-			postsamples0(j-100) = theta0old[0];	
+			postsamples4f(j-1000) = theta4old[0];	
 		}	
 		}
 	}
