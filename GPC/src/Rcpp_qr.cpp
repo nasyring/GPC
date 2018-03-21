@@ -4,21 +4,107 @@
 // we only include RcppArmadillo.h which pulls Rcpp.h in for us
 
 #include "RcppArmadillo.h"
-
-
+#include <RcppParallel.h>
+using namespace RcppParallel;
 using namespace Rcpp;
 using namespace arma;
 using namespace std;
 // via the depends attribute we tell Rcpp to create hooks for
-
 // RcppArmadillo so that the build process will know what to do
-//
+
+// [[Rcpp::depends(RcppParallel)]]
+// [[Rcpp::depends(RcppArmadillo)]]
+// [[Rcpp::export]]
+struct GPC_qr_mcmc_parallel : public Worker
+{
+   // initialize with source and destination
+   GPC_qr_mcmc_parallel(const int nn, const arma::mat data, const arma::mat theta_boot, const arma::mat data_boot,
+   			const double alpha, const int M_samp, const int B_resamp, const double w, arma::colvec cover) {}   
+
+   // operator
+   void operator()(std::size_t begin, std::size_t end) {
+   		NumericVector theta0old;
+		NumericVector theta0new;
+		NumericVector theta1old;
+		NumericVector theta1new; 
+		NumericVector loglikdiff;
+		arma::colvec sort0 = arma::colvec(M_samp);
+		arma::colvec sort1 = arma::colvec(M_samp);
+		arma::colvec r	= arma::colvec(1);r.fill(0.0);
+		arma::colvec uu = arma::colvec(1);
+		arma::colvec postsamples0	= arma::colvec(M_samp);
+		arma::colvec postsamples1	= arma::colvec(M_samp);
+		double l0;
+		double l1;
+		double u0;
+		double u1;
+		for (std::size_t i = begin; i < end; i++) {
+			theta0old = thetaboot(i,0);
+			theta1old = thetaboot(i,1);
+			for(int j=0; j<(M_samp_+100); j++) {
+				theta0new = Rcpp::rnorm(1, theta0old[0], 0.5);
+				loglikdiff = 0.0;
+				for(int k=0; k<nn_; k++){
+					loglikdiff = loglikdiff -w * fabs(databoot(k,2*i+1)-theta0new[0] - theta1old[0]*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old[0] - theta1old[0]*databoot(k,2*i)); 
+				}
+				r = Rcpp::dnorm(theta0new, theta0old[0],.5)/Rcpp::dnorm(theta0old,theta0new[0],.5);
+				loglikdiff[0] = loglikdiff[0] + log(r(0));
+				loglikdiff[0] = fmin(std::exp(loglikdiff[0]), 1.0);
+				uu = Rcpp::runif(1);
+      				if((uu(0) <= loglikdiff[0]) && (j>99)) {
+					postsamples0(j-100) = theta0new[0];
+					theta0old = theta0new; 
+      				}
+				else if(j>99){
+					postsamples0(j-100) = theta0old[0];	
+				}
+				theta1new = Rcpp::rnorm(1, theta1old[0], 0.5);
+				loglikdiff = 0.0;
+				for(int k=0; k<nn; k++){
+					loglikdiff = loglikdiff -w * fabs(databoot(k,2*i+1)-theta0old[0] - theta1new[0]*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old[0] - theta1old[0]*databoot(k,2*i)); 
+				}
+				r = Rcpp::dnorm(theta1new, theta1old[0],.5) / Rcpp::dnorm(theta1old,theta1new[0],.5);
+				loglikdiff[0] = loglikdiff[0] + log(r(0));
+				loglikdiff[0] = fmin(std::exp(loglikdiff[0]), 1.0);
+				uu = Rcpp::runif(1);
+      				if((uu(0) <= loglikdiff[0]) && (j>99)) {
+					postsamples1(j-100) = theta1new[0];
+					theta1old = theta1new; 
+      				}
+				else if(j>99){
+					postsamples1(j-100) = theta1old[0];	
+				}
+			}
+			sort0 = sort(postsamples0);
+			sort1 = sort(postsamples1);
+			l0 = sort0(0.025*M);
+			u0 = sort0(0.975*M);
+			l1 = sort1(0.025*M);
+			u1 = sort1(0.975*M);
+			if ( (l1 < bootmean1(0)) && (u1 > bootmean1(0)) ){
+				cover(i) = 1.0;
+			} else {cover(i) = 0.0;}
+			
+  		}
+	};
+	
+	// [[Rcpp::export]]
+NumericMatrix rcpp_parallel_js_distance(NumericMatrix mat) {
+  
+   // allocate the matrix we will return
+   NumericMatrix rmat(mat.nrow(), mat.nrow());
+
+   // create the worker
+   JsDistance jsDistance(mat, rmat);
+     
+   // call it with parallelFor
+   parallelFor(0, mat.nrow(), jsDistance);
+
+   return rmat;
+}
 
 // [[Rcpp::depends(RcppArmadillo)]]
-
-
 // [[Rcpp::export]]
-
 Rcpp::List GPC_qr(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) { 
 
 List result;
