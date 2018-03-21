@@ -88,6 +88,69 @@ struct GPC_qr_mcmc_parallel : public Worker
   		}
 	};
 	
+// [[Rcpp::depends(RcppArmadillo)]]
+// [[Rcpp::export]]
+Rcpp::List GPC_qr_parallel(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) {
+
+List result;
+double aalpha 			= Rcpp::as<double>(alpha);			 			
+int n				= Rcpp::as<int>(nn);
+int B 				= Rcpp::as<int>(B_resamp);
+double eps 			= 0.01; 
+double w			= 0.5;
+arma::mat thetaboot     	= Rcpp::as<arma::mat>(theta_boot);
+arma::mat ddata			= Rcpp::as<arma::mat>(data);
+arma::mat databoot 		= Rcpp::as<arma::mat>(data_boot);
+int M				= Rcpp::as<int>(M_samp);
+arma::colvec postsamples0f	= arma::colvec(2*M);
+arma::colvec postsamples1f	= arma::colvec(2*M);
+arma::colvec sort0		= arma::colvec(M);
+arma::colvec sort1		= arma::colvec(M);
+NumericVector theta0old;
+NumericVector theta0new;
+NumericVector theta1old;
+NumericVector theta1new;
+NumericVector loglikdiff;
+arma::colvec r			= arma::colvec(1);r.fill(0.0);
+arma::colvec uu 		= arma::colvec(1);
+arma::colvec cover		= arma::colvec(B);
+double diff;
+bool go 			= TRUE;
+int t				=1; 
+arma::colvec bootmean0		= arma::colvec(1);
+arma::colvec bootmean1		= arma::colvec(1);
+double sumcover = 0.0;
+
+for (int i=0; i<B; i++) {
+	bootmean0 = bootmean0 + thetaboot(i,0);
+	bootmean1 = bootmean1 + thetaboot(i,1);
+}
+bootmean0 = bootmean0/B;
+bootmean1 = bootmean1/B;
+
+
+while(go) {
+   // create the worker
+   GPC_qr_mcmc_parallel gpcWorker(n, ddata, thetaboot, databoot, aalpha, M, B, ww, cover);
+     
+   // call it with parallelFor
+   parallelFor(0, B, gpcWorker);
+
+   sumcover = 0.0;
+   for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
+   diff = (sumcover/B) - (1.0-aalpha);
+   if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
+  	go = FALSE;
+   } else {
+	t = t+1;
+	w = w + (pow(1+t,-0.51)*diff);
+     }
+}
+	
+
+}
+
+
 	// [[Rcpp::export]]
 NumericMatrix rcpp_parallel_js_distance(NumericMatrix mat) {
   
