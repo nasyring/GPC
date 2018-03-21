@@ -9,4 +9,4 @@ Description:  Provides tools for calibrating misspecified posterior credible int
   for quantile and linear regression, and a normal mixture model.    
 License: GPL (>= 3) 
 Imports: Rcpp (>= 0.12.5)
-LinkingTo: Rcpp, RcppArmadillo
+LinkingTo: Rcpp, RcppArmadillo, RcppParallel
