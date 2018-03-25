@@ -43,8 +43,8 @@ arma::colvec cover;
 		arma::colvec sort1 = arma::colvec(M_samp);
 		arma::colvec r	= arma::colvec(1);r.fill(0.0);
 		arma::colvec uu = arma::colvec(1);
-		arma::colvec postsamples0	= arma::colvec(M_samp);
-		arma::colvec postsamples1	= arma::colvec(M_samp);
+		arma::colvec postsamples0	= arma::colvec(M_samp);postsamples0.fill(0.0);
+		arma::colvec postsamples1	= arma::colvec(M_samp);postsamples1.fill(0.0);
 		double l0;
 		double l1;
 		double u0;
@@ -57,7 +57,7 @@ arma::colvec cover;
 				loglikdiff = 0.0;
 				for(int k=0; k<nn; k++){
 					loglikdiff = loglikdiff -w * fabs(databoot(k,2*i+1)-theta0new[0] - theta1old[0]*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old[0] - theta1old[0]*databoot(k,2*i)); 
-				}
+				}/*
 				r = Rcpp::dnorm(theta0new, theta0old[0],.5)/Rcpp::dnorm(theta0old,theta0new[0],.5);
 				loglikdiff[0] = loglikdiff[0] + log(r(0));
 				loglikdiff[0] = fmin(std::exp(loglikdiff[0]), 1.0);
@@ -84,7 +84,7 @@ arma::colvec cover;
       				}
 				else if(j>99){
 					postsamples1(j-100) = theta1old[0];	
-				}
+				}*/
 			}
 			sort0 = sort(postsamples0);
 			sort1 = sort(postsamples1);
@@ -144,7 +144,7 @@ bootmean1 = bootmean1/B;
 
 // create the worker
 GPC_qr_mcmc_parallel gpcWorker(n, ddata, thetaboot, bootmean0, bootmean1, databoot, aalpha, M, B, w, cover);
-parallelFor(0, 4, gpcWorker);
+parallelFor(0, 1, gpcWorker);
 sumcover = 0.0;
 for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
 diff = (sumcover/B) - (1.0-aalpha);
