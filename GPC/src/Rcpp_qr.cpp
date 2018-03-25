@@ -199,20 +199,6 @@ return result;
 }
 
 
-	// [[Rcpp::export]]
-NumericMatrix rcpp_parallel_js_distance(NumericMatrix mat) {
-  
-   // allocate the matrix we will return
-   NumericMatrix rmat(mat.nrow(), mat.nrow());
-
-   // create the worker
-   JsDistance jsDistance(mat, rmat);
-     
-   // call it with parallelFor
-   parallelFor(0, mat.nrow(), jsDistance);
-
-   return rmat;
-}
 
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
