@@ -4,8 +4,10 @@
 #include <RcppArmadillo.h>
 #include <RcppParallel.h>
 #include <Rcpp.h>
-
+using namespace RcppParallel;
 using namespace Rcpp;
+using namespace arma;
+using namespace std;
 
 // GPC_qr
 Rcpp::List GPC_qr(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp);
