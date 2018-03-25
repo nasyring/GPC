@@ -79,3 +79,28 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+
+arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & bootmean0, SEXP & bootmean1, SEXP & databoot,
+    SEXP & alpha, SEXP & M_samp, SEXP & B_resamp, SEXP & w);
+RcppExport SEXP GPC_rcpp_parallel_qr(SEXP nn, SEXP data, SEXP thetaboot, SEXP bootmean0, SEXP bootmean1, SEXP databoot, SEXP alpha, SEXP M_samp, SEXP B_resamp, SEXP w){
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< SEXP & >::type nn(nnSEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type thetaboot(thetabootSEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type bootmean0(bootmean0SEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type bootmean1(bootmean1SEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type databoot(databootSEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type M_samp(M_sampSEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type B_resamp(B_resampSEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type w(wSEXP);
+    __result = Rcpp::wrap(rcpp_parallel_qr(nn, data, thetaboot, databoot, bootmean0, bootmean1, alpha, M_samp, B_resamp, w));
+    return __result;
+END_RCPP
+}    
+    
+
+
+
