@@ -8,7 +8,6 @@ using namespace arma;
 using namespace std;
 // via the depends attribute we tell Rcpp to create hooks for
 // RcppArmadillo so that the build process will know what to do
-
 // [[Rcpp::depends(RcppParallel)]]
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
@@ -94,19 +93,33 @@ arma::colvec cover;
 			u1 = sort1(0.975*M_samp);
 			if ( (l1 < bootmean1(0)) && (u1 > bootmean1(0)) ){
 				cover(i) = 1.0;
-			} else {cover(i) = 0.0;}
-			cover(i) = 0.5;
-			
+			} else {cover(i) = 0.0;}			
   		}
 	}
 };
-	
+
+// [[Rcpp::export]]
+arma::colvec rcpp_parallel_qr(int nn, arma::mat data, arma::mat thetaboot, arma::mat bootmean0, arma::mat bootmean1, arma::mat databoot,
+   			double alpha, int M_samp, int B_resamp, double w) {
+  
+   // allocate the matrix we will return
+   arma::colvec cover = arma::colvec(B_resamp); 
+
+   // create the worker
+   GPC_qr_mcmc_parallel gpcWorker(n, ddata, thetaboot, bootmean0, bootmean1, databoot, aalpha, M, B, w, cover);
+     
+   // call it with parallelFor
+   parallelFor(0, B_resamp, gpcWorker);
+
+   return cover;
+}
 
 // [[Rcpp::depends(RcppParallel)]]	
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 Rcpp::List GPC_qr_parallel(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) {
 
+Rcpp::Function rcpp_parallel_qr("rcpp_parallel_qr");
 List result;
 double aalpha 			= Rcpp::as<double>(alpha);			 			
 int n				= Rcpp::as<int>(nn);
@@ -128,7 +141,7 @@ NumericVector theta1new;
 NumericVector loglikdiff;
 arma::colvec r			= arma::colvec(1);r.fill(0.0);
 arma::colvec uu 		= arma::colvec(1);
-arma::colvec cover		= arma::colvec(B);cover.fill(0.0);cover(0)=2;
+arma::colvec cover;
 double diff;
 bool go 			= TRUE;
 int t				=1; 
@@ -144,8 +157,7 @@ bootmean0 = bootmean0/B;
 bootmean1 = bootmean1/B;
 
 // create the worker
-GPC_qr_mcmc_parallel gpcWorker(n, ddata, thetaboot, bootmean0, bootmean1, databoot, aalpha, M, B, w, cover);
-parallelFor(0, B, gpcWorker);
+cover = rcpp_parallel_qr(n, ddata, thetaboot, bootmean0, bootmean1, databoot, aalpha, M, B, w);
 sumcover = 0.0;
 for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
 diff = (sumcover/B) - (1.0-aalpha);
