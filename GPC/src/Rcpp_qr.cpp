@@ -30,8 +30,8 @@ double w;
 arma::colvec cover;
 
    // initialize with source and destination
-   GPC_qr_mcmc_parallel(const int nn, const arma::mat data, const arma::mat thetaboot, const arma::mat bootmean0, const arma::mat bootmean1, const arma::mat databoot,
-   			const double alpha, const int M_samp, const int B_resamp, const double w, arma::colvec cover) {}   
+   GPC_qr_mcmc_parallel(int nn, arma::mat data, arma::mat thetaboot, arma::mat bootmean0, arma::mat bootmean1, arma::mat databoot,
+   			double alpha, int M_samp, int B_resamp, double w, arma::colvec cover) {}   
 
    // operator
    void operator()(std::size_t begin, std::size_t end) {
