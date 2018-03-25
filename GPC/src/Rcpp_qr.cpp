@@ -127,7 +127,7 @@ NumericVector theta1new;
 NumericVector loglikdiff;
 arma::colvec r			= arma::colvec(1);r.fill(0.0);
 arma::colvec uu 		= arma::colvec(1);
-arma::colvec cover		= arma::colvec(B);cover.fill(0.0);
+arma::colvec cover		= arma::colvec(B);cover.fill(0.0);cover(0)=2;
 double diff;
 bool go 			= TRUE;
 int t				=1; 
@@ -152,7 +152,7 @@ if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
    go = FALSE;
 } else {
    t = t+1;
-   w = w + (pow(1+t,-0.51)*diff);
+   w = fmax(w + (pow(1+t,-0.51)*diff),0.1);
 }
 /*
 while(go) {
