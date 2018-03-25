@@ -87,10 +87,10 @@ arma::colvec cover;
 			}
 			sort0 = sort(postsamples0);
 			sort1 = sort(postsamples1);
-			l0 = sort0(0.025*M);
-			u0 = sort0(0.975*M);
-			l1 = sort1(0.025*M);
-			u1 = sort1(0.975*M);
+			l0 = sort0(0.025*M_samp);
+			u0 = sort0(0.975*M_samp);
+			l1 = sort1(0.025*M_samp);
+			u1 = sort1(0.975*M_samp);
 			if ( (l1 < bootmean1(0)) && (u1 > bootmean1(0)) ){
 				cover(i) = 1.0;
 			} else {cover(i) = 0.0;}
