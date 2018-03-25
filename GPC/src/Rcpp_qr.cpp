@@ -143,7 +143,7 @@ bootmean0 = bootmean0/B;
 bootmean1 = bootmean1/B;
 
 // create the worker
-GPC_qr_mcmc_parallel gpcWorker(n, ddata, thetaboot, databoot, bootmean0, bootmean1, aalpha, M, B, w, cover);
+GPC_qr_mcmc_parallel gpcWorker(n, ddata, thetaboot, bootmean0, bootmean1, databoot, aalpha, M, B, w, cover);
 parallelFor(0, 1, gpcWorker);
 /*
 sumcover = 0.0;
