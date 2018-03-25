@@ -87,6 +87,9 @@ struct GPC_qr_mcmc_parallel : public Worker
 			
   		}
 	};
+}
+	
+
 	
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
