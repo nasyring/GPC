@@ -21,8 +21,8 @@ int nn;
 arma::mat data;
 arma::mat thetaboot;
 arma::mat databoot;
-double bootmean0;
-double bootmean1;
+arma::mat bootmean0;
+arma::mat bootmean1;
 double alpha;
 int M_samp;
 int B_resamp;
@@ -30,7 +30,7 @@ double w;
 arma::colvec cover;
 
    // initialize with source and destination
-   GPC_qr_mcmc_parallel(const int nn, const arma::mat data, const arma::mat thetaboot, const double bootmean0, const double bootmean1, const arma::mat databoot,
+   GPC_qr_mcmc_parallel(const int nn, const arma::mat data, const arma::mat thetaboot, const arma::mat bootmean0, const arma::mat bootmean1, const arma::mat databoot,
    			const double alpha, const int M_samp, const int B_resamp, const double w, arma::colvec cover) {}   
 
    // operator
@@ -93,7 +93,7 @@ arma::colvec cover;
 			u0 = sort0(0.975*M_samp);
 			l1 = sort1(0.025*M_samp);
 			u1 = sort1(0.975*M_samp);
-			if ( (l1 < bootmean1) && (u1 > bootmean1) ){
+			if ( (l1 < bootmean1(0)) && (u1 > bootmean1(0)) ){
 				cover(i) = 1.0;
 			} else {cover(i) = 0.0;}
 			
