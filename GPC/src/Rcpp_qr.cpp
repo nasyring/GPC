@@ -58,7 +58,7 @@ arma::colvec cover;
 				for(int k=0; k<nn; k++){
 					loglikdiff(0) = loglikdiff(0) -w * fabs(databoot(k,2*i+1)-theta0new(0) - theta1old(0)*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
 				}
-				r = R::dnorm(theta0new(0), theta0old(0),.5)/Rcpp::dnorm(theta0old(0),theta0new(0),.5);
+				r = R::dnorm(theta0new(0), theta0old(0),.5, 0)/Rcpp::dnorm(theta0old(0),theta0new(0),.5, 0);
 				loglikdiff(0) = loglikdiff(0) + log(r(0));
 				loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
 				uu = R::runif(0.0,1.0);
@@ -74,7 +74,7 @@ arma::colvec cover;
 				for(int k=0; k<nn; k++){
 					loglikdiff(0) = loglikdiff(0) -w * fabs(databoot(k,2*i+1)-theta0old(0) - theta1new(0)*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
 				}
-				r = R::dnorm(theta1new(0), theta1old(0),.5) / R::dnorm(theta1old(0),theta1new(0),.5);
+				r = R::dnorm(theta1new(0), theta1old(0),.5, 0) / R::dnorm(theta1old(0),theta1new(0),.5, 0);
 				loglikdiff(0) = loglikdiff(0) + log(r(0));
 				loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
 				uu = R::runif(0.0,1.0);
