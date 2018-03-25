@@ -51,36 +51,36 @@ arma::colvec cover;
 		double u1;
 		for (std::size_t i = begin; i < end; i++) {
 			theta0old = thetaboot(i,0);
-			theta1old = thetaboot(i,1);/*
+			theta1old = thetaboot(i,1);
 			for(int j=0; j<(M_samp+100); j++) {
-				theta0new = Rcpp::rnorm(1, theta0old[0], 0.5);
+				theta0new(0) = R::rnorm(theta0old(0), 0.5);
 				loglikdiff(0) = 0.0;
 				for(int k=0; k<nn; k++){
-					loglikdiff = loglikdiff -w * fabs(databoot(k,2*i+1)-theta0new[0] - theta1old[0]*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old[0] - theta1old[0]*databoot(k,2*i)); 
+					loglikdiff(0) = loglikdiff(0) -w * fabs(databoot(k,2*i+1)-theta0new(0) - theta1old(0)*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
 				}
-				r = Rcpp::dnorm(theta0new, theta0old[0],.5)/Rcpp::dnorm(theta0old,theta0new[0],.5);
+				r = R::dnorm(theta0new(0), theta0old(0),.5)/Rcpp::dnorm(theta0old(0),theta0new(0),.5);
 				loglikdiff(0) = loglikdiff(0) + log(r(0));
 				loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
-				uu = Rcpp::runif(1);
+				uu = R::runif(0.0,1.0);
       				if((uu(0) <= loglikdiff(0)) && (j>99)) {
 					postsamples0(j-100) = theta0new(0);
-					theta0old = theta0new; 
+					theta0old(0) = theta0new(0); 
       				}
 				else if(j>99){
 					postsamples0(j-100) = theta0old(0);	
 				}
-				theta1new = Rcpp::rnorm(1, theta1old(0), 0.5);
+				theta1new = R::rnorm(theta1old(0), 0.5);
 				loglikdiff(0) = 0.0;
 				for(int k=0; k<nn; k++){
-					loglikdiff = loglikdiff -w * fabs(databoot(k,2*i+1)-theta0old(0) - theta1new(0)*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
+					loglikdiff(0) = loglikdiff(0) -w * fabs(databoot(k,2*i+1)-theta0old(0) - theta1new(0)*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
 				}
-				r = Rcpp::dnorm(theta1new, theta1old(0),.5) / Rcpp::dnorm(theta1old,theta1new(0),.5);
+				r = R::dnorm(theta1new(0), theta1old(0),.5) / R::dnorm(theta1old(0),theta1new(0),.5);
 				loglikdiff(0) = loglikdiff(0) + log(r(0));
 				loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
-				uu = Rcpp::runif(1);
+				uu = R::runif(0.0,1.0);
       				if((uu(0) <= loglikdiff(0)) && (j>99)) {
 					postsamples1(j-100) = theta1new(0);
-					theta1old = theta1new; 
+					theta1old(0) = theta1new(0); 
       				}
 				else if(j>99){
 					postsamples1(j-100) = theta1old(0);	
@@ -94,7 +94,7 @@ arma::colvec cover;
 			u1 = sort1(0.975*M_samp);
 			if ( (l1 < bootmean1(0)) && (u1 > bootmean1(0)) ){
 				cover(i) = 1.0;
-			} else {cover(i) = 0.0;}*/
+			} else {cover(i) = 0.0;}
 			cover(i) = 0.5;
 			
   		}
