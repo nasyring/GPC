@@ -21,6 +21,8 @@ int nn;
 arma::mat data;
 arma::mat thetaboot;
 arma::mat databoot;
+double bootmean0;
+double bootmean1;
 double alpha;
 int M_samp;
 int B_resamp;
@@ -28,7 +30,7 @@ double w;
 arma::colvec cover;
 
    // initialize with source and destination
-   GPC_qr_mcmc_parallel(const int nn, const arma::mat data, const arma::mat thetaboot, const arma::mat databoot,
+   GPC_qr_mcmc_parallel(const int nn, const arma::mat data, const arma::mat thetaboot, const double bootmean0, const double bootmean1, const arma::mat databoot,
    			const double alpha, const int M_samp, const int B_resamp, const double w, arma::colvec cover) {}   
 
    // operator
@@ -54,7 +56,7 @@ arma::colvec cover;
 			for(int j=0; j<(M_samp_+100); j++) {
 				theta0new = Rcpp::rnorm(1, theta0old[0], 0.5);
 				loglikdiff = 0.0;
-				for(int k=0; k<nn_; k++){
+				for(int k=0; k<nn; k++){
 					loglikdiff = loglikdiff -w * fabs(databoot(k,2*i+1)-theta0new[0] - theta1old[0]*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old[0] - theta1old[0]*databoot(k,2*i)); 
 				}
 				r = Rcpp::dnorm(theta0new, theta0old[0],.5)/Rcpp::dnorm(theta0old,theta0new[0],.5);
@@ -144,7 +146,7 @@ bootmean1 = bootmean1/B;
 
 while(go) {
    // create the worker
-   GPC_qr_mcmc_parallel gpcWorker(n, ddata, thetaboot, databoot, aalpha, M, B, ww, cover);
+   GPC_qr_mcmc_parallel gpcWorker(n, ddata, thetaboot, databoot, bootmean0, bootmean1, aalpha, M, B, ww, cover);
      
    // call it with parallelFor
    parallelFor(0, B, gpcWorker);
