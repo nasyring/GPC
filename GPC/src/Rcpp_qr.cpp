@@ -106,7 +106,7 @@ arma::colvec rcpp_parallel_qr(int nn, arma::mat data, arma::mat thetaboot, arma:
    arma::colvec cover = arma::colvec(B_resamp); 
 
    // create the worker
-   GPC_qr_mcmc_parallel gpcWorker(n, ddata, thetaboot, bootmean0, bootmean1, databoot, aalpha, M, B, w, cover);
+   GPC_qr_mcmc_parallel gpcWorker(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w, cover);
      
    // call it with parallelFor
    parallelFor(0, B_resamp, gpcWorker);
