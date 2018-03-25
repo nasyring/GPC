@@ -153,7 +153,7 @@ if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
 } else {
    t = t+1;
    w = fmax(w + (pow(1+t,-0.51)*diff),0.1);
-}
+} 
 /*
 while(go) {
  
