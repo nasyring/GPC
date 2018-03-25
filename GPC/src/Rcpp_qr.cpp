@@ -102,7 +102,7 @@ arma::colvec cover;
 }
 	
 
-	
+// [[Rcpp::depends(RcppParallel)]]	
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 Rcpp::List GPC_qr_parallel(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) {
