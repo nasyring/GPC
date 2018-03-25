@@ -127,7 +127,7 @@ NumericVector theta1new;
 NumericVector loglikdiff;
 arma::colvec r			= arma::colvec(1);r.fill(0.0);
 arma::colvec uu 		= arma::colvec(1);
-arma::colvec cover		= arma::colvec(B);
+arma::colvec cover		= arma::colvec(B);cover.fill(0.0);
 double diff;
 bool go 			= TRUE;
 int t				=1; 
