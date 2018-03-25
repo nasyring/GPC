@@ -96,7 +96,7 @@ arma::colvec cover;
 				cover(i) = 1.0;
 			} else {cover(i) = 0.0;}
 			
-  		*/}
+  		*/}}
 	}
 };
 	
