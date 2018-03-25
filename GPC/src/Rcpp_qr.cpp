@@ -141,11 +141,11 @@ for (int i=0; i<B; i++) {
 }
 bootmean0 = bootmean0/B;
 bootmean1 = bootmean1/B;
-/* 
+
 // create the worker
 GPC_qr_mcmc_parallel gpcWorker(n, ddata, thetaboot, databoot, bootmean0, bootmean1, aalpha, M, B, w, cover);
 parallelFor(0, 1, gpcWorker);
-
+/*
 sumcover = 0.0;
 for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
 diff = (sumcover/B) - (1.0-aalpha);
