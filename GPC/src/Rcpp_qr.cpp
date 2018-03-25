@@ -146,7 +146,7 @@ bootmean1 = bootmean1/B;
 
 while(go) {
    // create the worker
-   GPC_qr_mcmc_parallel gpcWorker(n, ddata, thetaboot, databoot, bootmean0, bootmean1, aalpha, M, B, ww, cover);
+   GPC_qr_mcmc_parallel gpcWorker(n, ddata, thetaboot, databoot, bootmean0, bootmean1, aalpha, M, B, w, cover);
      
    // call it with parallelFor
    parallelFor(0, B, gpcWorker);
