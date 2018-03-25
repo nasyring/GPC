@@ -51,7 +51,7 @@ arma::colvec cover;
 		double u1;
 		for (std::size_t i = begin; i < end; i++) {
 			theta0old = thetaboot(i,0);
-			theta1old = thetaboot(i,1);
+			theta1old = thetaboot(i,1);/*
 			for(int j=0; j<(M_samp+100); j++) {
 				theta0new = Rcpp::rnorm(1, theta0old[0], 0.5);
 				loglikdiff = 0.0;
@@ -94,7 +94,8 @@ arma::colvec cover;
 			u1 = sort1(0.975*M_samp);
 			if ( (l1 < bootmean1(0)) && (u1 > bootmean1(0)) ){
 				cover(i) = 1.0;
-			} else {cover(i) = 0.0;}
+			} else {cover(i) = 0.0;}*/
+			cover(i) = 0.5;
 			
   		}
 	}
