@@ -1,8 +1,5 @@
 // -*- mode: C++; c-indent-level: 4; c-basic-offset: 4; indent-tabs-mode: nil; -*-
 
-
-// we only include RcppArmadillo.h which pulls Rcpp.h in for us
-
 #include "RcppArmadillo.h"
 #include <RcppParallel.h>
 using namespace RcppParallel;
@@ -145,6 +142,8 @@ bootmean1 = bootmean1/B;
 
 // create the worker
 GPC_qr_mcmc_parallel gpcWorker(n, ddata, thetaboot, databoot, bootmean0, bootmean1, aalpha, M, B, w, cover);
+
+/*	
 parallelFor(0, B, gpcWorker);
 sumcover = 0.0;
 for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
@@ -155,7 +154,7 @@ if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
    t = t+1;
    w = w + (pow(1+t,-0.51)*diff);
 }
-/*
+
 while(go) {
  
    // call it with parallelFor
@@ -222,9 +221,10 @@ for(int j=0; j<(2*M+1000); j++) {
 
 
 result = Rcpp::List::create(Rcpp::Named("l0") = l0,Rcpp::Named("u0") = u0,Rcpp::Named("l1") = l1,Rcpp::Named("u1") = u1,Rcpp::Named("w") = w,Rcpp::Named("t") = t,Rcpp::Named("diff") = diff);
-*/
-result = Rcpp::List::create(Rcpp::Named("w") = w,Rcpp::Named("t") = t,Rcpp::Named("cover") = cover);
 
+result = Rcpp::List::create(Rcpp::Named("w") = w,Rcpp::Named("t") = t,Rcpp::Named("cover") = cover);
+*/
+result = Rcpp::List::create(Rcpp::Named("w") = w);
 return result;
 }
 
