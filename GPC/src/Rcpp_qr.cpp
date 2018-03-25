@@ -98,8 +98,8 @@ arma::colvec cover;
 			} else {cover(i) = 0.0;}
 			
   		}
-	};
-}
+	}
+};
 	
 
 // [[Rcpp::depends(RcppParallel)]]	
