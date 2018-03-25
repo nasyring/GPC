@@ -201,6 +201,10 @@ for(int j=0; j<(2*M+1000); j++) {
 	}
 	sort0 = sort(postsamples0f);
 	sort1 = sort(postsamples1f);
+	double l0;
+	double u0;
+	double l1;
+	double u1;
 	l0 = sort0(0.025*2*M);
 	u0 = sort0(0.975*2*M);
 	l1 = sort1(0.025*2*M);
