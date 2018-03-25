@@ -5,6 +5,10 @@ GPC_qr <- function(nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp) {
     .Call('GPC_GPC_qr', PACKAGE = 'GPC', nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp)
 }
 
+GPC_qr_parallel <- function(nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp) {
+    .Call('GPC_GPC_qr_parallel', PACKAGE = 'GPC', nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp)
+}
+
 GPC_linreg <- function(nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp) {
     .Call('GPC_GPC_linreg', PACKAGE = 'GPC', nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp)
 }
