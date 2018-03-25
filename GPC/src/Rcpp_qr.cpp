@@ -57,7 +57,7 @@ arma::colvec cover;
 				loglikdiff = 0.0;
 				for(int k=0; k<nn; k++){
 					loglikdiff = loglikdiff -w * fabs(databoot(k,2*i+1)-theta0new[0] - theta1old[0]*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old[0] - theta1old[0]*databoot(k,2*i)); 
-				}/*
+				}
 				r = Rcpp::dnorm(theta0new, theta0old[0],.5)/Rcpp::dnorm(theta0old,theta0new[0],.5);
 				loglikdiff[0] = loglikdiff[0] + log(r(0));
 				loglikdiff[0] = fmin(std::exp(loglikdiff[0]), 1.0);
@@ -84,7 +84,7 @@ arma::colvec cover;
       				}
 				else if(j>99){
 					postsamples1(j-100) = theta1old[0];	
-				}*/
+				}
 			}
 			sort0 = sort(postsamples0);
 			sort1 = sort(postsamples1);
