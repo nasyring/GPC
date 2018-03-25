@@ -19,8 +19,8 @@ struct GPC_qr_mcmc_parallel : public Worker
 {
 int nn;
 arma::mat data;
-arma::mat theta_boot;
-arma::mat data_boot;
+arma::mat thetaboot;
+arma::mat databoot;
 double alpha;
 int M_samp;
 int B_resamp;
@@ -28,7 +28,7 @@ double w;
 arma::colvec cover;
 
    // initialize with source and destination
-   GPC_qr_mcmc_parallel(const int nn, const arma::mat data, const arma::mat theta_boot, const arma::mat data_boot,
+   GPC_qr_mcmc_parallel(const int nn, const arma::mat data, const arma::mat thetaboot, const arma::mat databoot,
    			const double alpha, const int M_samp, const int B_resamp, const double w, arma::colvec cover) {}   
 
    // operator
