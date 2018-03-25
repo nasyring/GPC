@@ -17,6 +17,16 @@ using namespace std;
 // [[Rcpp::export]]
 struct GPC_qr_mcmc_parallel : public Worker
 {
+const int nn;
+const arma::mat data;
+const arma::mat theta_boot;
+const arma::mat data_boot;
+const double alpha;
+const int M_samp;
+const int B_resamp;
+const double w;
+arma::colvec cover;
+
    // initialize with source and destination
    GPC_qr_mcmc_parallel(const int nn, const arma::mat data, const arma::mat theta_boot, const arma::mat data_boot,
    			const double alpha, const int M_samp, const int B_resamp, const double w, arma::colvec cover) {}   
