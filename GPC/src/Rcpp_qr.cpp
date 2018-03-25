@@ -53,7 +53,7 @@ arma::colvec cover;
 		for (std::size_t i = begin; i < end; i++) {
 			theta0old = thetaboot(i,0);
 			theta1old = thetaboot(i,1);
-			for(int j=0; j<(M_samp_+100); j++) {
+			for(int j=0; j<(M_samp+100); j++) {
 				theta0new = Rcpp::rnorm(1, theta0old[0], 0.5);
 				loglikdiff = 0.0;
 				for(int k=0; k<nn; k++){
