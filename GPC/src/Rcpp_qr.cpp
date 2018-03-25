@@ -14,11 +14,23 @@ using namespace std;
 // [[Rcpp::export]]
 struct GPC_qr_mcmc_parallel : public Worker
 {
-
+const int nn;
+const arma::mat data;
+const arma::mat thetaboot;
+const arma::mat bootmean0;
+const arma::mat bootmean1;
+const arma::mat databoot;
+const double alpha;
+const int M_samp;
+const int B_resamp;
+const double w;
+arma::colvec cover;
 
    // initialize with source and destination
-   GPC_qr_mcmc_parallel(const int nn, arma::mat data, const arma::mat thetaboot, const arma::mat bootmean0, const arma::mat bootmean1, const arma::mat databoot,
-   			const double alpha, const int M_samp, const int B_resamp, const double w, arma::colvec cover) {}   
+   GPC_qr_mcmc_parallel(const int nn, const arma::mat data, const arma::mat thetaboot, const arma::mat bootmean0, const arma::mat bootmean1, const arma::mat databoot,
+   			const double alpha, const int M_samp, const int B_resamp, const double w, arma::colvec cover) 
+			: nn(nn), data(data), thetaboot(thetaboot), bootmean0(bootmean0), bootmean1(bootmean1),
+			alpha(alpha), M_samp(M_samp), B_resamp(B_resamp), w(w), cover(cover) {}   
 
    // operator
    void operator()(std::size_t begin, std::size_t end) {
