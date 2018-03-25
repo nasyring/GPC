@@ -34,11 +34,11 @@ arma::colvec cover;
 
    // operator
    void operator()(std::size_t begin, std::size_t end) {
-   		NumericVector theta0old;
-		NumericVector theta0new;
-		NumericVector theta1old;
-		NumericVector theta1new; 
-		NumericVector loglikdiff;
+   		arma::colvec theta0old= arma::colvec(1);
+		arma::colvec theta0new= arma::colvec(1);
+		arma::colvec theta1old= arma::colvec(1);
+		arma::colvec theta1new= arma::colvec(1); 
+		arma::colvec loglikdiff= arma::colvec(1);
 		arma::colvec sort0 = arma::colvec(M_samp);
 		arma::colvec sort1 = arma::colvec(M_samp);
 		arma::colvec r	= arma::colvec(1);r.fill(0.0);
@@ -54,36 +54,36 @@ arma::colvec cover;
 			theta1old = thetaboot(i,1);/*
 			for(int j=0; j<(M_samp+100); j++) {
 				theta0new = Rcpp::rnorm(1, theta0old[0], 0.5);
-				loglikdiff = 0.0;
+				loglikdiff(0) = 0.0;
 				for(int k=0; k<nn; k++){
 					loglikdiff = loglikdiff -w * fabs(databoot(k,2*i+1)-theta0new[0] - theta1old[0]*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old[0] - theta1old[0]*databoot(k,2*i)); 
 				}
 				r = Rcpp::dnorm(theta0new, theta0old[0],.5)/Rcpp::dnorm(theta0old,theta0new[0],.5);
-				loglikdiff[0] = loglikdiff[0] + log(r(0));
-				loglikdiff[0] = fmin(std::exp(loglikdiff[0]), 1.0);
+				loglikdiff(0) = loglikdiff(0) + log(r(0));
+				loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
 				uu = Rcpp::runif(1);
-      				if((uu(0) <= loglikdiff[0]) && (j>99)) {
-					postsamples0(j-100) = theta0new[0];
+      				if((uu(0) <= loglikdiff(0)) && (j>99)) {
+					postsamples0(j-100) = theta0new(0);
 					theta0old = theta0new; 
       				}
 				else if(j>99){
-					postsamples0(j-100) = theta0old[0];	
+					postsamples0(j-100) = theta0old(0);	
 				}
-				theta1new = Rcpp::rnorm(1, theta1old[0], 0.5);
-				loglikdiff = 0.0;
+				theta1new = Rcpp::rnorm(1, theta1old(0), 0.5);
+				loglikdiff(0) = 0.0;
 				for(int k=0; k<nn; k++){
-					loglikdiff = loglikdiff -w * fabs(databoot(k,2*i+1)-theta0old[0] - theta1new[0]*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old[0] - theta1old[0]*databoot(k,2*i)); 
+					loglikdiff = loglikdiff -w * fabs(databoot(k,2*i+1)-theta0old(0) - theta1new(0)*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
 				}
-				r = Rcpp::dnorm(theta1new, theta1old[0],.5) / Rcpp::dnorm(theta1old,theta1new[0],.5);
-				loglikdiff[0] = loglikdiff[0] + log(r(0));
-				loglikdiff[0] = fmin(std::exp(loglikdiff[0]), 1.0);
+				r = Rcpp::dnorm(theta1new, theta1old(0),.5) / Rcpp::dnorm(theta1old,theta1new(0),.5);
+				loglikdiff(0) = loglikdiff(0) + log(r(0));
+				loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
 				uu = Rcpp::runif(1);
-      				if((uu(0) <= loglikdiff[0]) && (j>99)) {
-					postsamples1(j-100) = theta1new[0];
+      				if((uu(0) <= loglikdiff(0)) && (j>99)) {
+					postsamples1(j-100) = theta1new(0);
 					theta1old = theta1new; 
       				}
 				else if(j>99){
-					postsamples1(j-100) = theta1old[0];	
+					postsamples1(j-100) = theta1old(0);	
 				}
 			}
 			sort0 = sort(postsamples0);
