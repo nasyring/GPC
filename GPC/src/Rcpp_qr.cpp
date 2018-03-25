@@ -48,7 +48,7 @@ arma::colvec cover;
 		double l0;
 		double l1;
 		double u0;
-		double u1;
+		double u1;/*
 		for (std::size_t i = begin; i < end; i++) {
 			theta0old = thetaboot(i,0);
 			theta1old = thetaboot(i,1);
@@ -96,7 +96,7 @@ arma::colvec cover;
 				cover(i) = 1.0;
 			} else {cover(i) = 0.0;}
 			
-  		}
+  		}*/
 	}
 };
 	
