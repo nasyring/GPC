@@ -130,7 +130,7 @@ arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & b
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 Rcpp::List GPC_qr_parallel(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) {
-
+RNGScope scp;
 Rcpp::Function rcpp_parallel_qr("rcpp_parallel_qr");
 List result;
 double aalpha 			= Rcpp::as<double>(alpha);			 			
