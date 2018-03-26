@@ -80,6 +80,7 @@ BEGIN_RCPP
 END_RCPP
 }
 
+// rcpp_parallel_qr
 arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & bootmean0, SEXP & bootmean1, SEXP & databoot,
     SEXP & alpha, SEXP & M_samp, SEXP & B_resamp, SEXP & w);
 RcppExport SEXP GPC_rcpp_parallel_qr(SEXP nnSEXP, SEXP dataSEXP, SEXP thetabootSEXP, SEXP bootmean0SEXP, SEXP bootmean1SEXP, SEXP databootSEXP, SEXP alphaSEXP, SEXP M_sampSEXP, SEXP B_resampSEXP, SEXP wSEXP){
