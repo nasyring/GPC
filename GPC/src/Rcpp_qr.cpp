@@ -99,17 +99,29 @@ arma::colvec cover;
 };
 
 // [[Rcpp::export]]
-arma::colvec rcpp_parallel_qr(int nn, arma::mat data, arma::mat thetaboot, arma::mat bootmean0, arma::mat bootmean1, arma::mat databoot,
-   			double alpha, int M_samp, int B_resamp, double w) {
-  
+arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & bootmean0, SEXP & bootmean1, SEXP & databoot,
+   			SEXP & alpha, SEXP & M_samp, SEXP & B_resamp, SEXP & w) {
+	
+   int nn_ = Rcpp::as<int>(nn);
+   arma::mat data_ = Rcpp::as<arma::mat>(data);
+   arma::mat thetaboot_ = Rcpp::as<arma::mat>(thetaboot); 
+   arma::colvec bootmean0_ = Rcpp::as<arma::colvec>(bootmean0);
+   arma::colvec bootmean1_ = Rcpp::as<arma::colvec>(bootmean1);
+   arma::mat databoot_ = Rcpp::as<arma::mat>(databoot); 
+   double alpha_ = Rcpp::as<double>(alpha);
+   int M_samp_ = Rcpp::as<int>(M_samp);
+   int B_resamp_ = Rcpp::as<int>(B_resamp);
+   double w_ = Rcpp::as<double>(w);
+	
+	
    // allocate the matrix we will return
-   arma::colvec cover = arma::colvec(B_resamp); 
+   arma::colvec cover = arma::colvec(B_resamp_); 
 
    // create the worker
-   GPC_qr_mcmc_parallel gpcWorker(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w, cover);
+   GPC_qr_mcmc_parallel gpcWorker(nn_, data_, thetaboot_, bootmean0_, bootmean1_, databoot_, alpha_, M_samp_, B_resamp_, w_, cover);
      
    // call it with parallelFor
-   parallelFor(0, B_resamp, gpcWorker);
+   parallelFor(0, B_resamp_, gpcWorker);
 
    return cover;
 }
