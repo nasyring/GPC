@@ -103,7 +103,7 @@ arma::colvec cover;
 // [[Rcpp::export]]
 arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & bootmean0, SEXP & bootmean1, SEXP & databoot,
    			SEXP & alpha, SEXP & M_samp, SEXP & B_resamp, SEXP & w) {
-	
+
    int nn_ = Rcpp::as<int>(nn);
    arma::mat data_ = Rcpp::as<arma::mat>(data);
    arma::mat thetaboot_ = Rcpp::as<arma::mat>(thetaboot); 
@@ -134,7 +134,7 @@ arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & b
 Rcpp::List GPC_qr_parallel(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) {
 
 RNGScope scp;
-Rcpp::Function rcpp_parallel_qr("rcpp_parallel_qr");
+//Rcpp::Function rcpp_parallel_qr("rcpp_parallel_qr");
 List result;
 double aalpha 			= Rcpp::as<double>(alpha);			 			
 int n				= Rcpp::as<int>(nn);
