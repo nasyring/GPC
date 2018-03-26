@@ -97,7 +97,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< SEXP & >::type M_samp(M_sampSEXP);
     Rcpp::traits::input_parameter< SEXP & >::type B_resamp(B_resampSEXP);
     Rcpp::traits::input_parameter< SEXP & >::type w(wSEXP);
-    __result = Rcpp::wrap(rcpp_parallel_qr(nn, data, thetaboot, databoot, bootmean0, bootmean1, alpha, M_samp, B_resamp, w));
+    __result = Rcpp::wrap(rcpp_parallel_qr(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w));
     return __result;
 END_RCPP
 }    
