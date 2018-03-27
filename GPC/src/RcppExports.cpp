@@ -2,9 +2,7 @@
 // Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #include <RcppArmadillo.h>
-#include <RcppParallel.h>
 #include <Rcpp.h>
-using namespace RcppParallel;
 using namespace Rcpp;
 using namespace arma;
 using namespace std;
@@ -101,6 +99,21 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }    
+
+
+static const R_CallMethodDef CallEntries[] = {
+    {"GPC_GPC_qr", (DL_FUNC) &GPC_GPC_qr, 7},
+    {"GPC_GPC_qr_parallel", (DL_FUNC) &GPC_GPC_qr_parallel, 7},
+    {"GPC_GPC_linreg", (DL_FUNC) &GPC_GPC_linreg, 7},
+    {"GPC_GPC_varmix", (DL_FUNC) &GPC_GPC_varmix, 5},
+    {"GPC_rcpp_parallel_qr", (DL_FUNC) &GPC_rcpp_parallel_qr, 10},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_GPC(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}
     
 
 
