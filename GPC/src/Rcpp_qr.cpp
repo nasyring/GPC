@@ -2,6 +2,7 @@
 
 #include "RcppArmadillo.h"
 #include <RcppParallel.h>
+#include <Rcpp.h>
 using namespace RcppParallel;
 using namespace Rcpp;
 using namespace arma;
@@ -10,6 +11,11 @@ using namespace std;
 // RcppArmadillo so that the build process will know what to do
 // [[Rcpp::depends(RcppParallel)]]
 // [[Rcpp::depends(RcppArmadillo)]]
+
+
+
+
+
 // [[Rcpp::export]]
 struct GPC_qr_mcmc_parallel : public Worker
 {
@@ -98,8 +104,7 @@ arma::colvec cover;
 	}
 };
 
-// [[Rcpp::depends(RcppParallel)]]
-// [[Rcpp::depends(RcppArmadillo)]]
+
 // [[Rcpp::export]]
 arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & bootmean0, SEXP & bootmean1, SEXP & databoot,
    			SEXP & alpha, SEXP & M_samp, SEXP & B_resamp, SEXP & w) {
@@ -128,8 +133,7 @@ arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & b
    return cover;
 }
 
-// [[Rcpp::depends(RcppParallel)]]	
-// [[Rcpp::depends(RcppArmadillo)]]
+
 // [[Rcpp::export]]
 Rcpp::List GPC_qr_parallel(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) {
 
@@ -257,7 +261,7 @@ return result;
 
 
 
-// [[Rcpp::depends(RcppArmadillo)]]
+
 // [[Rcpp::export]]
 Rcpp::List GPC_qr(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) { 
 
