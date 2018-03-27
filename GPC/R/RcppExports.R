@@ -2,21 +2,21 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 GPC_qr <- function(nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp) {
-    .Call('GPC_GPC_qr', PACKAGE = 'GPC', nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp)
+    .Call(`GPC_GPC_qr`, nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp)
 }
 
 GPC_qr_parallel <- function(nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp) {
-    .Call('GPC_GPC_qr_parallel', PACKAGE = 'GPC', nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp)
+    .Call(`GPC_GPC_qr_parallel`,  nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp)
 }
 
 GPC_linreg <- function(nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp) {
-    .Call('GPC_GPC_linreg', PACKAGE = 'GPC', nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp)
+    .Call(`GPC_GPC_linreg`,  nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp)
 }
 
 GPC_varmix <- function(nn, data, data_boot, alpha, B_resamp) {
-    .Call('GPC_GPC_varmix', PACKAGE = 'GPC', nn, data, data_boot, alpha, B_resamp)
+    .Call(`GPC_GPC_varmix`,  nn, data, data_boot, alpha, B_resamp)
 }
   
 GPC_rcpp_parallel_qr <- function(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, w){
-    .Call('GPC_rcpp_parallel_qr', PACKAGE = 'GPC', nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, w)   
+    .Call(`GPC_rcpp_parallel_qr`,  nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, w)   
 }
