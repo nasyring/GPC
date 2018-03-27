@@ -1,5 +1,0 @@
-useDynLib(GPC)
-importFrom(Rcpp, evalCpp)
-importFrom(RcppParallel, RcppParallelLibs)
-importFrom("utils", "read.table")
-exportPattern("^[[:alpha:]]+")
