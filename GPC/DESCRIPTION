@@ -8,6 +8,6 @@ Maintainer: Nicholas Syring <nasyrin@gmail.com>
 Description:  Provides tools for calibrating misspecified posterior credible intervals.  Functions are provided
   for quantile and linear regression, and a normal mixture model.    
 License: GPL (>= 3) 
-Imports: Rcpp (>= 0.12.5), RcppParallel
+Imports: Rcpp (>= 0.12.16), RcppParallel (>= 4.4.0)
 LinkingTo: Rcpp, RcppArmadillo, RcppParallel
 SystemRequirements: GNU make
