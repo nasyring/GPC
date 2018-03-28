@@ -100,6 +100,18 @@ BEGIN_RCPP
 END_RCPP
 }    
 
+// rcpp_parallel_js_distance
+NumericMatrix rcpp_parallel_js_distance(NumericMatrix mat);
+RcppExport SEXP GPC_rcpp_parallel_js_distance(SEXP matSEXP){
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;   
+    Rcpp::traits::input_parameter< NumericMatrix >::type mat(matSEXP);
+    __result = Rcpp::wrap(rcpp_parallel_js_distance(mat));
+    return __result;
+END_RCPP
+}    
+
 
 static const R_CallMethodDef CallEntries[] = {
     {"GPC_GPC_qr", (DL_FUNC) &GPC_GPC_qr, 7},
@@ -107,6 +119,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"GPC_GPC_linreg", (DL_FUNC) &GPC_GPC_linreg, 7},
     {"GPC_GPC_varmix", (DL_FUNC) &GPC_GPC_varmix, 5},
     {"GPC_rcpp_parallel_qr", (DL_FUNC) &GPC_rcpp_parallel_qr, 10},
+    {"GPC_rcpp_parallel_js_distance", (DL_FUNC) &GPC_rcpp_parallel_js_distance, 1},
     {NULL, NULL, 0}
 };
 
