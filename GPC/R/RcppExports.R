@@ -18,5 +18,5 @@ GPC_varmix <- function(nn, data, data_boot, alpha, B_resamp) {
 }
 
 GPC_rcpp_parallel_qr <- function(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w){
-    .Call(`GPC_rcpp_parallel_qr`,  nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w)   
+    .Call(`GPC_rcpp_parallel_qr`, PACKAGE = "GPC",  nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w)   
 }
