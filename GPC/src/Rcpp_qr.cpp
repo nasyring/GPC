@@ -17,8 +17,7 @@ using namespace std;
 
 
 // [[Rcpp::export]]
-struct GPC_qr_mcmc_parallel : public Worker
-{
+struct GPC_qr_mcmc_parallel : public Worker {
 const int nn;
 const arma::mat data;
 const arma::mat thetaboot;
@@ -39,6 +38,10 @@ arma::colvec cover;
 
    // operator
    void operator()(std::size_t begin, std::size_t end) {
+	   for (std::size_t i = begin; i < end; i++) {
+		   cover(i) = 0.0;
+	   }
+   }
    		/*arma::colvec theta0old= arma::colvec(1);
 		arma::colvec theta0new= arma::colvec(1);
 		arma::colvec theta1old= arma::colvec(1);
@@ -101,7 +104,7 @@ arma::colvec cover;
 				cover(i) = 1.0;
 			} else {cover(i) = 0.0;}			
   		}
-	*/for (std::size_t i = begin; i < end; i++) {cover(i) = 0.0;}}
+	*/
 };
 
 
@@ -128,7 +131,7 @@ arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & b
    GPC_qr_mcmc_parallel gpcWorker(nn_, data_, thetaboot_, bootmean0_, bootmean1_, databoot_, alpha_, M_samp_, B_resamp_, w_, cover);
      
    // call it with parallelFor
-   parallelFor(0, 200, gpcWorker);
+   parallelFor(0, B_resamp_, gpcWorker);
 
    return cover;
 }
