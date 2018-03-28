@@ -128,7 +128,7 @@ arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & b
    GPC_qr_mcmc_parallel gpcWorker(nn_, data_, thetaboot_, bootmean0_, bootmean1_, databoot_, alpha_, M_samp_, B_resamp_, w_, cover);
      
    // call it with parallelFor
-   parallelFor(0, B_resamp_, gpcWorker);
+   parallelFor(0, 200, gpcWorker);
 
    return cover;
 }
