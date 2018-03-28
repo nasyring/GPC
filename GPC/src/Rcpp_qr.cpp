@@ -13,7 +13,45 @@ using namespace std;
 // [[Rcpp::depends(RcppArmadillo)]]
 
 
-
+struct JsDistance : public Worker {
+   
+   // input matrix to read from
+   const RMatrix<double> mat;
+   
+   // output matrix to write to
+   RMatrix<double> rmat;
+   
+   // initialize from Rcpp input and output matrixes (the RMatrix class
+   // can be automatically converted to from the Rcpp matrix type)
+   JsDistance(const NumericMatrix mat, NumericMatrix rmat)
+      : mat(mat), rmat(rmat) {}
+   
+   // function call operator that work for the specified range (begin/end)
+   void operator()(std::size_t begin, std::size_t end) {
+      for (std::size_t i = begin; i < end; i++) {
+         for (std::size_t j = 0; j < i; j++) {
+            
+            // rows we will operate on
+            RMatrix<double>::Row row1 = mat.row(i);
+            RMatrix<double>::Row row2 = mat.row(j);
+            
+            // compute the average using std::tranform from the STL
+            std::vector<double> avg(row1.length());
+            std::transform(row1.begin(), row1.end(), // input range 1
+                           row2.begin(),             // input range 2
+                           avg.begin(),              // output range 
+                           average);                 // function to apply
+              
+            // calculate divergences
+            double d1 = kl_divergence(row1.begin(), row1.end(), avg.begin());
+            double d2 = kl_divergence(row2.begin(), row2.end(), avg.begin());
+               
+            // write to output matrix
+            rmat(i,j) = sqrt(.5 * (d1 + d2));
+         }
+      }
+   }
+};
 
 
 // [[Rcpp::export]]
