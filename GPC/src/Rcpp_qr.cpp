@@ -29,7 +29,7 @@ const double alpha;
 const int M_samp;
 const int B_resamp;
 const double w;
-arma::colvec cover = arma::colvec(B_resamp); cover.fill(7.0);
+arma::colvec cover = arma::colvec(B_resamp); cover.fill(7.0); 
 
    // initialize with source and destination
    GPC_qr_mcmc_parallel(const int nn, const arma::mat data, const arma::mat thetaboot, const arma::mat bootmean0, const arma::mat bootmean1, const arma::mat databoot,
