@@ -29,7 +29,7 @@ const double alpha;
 const int M_samp;
 const int B_resamp;
 const double w;
-arma::colvec cover;
+arma::colvec cover;cover.fill(7.0);
 
    // initialize with source and destination
    GPC_qr_mcmc_parallel(const int nn, const arma::mat data, const arma::mat thetaboot, const arma::mat bootmean0, const arma::mat bootmean1, const arma::mat databoot,
@@ -39,7 +39,7 @@ arma::colvec cover;
 
    // operator
    void operator()(std::size_t begin, std::size_t end) {
-   		arma::colvec theta0old= arma::colvec(1);
+   		/*arma::colvec theta0old= arma::colvec(1);
 		arma::colvec theta0new= arma::colvec(1);
 		arma::colvec theta1old= arma::colvec(1);
 		arma::colvec theta1new= arma::colvec(1); 
@@ -101,7 +101,7 @@ arma::colvec cover;
 				cover(i) = 1.0;
 			} else {cover(i) = 0.0;}			
   		}
-	}
+	*/for (std::size_t i = begin; i < end; i++) {cover(i) = 0.0;}}
 };
 
 
