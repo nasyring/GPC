@@ -12,6 +12,39 @@ using namespace std;
 // [[Rcpp::depends(RcppParallel)]]
 // [[Rcpp::depends(RcppArmadillo)]]
 
+#include <cmath>
+#include <algorithm>
+
+// generic function for kl_divergence
+template <typename InputIterator1, typename InputIterator2>
+inline double kl_divergence(InputIterator1 begin1, InputIterator1 end1, 
+                            InputIterator2 begin2) {
+  
+   // value to return
+   double rval = 0;
+   
+   // set iterators to beginning of ranges
+   InputIterator1 it1 = begin1;
+   InputIterator2 it2 = begin2;
+   
+   // for each input item
+   while (it1 != end1) {
+      
+      // take the value and increment the iterator
+      double d1 = *it1++;
+      double d2 = *it2++;
+      
+      // accumulate if appropirate
+      if (d1 > 0 && d2 > 0)
+         rval += std::log(d1 / d2) * d1;
+   }
+   return rval;  
+}
+
+// helper function for taking the average of two numbers
+inline double average(double val1, double val2) {
+   return (val1 + val2) / 2;
+}
 
 struct JsDistance : public Worker {
    
@@ -53,39 +86,6 @@ struct JsDistance : public Worker {
    }
 };
 
-#include <cmath>
-#include <algorithm>
-
-// generic function for kl_divergence
-template <typename InputIterator1, typename InputIterator2>
-inline double kl_divergence(InputIterator1 begin1, InputIterator1 end1, 
-                            InputIterator2 begin2) {
-  
-   // value to return
-   double rval = 0;
-   
-   // set iterators to beginning of ranges
-   InputIterator1 it1 = begin1;
-   InputIterator2 it2 = begin2;
-   
-   // for each input item
-   while (it1 != end1) {
-      
-      // take the value and increment the iterator
-      double d1 = *it1++;
-      double d2 = *it2++;
-      
-      // accumulate if appropirate
-      if (d1 > 0 && d2 > 0)
-         rval += std::log(d1 / d2) * d1;
-   }
-   return rval;  
-}
-
-// helper function for taking the average of two numbers
-inline double average(double val1, double val2) {
-   return (val1 + val2) / 2;
-}
 
 // [[Rcpp::export]]
 NumericMatrix rcpp_parallel_js_distance(NumericMatrix mat) {
