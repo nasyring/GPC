@@ -122,7 +122,7 @@ arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & b
 	
 	
    // allocate the matrix we will return
-   arma::colvec cover = arma::colvec(B_resamp_); 
+   arma::colvec cover = arma::colvec(B_resamp_);cover.fill(3.0); 
 
    // create the worker
    GPC_qr_mcmc_parallel gpcWorker(nn_, data_, thetaboot_, bootmean0_, bootmean1_, databoot_, alpha_, M_samp_, B_resamp_, w_, cover);
@@ -160,7 +160,6 @@ NumericVector theta1new;
 NumericVector loglikdiff;
 arma::colvec r			= arma::colvec(1);r.fill(0.0);
 arma::colvec uu 		= arma::colvec(1);
-arma::colvec cover;
 double diff;
 bool go 			= TRUE;
 int t				=1; 
