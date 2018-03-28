@@ -20,3 +20,7 @@ GPC_varmix <- function(nn, data, data_boot, alpha, B_resamp) {
 rcpp_parallel_qr <- function(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w){
     .Call(`GPC_rcpp_parallel_qr`,  nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w)   
 }
+
+rcpp_parallel_js_distance <- function(mat){
+    .Call(`GPC_rcpp_parallel_js_distance`, mat)   
+}
