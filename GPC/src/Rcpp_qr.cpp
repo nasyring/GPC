@@ -138,7 +138,7 @@ arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & b
 Rcpp::List GPC_qr_parallel(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) {
 
 RNGScope scp;
-Rcpp::Function GPC_rcpp_parallel_qr("GPC_rcpp_parallel_qr");
+Rcpp::Function _GPC_rcpp_parallel_qr("GPC_rcpp_parallel_qr");
 List result;
 double aalpha 			= Rcpp::as<double>(alpha);			 			
 int n				= Rcpp::as<int>(nn);
@@ -176,7 +176,7 @@ bootmean0 = bootmean0/B;
 bootmean1 = bootmean1/B;
 
 // create the worker
-cover = Rcpp::as<arma::colvec>(GPC_rcpp_parallel_qr(n, ddata, thetaboot, bootmean0, bootmean1, databoot, aalpha, M, B, w));
+cover = Rcpp::as<arma::colvec>(_GPC_rcpp_parallel_qr(n, ddata, thetaboot, bootmean0, bootmean1, databoot, aalpha, M, B, w));
 sumcover = 0.0;
 for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
 diff = (sumcover/B) - (1.0-aalpha);
