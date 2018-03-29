@@ -246,7 +246,7 @@ struct GPC_qr_mcmc_parallel : public Worker {
 
    // operator
 void operator()(std::size_t begin, std::size_t end) {
-		int M = int(M_samp[0]);
+		/*int M = int(M_samp[0]);
 		int n = int(nn[0]);
    		NumericVector theta0old(1,0.0);
 		NumericVector theta0new(1,0.0);
@@ -260,7 +260,7 @@ void operator()(std::size_t begin, std::size_t end) {
 		NumericVector l0(1,0.0);
 		NumericVector l1(1,0.0);
 		NumericVector u0(1,0.0);
-		NumericVector u1(1,0.0);
+		NumericVector u1(1,0.0);*/
 		for (std::size_t i = begin; i < end; i++) {
 			/*theta0old = thetaboot(i,0);
 			theta1old = thetaboot(i,1);
