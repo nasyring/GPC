@@ -252,7 +252,7 @@ NumericVector rcpp_parallel_qr(SEXP & thing1) {
    // call it with parallelFor
    parallelFor(0, thing1_.size(), gpcWorker);
 
-   return cover;
+   return thing2;
 }
 
 
