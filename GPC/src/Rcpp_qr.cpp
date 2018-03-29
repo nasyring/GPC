@@ -262,7 +262,7 @@ void operator()(std::size_t begin, std::size_t end) {
 		NumericVector u0(1,0.0);
 		NumericVector u1(1,0.0);
 		for (std::size_t i = begin; i < end; i++) {
-			theta0old = thetaboot(i,0);
+			/*theta0old = thetaboot(i,0);
 			theta1old = thetaboot(i,1);
 			for(int j=0; j<(M+100); j++) {
 				theta0new(0) = R::rnorm(theta0old(0), 0.5);
@@ -307,7 +307,7 @@ void operator()(std::size_t begin, std::size_t end) {
 			if ( (l1[0] < bootmean1(0)) && (u1[0] > bootmean1(0)) ){
 				cover(i) = 1.0;
 			} else {cover(i) = 0.0;}			
-  		}
+  		*/cover(i) = 0.0;}
 	}
 };
 
