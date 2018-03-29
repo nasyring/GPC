@@ -239,18 +239,16 @@ struct GPC_qr_mcmc_parallel : public Worker {
 };
 
 // [[Rcpp::export]]
-NumericVector rcpp_parallel_qr(SEXP & thing1) {
-
-   NumericVector thing1_ = Rcpp::as<NumericVector>(thing1);
+NumericVector rcpp_parallel_qr(NumericVector thing1) {
  
    // allocate the matrix we will return
-   NumericVector thing2(thing1_.size(),2.0); 
+   NumericVector thing2(thing1.size(),2.0); 
 
    // create the worker
-   GPC_qr_mcmc_parallel gpcWorker(thing1_, thing2);
+   GPC_qr_mcmc_parallel gpcWorker(thing1, thing2);
      
    // call it with parallelFor
-   parallelFor(0, thing1_.size(), gpcWorker);
+   parallelFor(0, thing1.size(), gpcWorker);
 
    return thing2;
 }
