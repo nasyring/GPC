@@ -164,6 +164,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"GPC_GPC_varmix", (DL_FUNC) &GPC_GPC_varmix, 5},
     {"GPC_rcpp_parallel_qr", (DL_FUNC) &GPC_rcpp_parallel_qr, 10},
     {"GPC_rcpp_parallel_js_distance", (DL_FUNC) &GPC_rcpp_parallel_js_distance, 1},
+    {"GPC_GibbsMCMC2", (DL_FUNC) &GPC_GibbsMCMC2, 8},
     {NULL, NULL, 0}
 };
 
