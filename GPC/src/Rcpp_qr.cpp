@@ -102,7 +102,7 @@ NumericMatrix rcpp_parallel_js_distance(NumericMatrix mat) {
    return rmat;
 }
 
-
+/*
 struct GPC_qr_mcmc_parallel : public Worker {
 const int nn;
 const arma::mat data;
@@ -125,10 +125,7 @@ arma::colvec cover;
    // operator
    void operator()(std::size_t begin, std::size_t end) {
 	   for (std::size_t i = begin; i < end; i++) {
-		   cover(i) = 0.0;
-	   }
-   }
-   		/*arma::colvec theta0old= arma::colvec(1);
+   		arma::colvec theta0old= arma::colvec(1);
 		arma::colvec theta0new= arma::colvec(1);
 		arma::colvec theta1old= arma::colvec(1);
 		arma::colvec theta1new= arma::colvec(1); 
@@ -190,10 +187,10 @@ arma::colvec cover;
 				cover(i) = 1.0;
 			} else {cover(i) = 0.0;}			
   		}
-	*/
+	}
 };
-
-
+*/
+/*
 // [[Rcpp::export]]
 arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & bootmean0, SEXP & bootmean1, SEXP & databoot,
    			SEXP & alpha, SEXP & M_samp, SEXP & B_resamp, SEXP & w) {
@@ -221,6 +218,44 @@ arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & b
 
    return cover;
 }
+*/
+
+
+
+struct GPC_qr_mcmc_parallel : public Worker {
+	const NumericVector thing1;
+	NumericVector thing2;
+
+   // initialize with source and destination
+   GPC_qr_mcmc_parallel(const NumericMatrix thing1, NumericMatrix thing2) 
+			: thing1(thing1), thing2(thing2) {}   
+
+   // operator
+   void operator()(std::size_t begin, std::size_t end) {
+	   for (std::size_t i = begin; i < end; i++) {
+			thing2[i] = thing1[i];
+	}
+};
+
+// [[Rcpp::export]]
+arma::colvec rcpp_parallel_qr(SEXP & thing1) {
+
+   NumericVector thing1 = Rcpp::as<NumericVector>(thing1);
+ 
+   // allocate the matrix we will return
+   NumericVector thing2(thing1.size(),2.0); 
+
+   // create the worker
+   GPC_qr_mcmc_parallel gpcWorker(nn_, data_, thetaboot_, bootmean0_, bootmean1_, databoot_, alpha_, M_samp_, B_resamp_, w_, cover);
+     
+   // call it with parallelFor
+   parallelFor(0, thing1.size(), gpcWorker);
+
+   return cover;
+}
+
+
+
 
 
 // [[Rcpp::export]]
