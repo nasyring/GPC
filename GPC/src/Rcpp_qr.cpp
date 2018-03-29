@@ -227,7 +227,7 @@ struct GPC_qr_mcmc_parallel : public Worker {
 	NumericVector thing2;
 
    // initialize with source and destination
-   GPC_qr_mcmc_parallel(const NumericMatrix thing1, NumericMatrix thing2) 
+   GPC_qr_mcmc_parallel(const NumericVector thing1, NumericVector thing2) 
 			: thing1(thing1), thing2(thing2) {}   
 
    // operator
@@ -235,6 +235,7 @@ struct GPC_qr_mcmc_parallel : public Worker {
 	   for (std::size_t i = begin; i < end; i++) {
 			thing2[i] = thing1[i];
 	}
+   }
 };
 
 // [[Rcpp::export]]
