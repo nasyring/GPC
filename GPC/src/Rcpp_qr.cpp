@@ -189,7 +189,8 @@ inline double GibbsMCMC(RVector<double> nn, RMatrix<double> data, RMatrix<double
 	
 }
 
-inline Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot,
+// [[Rcpp::export]]
+Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot,
 	NumericVector bootmean0, NumericVector bootmean1, NumericVector alpha, NumericVector M_samp, NumericVector w) {
    	
 	List result;
