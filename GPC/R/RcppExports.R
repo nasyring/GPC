@@ -17,12 +17,8 @@ GPC_varmix <- function(nn, data, data_boot, alpha, B_resamp) {
     .Call(`GPC_GPC_varmix`,  nn, data, data_boot, alpha, B_resamp)
 }
 
-#rcpp_parallel_qr <- function(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w){
-#    .Call(`GPC_rcpp_parallel_qr`,  nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w)   
-#}
-
-rcpp_parallel_qr <- function(thing1){
-    .Call(`GPC_rcpp_parallel_qr`,  thing1)   
+rcpp_parallel_qr <- function(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w){
+    .Call(`GPC_rcpp_parallel_qr`,  nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w)   
 }
 
 rcpp_parallel_js_distance <- function(mat){
