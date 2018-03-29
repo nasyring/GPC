@@ -245,17 +245,17 @@ inline Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix
 
 struct GPC_qr_mcmc_parallel : public Worker {
 
-	const RVector nn;
-	const RMatrix data;
-	const RMatrix thetaboot;
-	const RVector bootmean0;
-	const RVector bootmean1;
-	const RMatrix databoot;
-	const RVector alpha;
-	const RVector M_samp;
-	const RVector B_resamp;
-	const RVector w;
-	RVector cover;
+	const RVector<double> nn;
+	const RMatrix<double> data;
+	const RMatrix<double> thetaboot;
+	const RVector<double> bootmean0;
+	const RVector<double> bootmean1;
+	const RMatrix<double> databoot;
+	const RVector<double> alpha;
+	const RVector<double> M_samp;
+	const RVector<double> B_resamp;
+	const RVector<double> w;
+	RVector<double> cover;
 
    // initialize with source and destination
    GPC_qr_mcmc_parallel(const NumericVector nn,	const NumericMatrix data, const NumericMatrix thetaboot,
