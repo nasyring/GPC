@@ -233,7 +233,7 @@ struct GPC_qr_mcmc_parallel : public Worker {
    // operator
    void operator()(std::size_t begin, std::size_t end) {
 	   for (std::size_t i = begin; i < end; i++) {
-			thing2[i] = thing1[i];
+			thing2[i] = 2*thing1[i];
 	}
    }
 };
