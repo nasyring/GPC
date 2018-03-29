@@ -246,7 +246,6 @@ struct GPC_qr_mcmc_parallel : public Worker {
 
    // operator
 void operator()(std::size_t begin, std::size_t end) {
-	   for (std::size_t i = begin; i < end; i++) {
 		int M = int(M_samp[0]);
 		int n = int(nn[0]);
    		NumericVector theta0old(1,0.0);
@@ -301,8 +300,8 @@ void operator()(std::size_t begin, std::size_t end) {
 					postsamples1(j-100) = theta1old(0);	
 				}
 			}
-			sort0 = sort(postsamples0);
-			sort1 = sort(postsamples1);
+			sort0 = std::sort(postsamples0.begin(), postsamples0.end());
+			sort1 = std::sort(postsamples1.begin(), postsamples1.end());
 			l0[0] = sort0(0.025*M_samp);
 			u0[0] = sort0(0.975*M_samp);
 			l1[0] = sort1(0.025*M_samp);
