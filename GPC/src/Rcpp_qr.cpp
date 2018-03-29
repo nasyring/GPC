@@ -221,7 +221,78 @@ arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & b
 }
 */
 
-
+// helper function for Gibbs sampling
+inline double GibbsMCMC(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot,
+	NumericVector bootmean0, NumericVector bootmean1, NumericMatrix databoot,
+	NumericVector alpha, NumericVector M_samp, NumericVector B_resamp,
+	NumericVector w, std::size_t i) {
+   	
+	double cov_ind;
+	int M = int(M_samp[0]);
+	int n = int(nn[0]);
+   	NumericVector theta0old(1,0.0);
+	NumericVector theta0new(1,0.0);
+	NumericVector theta1old(1,0.0);
+	NumericVector theta1new(1,0.0);
+	NumericVector loglikdiff(1,0.0);
+	NumericVector r(1,0.0);
+	NumericVector uu(1,0.0);
+	NumericVector postsamples0(M,0.0);
+	NumericVector postsamples1(M,0.0);
+	NumericVector l0(1,0.0);
+	NumericVector l1(1,0.0);
+	NumericVector u0(1,0.0);
+	NumericVector u1(1,0.0);*/
+	theta0old = thetaboot(i,0);
+	theta1old = thetaboot(i,1);
+	
+	for(int j=0; j<(M+100); j++) {
+		theta0new(0) = R::rnorm(theta0old(0), 0.5);
+		loglikdiff(0) = 0.0;
+		for(int k=0; k<n; k++){
+			loglikdiff(0) = loglikdiff(0) -w[0] * fabs(databoot(k,2*i+1)-theta0new(0) - theta1old(0)*databoot(k,2*i)) + w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
+		}
+		r[0] = R::dnorm(theta0new(0), theta0old(0),.5, 0)/R::dnorm(theta0old(0),theta0new(0),.5, 0);
+		loglikdiff(0) = loglikdiff(0) + log(r(0));
+		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		uu[0] = R::runif(0.0,1.0);
+      		if((uu(0) <= loglikdiff(0)) && (j>99)) {
+			postsamples0(j-100) = theta0new(0);
+			theta0old(0) = theta0new(0); 
+      		}
+		else if(j>99){
+			postsamples0(j-100) = theta0old(0);	
+		}
+		theta1new[0] = R::rnorm(theta1old(0), 0.5);
+		loglikdiff(0) = 0.0;
+		for(int k=0; k<n; k++){
+			loglikdiff(0) = loglikdiff(0) -w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1new(0)*databoot(k,2*i)) + w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
+		}
+		r[0] = R::dnorm(theta1new(0), theta1old(0),.5, 0) / R::dnorm(theta1old(0),theta1new(0),.5, 0);
+		loglikdiff(0) = loglikdiff(0) + log(r(0));
+		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		uu[0] = R::runif(0.0,1.0);
+      		if((uu(0) <= loglikdiff(0)) && (j>99)) {
+			postsamples1(j-100) = theta1new(0);
+			theta1old(0) = theta1new(0); 
+      		}
+		else if(j>99){
+			postsamples1(j-100) = theta1old(0);	
+		}
+	}
+	std::sort(postsamples0.begin(), postsamples0.end());
+	std::sort(postsamples1.begin(), postsamples1.end());
+	l0[0] = postsamples0(0.025*M);
+	u0[0] = postsamples0(0.975*M);
+	l1[0] = postsamples1(0.025*M);
+	u1[0] = postsamples1(0.975*M);
+	if ( (l1[0] < bootmean1(0)) && (u1[0] > bootmean1(0)) ){
+		cov_ind = 1.0;
+	} else {cov_ind = 0.0;}
+	
+	return cov_ind;
+	
+}
 
 struct GPC_qr_mcmc_parallel : public Worker {
 
@@ -246,68 +317,10 @@ struct GPC_qr_mcmc_parallel : public Worker {
 
    // operator
 void operator()(std::size_t begin, std::size_t end) {
-		/*int M = int(M_samp[0]);
-		int n = int(nn[0]);
-   		NumericVector theta0old(1,0.0);
-		NumericVector theta0new(1,0.0);
-		NumericVector theta1old(1,0.0);
-		NumericVector theta1new(1,0.0);
-		NumericVector loglikdiff(1,0.0);
-		NumericVector r(1,0.0);
-		NumericVector uu(1,0.0);
-		NumericVector postsamples0(M,0.0);
-		NumericVector postsamples1(M,0.0);
-		NumericVector l0(1,0.0);
-		NumericVector l1(1,0.0);
-		NumericVector u0(1,0.0);
-		NumericVector u1(1,0.0);*/
 		for (std::size_t i = begin; i < end; i++) {
-			/*theta0old = thetaboot(i,0);
-			theta1old = thetaboot(i,1);
-			for(int j=0; j<(M+100); j++) {
-				theta0new(0) = R::rnorm(theta0old(0), 0.5);
-				loglikdiff(0) = 0.0;
-				for(int k=0; k<n; k++){
-					loglikdiff(0) = loglikdiff(0) -w[0] * fabs(databoot(k,2*i+1)-theta0new(0) - theta1old(0)*databoot(k,2*i)) + w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
-				}
-				r[0] = R::dnorm(theta0new(0), theta0old(0),.5, 0)/R::dnorm(theta0old(0),theta0new(0),.5, 0);
-				loglikdiff(0) = loglikdiff(0) + log(r(0));
-				loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
-				uu[0] = R::runif(0.0,1.0);
-      				if((uu(0) <= loglikdiff(0)) && (j>99)) {
-					postsamples0(j-100) = theta0new(0);
-					theta0old(0) = theta0new(0); 
-      				}
-				else if(j>99){
-					postsamples0(j-100) = theta0old(0);	
-				}
-				theta1new[0] = R::rnorm(theta1old(0), 0.5);
-				loglikdiff(0) = 0.0;
-				for(int k=0; k<n; k++){
-					loglikdiff(0) = loglikdiff(0) -w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1new(0)*databoot(k,2*i)) + w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
-				}
-				r[0] = R::dnorm(theta1new(0), theta1old(0),.5, 0) / R::dnorm(theta1old(0),theta1new(0),.5, 0);
-				loglikdiff(0) = loglikdiff(0) + log(r(0));
-				loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
-				uu[0] = R::runif(0.0,1.0);
-      				if((uu(0) <= loglikdiff(0)) && (j>99)) {
-					postsamples1(j-100) = theta1new(0);
-					theta1old(0) = theta1new(0); 
-      				}
-				else if(j>99){
-					postsamples1(j-100) = theta1old(0);	
-				}
-			}
-			std::sort(postsamples0.begin(), postsamples0.end());
-			std::sort(postsamples1.begin(), postsamples1.end());
-			l0[0] = postsamples0(0.025*M);
-			u0[0] = postsamples0(0.975*M);
-			l1[0] = postsamples1(0.025*M);
-			u1[0] = postsamples1(0.975*M);
-			if ( (l1[0] < bootmean1(0)) && (u1[0] > bootmean1(0)) ){
-				cover(i) = 1.0;
-			} else {cover(i) = 0.0;}			
-  		*/cover(i) = 0.0;}
+			cover(i) = GibbsMCMC(nn, data, thetaboot, bootmean0, bootmean1, databoot,
+					alpha, M_samp, B_resamp, w, i)	
+		}
 	}
 };
 
