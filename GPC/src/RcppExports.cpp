@@ -102,13 +102,25 @@ END_RCPP
 */
 
 // rcpp_parallel_qr
-NumericVector rcpp_parallel_qr(NumericVector thing1);
-RcppExport SEXP GPC_rcpp_parallel_qr(SEXP thing1SEXP){
+NumericVector rcpp_parallel_qr(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot, NumericVector bootmean0,
+	NumericVector bootmean1, NumericMatrix databoot, NumericVector alpha, NumericVector M_samp, NumericVector B_resamp,
+	NumericVector w);
+RcppExport SEXP GPC_rcpp_parallel_qr(SEXP nnSEXP, SEXP dataSEXP, SEXP thetabootSEXP, SEXP bootmean0SEXP, SEXP bootmean1SEXP, SEXP databootSEXP,
+                                    SEXP alphaSEXP, SEXP M_sampSEXP, SEXP B_resampSEXP, SEXP wSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type thing1(thing1SEXP);
-    __result = Rcpp::wrap(rcpp_parallel_qr(thing1));
+    Rcpp::traits::input_parameter< NumericVector >::type nn(nnSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type thetaboot(thetabootSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type bootmean0(bootmean0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type bootmean1(bootmean1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type databoot(databootSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type M_samp(M_sampSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type B_resamp(B_resampSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    __result = Rcpp::wrap(rcpp_parallel_qr(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w));
     return __result;
 END_RCPP
 }    
