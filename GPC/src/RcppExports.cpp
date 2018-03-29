@@ -125,6 +125,24 @@ BEGIN_RCPP
 END_RCPP
 }    
 
+Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot,
+	NumericVector bootmean0, NumericVector bootmean1, NumericVector alpha, NumericVector M_samp, NumericVector w);
+RcppExport SEXP GPC_GibbsMCMC2(SEXP nnSEXP, SEXP dataSEXP, SEXP thetabootSEXP, SEXP bootmean0SEXP, SEXP bootmean1SEXP, SEXP alphaSEXP, SEXP M_sampSEXP, SEXP wSEXP){
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< SEXP & >::type nn(nnSEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type thetaboot(thetabootSEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type bootmean0(bootmean0SEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type bootmean1(bootmean1SEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type M_samp(M_sampSEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type w(wSEXP);
+    __result = Rcpp::wrap(GibbsMCMC2(nn, data, thetaboot, bootmean0, bootmean1, alpha, M_samp, w));
+    return __result;
+END_RCPP
+}
 
 // rcpp_parallel_js_distance
 NumericMatrix rcpp_parallel_js_distance(NumericMatrix mat);
