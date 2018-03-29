@@ -305,10 +305,9 @@ List finalsample;
 double eps 			= 0.01; 
 NumericVector nn_ = Rcpp::as<NumericVector>(nn);
 NumericMatrix data_ = Rcpp::as<NumericMatrix>(data);
-/*
 NumericMatrix thetaboot_ = Rcpp::as<NumericMatrix>(theta_boot);
 NumericVector bootmean0(1,0.0);
-NumericVector bootmean1(1,0.0);
+NumericVector bootmean1(1,0.0);/*
 NumericMatrix databoot_ = Rcpp::as<NumericMatrix>(data_boot);
 NumericVector alpha_ = Rcpp::as<NumericVector>(alpha);
 NumericVector M_samp_ = Rcpp::as<NumericMatrix>(M_samp);
