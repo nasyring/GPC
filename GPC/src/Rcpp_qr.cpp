@@ -256,7 +256,7 @@ NumericVector rcpp_parallel_qr(NumericVector nn, NumericMatrix data, NumericMatr
 	NumericVector bootmean1, NumericMatrix databoot, NumericVector alpha, NumericVector M_samp, NumericVector B_resamp,
 	NumericVector w) {
 	
-   int B = Rcpp::as<int>(B_resamp[0]);
+   int B = std::round(B_resamp[0]);
    // allocate the matrix we will return
    NumericVector cover(B,2.0); 
 
