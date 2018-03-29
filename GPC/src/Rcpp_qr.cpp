@@ -328,9 +328,7 @@ bootmean0 = bootmean0/B;
 bootmean1 = bootmean1/B;
 
 while(go){	
-	
 cover = _GPC_rcpp_parallel_qr(nn_, data_, thetaboot_, bootmean0, bootmean1, databoot_, alpha_, M_samp_, B_resamp_, w);
-	
 sumcover = 0.0;
 for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
 diff = (sumcover/B) - (1.0-alpha_[0]);
@@ -340,6 +338,7 @@ if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
    t = t+1;
    w[0] = fmax(w[0] + (pow(1+t,-0.51)*diff),0.1);
 } 
+}
 
 // Final sample
 
