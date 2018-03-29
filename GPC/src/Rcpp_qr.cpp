@@ -104,9 +104,9 @@ NumericMatrix rcpp_parallel_js_distance(NumericMatrix mat) {
 }
 
 // helper function for Gibbs sampling
-inline double GibbsMCMC(RVector nn, RMatrix data, RMatrix thetaboot,
-	RVector bootmean0, RVector bootmean1, RMatrix databoot,
-	RVector alpha, RVector M_samp, RVector w, std::size_t i) {
+inline double GibbsMCMC(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot,
+	NumericVector bootmean0, NumericVector bootmean1, NumericMatrix databoot,
+	NumericVector alpha, NumericVector M_samp, NumericVector w, std::size_t i) {
    	
 	double cov_ind;
 	int M = int(M_samp[0]);
