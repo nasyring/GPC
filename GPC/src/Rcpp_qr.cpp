@@ -103,129 +103,10 @@ NumericMatrix rcpp_parallel_js_distance(NumericMatrix mat) {
    return rmat;
 }
 
-/*
-struct GPC_qr_mcmc_parallel : public Worker {
-const int nn;
-const arma::mat data;
-const arma::mat thetaboot;
-const arma::mat bootmean0;
-const arma::mat bootmean1;
-const arma::mat databoot;
-const double alpha;
-const int M_samp;
-const int B_resamp;
-const double w;
-arma::colvec cover;
-
-   // initialize with source and destination
-   GPC_qr_mcmc_parallel(const int nn, const arma::mat data, const arma::mat thetaboot, const arma::mat bootmean0, const arma::mat bootmean1, const arma::mat databoot,
-   			const double alpha, const int M_samp, const int B_resamp, const double w, arma::colvec cover) 
-			: nn(nn), data(data), thetaboot(thetaboot), bootmean0(bootmean0), bootmean1(bootmean1), databoot(databoot),
-			alpha(alpha), M_samp(M_samp), B_resamp(B_resamp), w(w), cover(cover) {}   
-
-   // operator
-   void operator()(std::size_t begin, std::size_t end) {
-	   for (std::size_t i = begin; i < end; i++) {
-   		arma::colvec theta0old= arma::colvec(1);
-		arma::colvec theta0new= arma::colvec(1);
-		arma::colvec theta1old= arma::colvec(1);
-		arma::colvec theta1new= arma::colvec(1); 
-		arma::colvec loglikdiff= arma::colvec(1);
-		arma::colvec sort0 = arma::colvec(M_samp);
-		arma::colvec sort1 = arma::colvec(M_samp);
-		arma::colvec r	= arma::colvec(1);r.fill(0.0);
-		arma::colvec uu = arma::colvec(1);
-		arma::colvec postsamples0	= arma::colvec(M_samp);postsamples0.fill(0.0);
-		arma::colvec postsamples1	= arma::colvec(M_samp);postsamples1.fill(0.0);
-		double l0;
-		double l1;
-		double u0;
-		double u1;
-		for (std::size_t i = begin; i < end; i++) {
-			theta0old = thetaboot(i,0);
-			theta1old = thetaboot(i,1);
-			for(int j=0; j<(M_samp+100); j++) {
-				theta0new(0) = R::rnorm(theta0old(0), 0.5);
-				loglikdiff(0) = 0.0;
-				for(int k=0; k<nn; k++){
-					loglikdiff(0) = loglikdiff(0) -w * fabs(databoot(k,2*i+1)-theta0new(0) - theta1old(0)*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
-				}
-				r = R::dnorm(theta0new(0), theta0old(0),.5, 0)/R::dnorm(theta0old(0),theta0new(0),.5, 0);
-				loglikdiff(0) = loglikdiff(0) + log(r(0));
-				loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
-				uu = R::runif(0.0,1.0);
-      				if((uu(0) <= loglikdiff(0)) && (j>99)) {
-					postsamples0(j-100) = theta0new(0);
-					theta0old(0) = theta0new(0); 
-      				}
-				else if(j>99){
-					postsamples0(j-100) = theta0old(0);	
-				}
-				theta1new = R::rnorm(theta1old(0), 0.5);
-				loglikdiff(0) = 0.0;
-				for(int k=0; k<nn; k++){
-					loglikdiff(0) = loglikdiff(0) -w * fabs(databoot(k,2*i+1)-theta0old(0) - theta1new(0)*databoot(k,2*i)) + w * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
-				}
-				r = R::dnorm(theta1new(0), theta1old(0),.5, 0) / R::dnorm(theta1old(0),theta1new(0),.5, 0);
-				loglikdiff(0) = loglikdiff(0) + log(r(0));
-				loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
-				uu = R::runif(0.0,1.0);
-      				if((uu(0) <= loglikdiff(0)) && (j>99)) {
-					postsamples1(j-100) = theta1new(0);
-					theta1old(0) = theta1new(0); 
-      				}
-				else if(j>99){
-					postsamples1(j-100) = theta1old(0);	
-				}
-			}
-			sort0 = sort(postsamples0);
-			sort1 = sort(postsamples1);
-			l0 = sort0(0.025*M_samp);
-			u0 = sort0(0.975*M_samp);
-			l1 = sort1(0.025*M_samp);
-			u1 = sort1(0.975*M_samp);
-			if ( (l1 < bootmean1(0)) && (u1 > bootmean1(0)) ){
-				cover(i) = 1.0;
-			} else {cover(i) = 0.0;}			
-  		}
-	}
-};
-*/
-/*
-// [[Rcpp::export]]
-arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & bootmean0, SEXP & bootmean1, SEXP & databoot,
-   			SEXP & alpha, SEXP & M_samp, SEXP & B_resamp, SEXP & w) {
-
-   int nn_ = Rcpp::as<int>(nn);
-   arma::mat data_ = Rcpp::as<arma::mat>(data);
-   arma::mat thetaboot_ = Rcpp::as<arma::mat>(thetaboot); 
-   arma::colvec bootmean0_ = Rcpp::as<arma::colvec>(bootmean0);
-   arma::colvec bootmean1_ = Rcpp::as<arma::colvec>(bootmean1);
-   arma::mat databoot_ = Rcpp::as<arma::mat>(databoot); 
-   double alpha_ = Rcpp::as<double>(alpha);
-   int M_samp_ = Rcpp::as<int>(M_samp);
-   int B_resamp_ = Rcpp::as<int>(B_resamp);
-   double w_ = Rcpp::as<double>(w);
-	
-	
-   // allocate the matrix we will return
-   arma::colvec cover = arma::colvec(B_resamp_);cover.fill(3.0); 
-
-   // create the worker
-   GPC_qr_mcmc_parallel gpcWorker(nn_, data_, thetaboot_, bootmean0_, bootmean1_, databoot_, alpha_, M_samp_, B_resamp_, w_, cover);
-     
-   // call it with parallelFor
-   parallelFor(0, B_resamp_, gpcWorker);
-
-   return cover;
-}
-*/
-
 // helper function for Gibbs sampling
 inline double GibbsMCMC(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot,
 	NumericVector bootmean0, NumericVector bootmean1, NumericMatrix databoot,
-	NumericVector alpha, NumericVector M_samp, NumericVector B_resamp,
-	NumericVector w, std::size_t i) {
+	NumericVector alpha, NumericVector M_samp, NumericVector w, std::size_t i) {
    	
 	double cov_ind;
 	int M = int(M_samp[0]);
@@ -294,6 +175,75 @@ inline double GibbsMCMC(NumericVector nn, NumericMatrix data, NumericMatrix thet
 	
 }
 
+inline Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot,
+	NumericVector bootmean0, NumericVector bootmean1, NumericMatrix databoot,
+	NumericVector alpha, NumericVector M_samp, NumericVector w) {
+   	
+	List result;
+	int M = int(M_samp[0]);
+	int n = int(nn[0]);
+   	NumericVector theta0old(1,0.0);
+	NumericVector theta0new(1,0.0);
+	NumericVector theta1old(1,0.0);
+	NumericVector theta1new(1,0.0);
+	NumericVector loglikdiff(1,0.0);
+	NumericVector r(1,0.0);
+	NumericVector uu(1,0.0);
+	NumericVector postsamples0(M,0.0);
+	NumericVector postsamples1(M,0.0);
+	NumericVector l0(1,0.0);
+	NumericVector l1(1,0.0);
+	NumericVector u0(1,0.0);
+	NumericVector u1(1,0.0);
+	theta0old = bootmean0;
+	theta1old = bootmean1;
+	
+	for(int j=0; j<(M+100); j++) {
+		theta0new(0) = R::rnorm(theta0old(0), 0.5);
+		loglikdiff(0) = 0.0;
+		for(int k=0; k<n; k++){
+			loglikdiff(0) = loglikdiff(0) -w[0] * fabs(databoot(k,2*i+1)-theta0new(0) - theta1old(0)*databoot(k,2*i)) + w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
+		}
+		r[0] = R::dnorm(theta0new(0), theta0old(0),.5, 0)/R::dnorm(theta0old(0),theta0new(0),.5, 0);
+		loglikdiff(0) = loglikdiff(0) + log(r(0));
+		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		uu[0] = R::runif(0.0,1.0);
+      		if((uu(0) <= loglikdiff(0)) && (j>99)) {
+			postsamples0(j-100) = theta0new(0);
+			theta0old(0) = theta0new(0); 
+      		}
+		else if(j>99){
+			postsamples0(j-100) = theta0old(0);	
+		}
+		theta1new[0] = R::rnorm(theta1old(0), 0.5);
+		loglikdiff(0) = 0.0;
+		for(int k=0; k<n; k++){
+			loglikdiff(0) = loglikdiff(0) -w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1new(0)*databoot(k,2*i)) + w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
+		}
+		r[0] = R::dnorm(theta1new(0), theta1old(0),.5, 0) / R::dnorm(theta1old(0),theta1new(0),.5, 0);
+		loglikdiff(0) = loglikdiff(0) + log(r(0));
+		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		uu[0] = R::runif(0.0,1.0);
+      		if((uu(0) <= loglikdiff(0)) && (j>99)) {
+			postsamples1(j-100) = theta1new(0);
+			theta1old(0) = theta1new(0); 
+      		}
+		else if(j>99){
+			postsamples1(j-100) = theta1old(0);	
+		}
+	}
+	std::sort(postsamples0.begin(), postsamples0.end());
+	std::sort(postsamples1.begin(), postsamples1.end());
+	l0[0] = postsamples0(0.025*M);
+	u0[0] = postsamples0(0.975*M);
+	l1[0] = postsamples1(0.025*M);
+	u1[0] = postsamples1(0.975*M);
+	
+	result = Rcpp::List::create(Rcpp::Named("l0") = l0[0],Rcpp::Named("u0") = u0[0],Rcpp::Named("l1") = l1[0],Rcpp::Named("u1") = u1[0]);
+
+	return result;
+}
+
 struct GPC_qr_mcmc_parallel : public Worker {
 
 	const NumericVector nn;
@@ -353,121 +303,52 @@ Rcpp::List GPC_qr_parallel(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & dat
 RNGScope scp;
 Rcpp::Function _GPC_rcpp_parallel_qr("rcpp_parallel_qr");
 List result;
-double aalpha 			= Rcpp::as<double>(alpha);			 			
-int n				= Rcpp::as<int>(nn);
-int B 				= Rcpp::as<int>(B_resamp);
+List finalsample;
 double eps 			= 0.01; 
-double w			= 0.5;
-arma::mat thetaboot     	= Rcpp::as<arma::mat>(theta_boot);
-arma::mat ddata			= Rcpp::as<arma::mat>(data);
-arma::mat databoot 		= Rcpp::as<arma::mat>(data_boot);
-int M				= Rcpp::as<int>(M_samp);
-arma::colvec postsamples0f	= arma::colvec(2*M);
-arma::colvec postsamples1f	= arma::colvec(2*M);
-arma::colvec sort0		= arma::colvec(M);
-arma::colvec sort1		= arma::colvec(M);
-NumericVector theta0old;
-NumericVector theta0new;
-NumericVector theta1old;
-NumericVector theta1new;
-NumericVector loglikdiff;
-arma::colvec r			= arma::colvec(1);r.fill(0.0);
-arma::colvec uu 		= arma::colvec(1);
-arma::colvec cover;
+NumericVector nn_ = Rcpp::as<NumericVector>(nn);
+NumericMatrix data_ = Rcpp::as<NumericMatrix>(data);
+NumericMatrix thetaboot_ = Rcpp::as<NumericMatrix>(theta_boot);
+NumericVector bootmean0(1,0);
+NumericVector bootmean1(1,0);
+NumericMatrix databoot_ = Rcpp::as<NumericMatrix>(data_boot);
+NumericVector alpha_ = Rcpp::as<NumericVector>(alpha);
+NumericVector M_samp_ = Rcpp::as<NumericMatrix>(M_samp);
+NumericVector B_resamp_ = Rcpp::as<NumericVector>(B_resamp);
+NumericVector w(1,0);
 double diff;
 bool go 			= TRUE;
 int t				=1; 
-arma::colvec bootmean0		= arma::colvec(1);
-arma::colvec bootmean1		= arma::colvec(1);
-double sumcover = 0.0;
-
+double sumcover;
+int B = int(B_resamp_[0]);
+NumericVector cover;
+	
 for (int i=0; i<B; i++) {
-	bootmean0 = bootmean0 + thetaboot(i,0);
-	bootmean1 = bootmean1 + thetaboot(i,1);
+	bootmean0[0] = bootmean0[0] + thetaboot(i,0);
+	bootmean1[0] = bootmean1[0] + thetaboot(i,1);
 }
 bootmean0 = bootmean0/B;
 bootmean1 = bootmean1/B;
 
-// create the worker
-//cover = Rcpp::as<arma::colvec>(_GPC_rcpp_parallel_qr(n, ddata, thetaboot, bootmean0, bootmean1, databoot, aalpha, M, B, w));
+while(go){	
+	
+cover = _GPC_rcpp_parallel_qr(nn_, data_, thetaboot_, bootmean0, bootmean1, databoot_, alpha_, M_samp_, B_resamp_, w);
+	
 sumcover = 0.0;
 for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
-diff = (sumcover/B) - (1.0-aalpha);
+diff = (sumcover/B) - (1.0-alpha_[0]);
 if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
    go = FALSE;
 } else {
    t = t+1;
-   w = fmax(w + (pow(1+t,-0.51)*diff),0.1);
+   w[0] = fmax(w[0] + (pow(1+t,-0.51)*diff),0.1);
 } 
-/*
-while(go) {
- 
-   // call it with parallelFor
-   parallelFor(0, B, gpcWorker);
 
-   sumcover = 0.0;
-   for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
-   diff = (sumcover/B) - (1.0-aalpha);
-   if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
-  	go = FALSE;
-   } else {
-	t = t+1;
-	w = w + (pow(1+t,-0.51)*diff);
-     }
-}
+// Final sample
+
+NumericVector M_final; M_final[0] = 2*M_samp_[0];
+finalsample = GibbsMCMC2(nn_, data_, thetaboot_, bootmean0, bootmean1, databoot_, alpha_, M_final, w);
 	
-
-theta0old[0] = bootmean0(0);
-theta1old[0] = bootmean1(0);
-for(int j=0; j<(2*M+1000); j++) {
-		theta0new = Rcpp::rnorm(1, theta0old[0], 0.5);
-		loglikdiff = 0.0;
-		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -w * fabs(ddata(k,1)-theta0new[0] - theta1old[0]*ddata(k,0)) + w * fabs(ddata(k,1)-theta0old[0] - theta1old[0]*ddata(k,0)); 
-		}
-		r = Rcpp::dnorm(theta0new, theta0old[0],.5) / Rcpp::dnorm(theta0old,theta0new[0],.5);
-		loglikdiff[0] = loglikdiff[0] + log(r(0));
-		loglikdiff[0] = fmin(std::exp(loglikdiff[0]), 1.0);
-		uu = Rcpp::runif(1);
-      		if((uu(0) <= loglikdiff[0]) && (j>999)) {
-			postsamples0f(j-1000) = theta0new[0];
-			theta0old = theta0new; 
-      		}
-		else if(j>999){
-			postsamples0f(j-1000) = theta0old[0];	
-		}
-		theta1new = Rcpp::rnorm(1, theta1old[0], 0.5);
-		loglikdiff = 0.0;
-		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -w * fabs(ddata(k,1)-theta0old[0] - theta1new[0]*ddata(k,0)) + w * fabs(ddata(k,1)-theta0old[0] - theta1old[0]*ddata(k,0)); 
-		}
-		r = Rcpp::dnorm(theta1new, theta1old[0],.5) / Rcpp::dnorm(theta1old,theta1new[0],.5);
-		loglikdiff[0] = loglikdiff[0] + log(r(0));
-		loglikdiff[0] = fmin(std::exp(loglikdiff[0]), 1.0);
-		uu = Rcpp::runif(1);
-      		if((uu(0) <= loglikdiff[0]) && (j>999)) {
-			postsamples1f(j-1000) = theta1new[0];
-			theta1old = theta1new; 
-      		}
-		else if(j>999){
-			postsamples1f(j-1000) = theta1old[0];	
-		}
-	}
-	sort0 = sort(postsamples0f);
-	sort1 = sort(postsamples1f);
-	double l0;
-	double u0;
-	double l1;
-	double u1;
-	l0 = sort0(0.025*2*M);
-	u0 = sort0(0.975*2*M);
-	l1 = sort1(0.025*2*M);
-	u1 = sort1(0.975*2*M);
-
-
-result = Rcpp::List::create(Rcpp::Named("l0") = l0,Rcpp::Named("u0") = u0,Rcpp::Named("l1") = l1,Rcpp::Named("u1") = u1,Rcpp::Named("w") = w,Rcpp::Named("t") = t,Rcpp::Named("diff") = diff);
-*/
-result = Rcpp::List::create(Rcpp::Named("w") = w,Rcpp::Named("t") = t,Rcpp::Named("cover") = cover);
+result = Rcpp::List::create(Rcpp::Named("w") = w,Rcpp::Named("t") = t,Rcpp::Named("diff") = diff, Rcpp::Named("list_cis") = finalsample);
 
 return result;
 }
