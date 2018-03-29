@@ -255,15 +255,17 @@ struct GPC_qr_mcmc_parallel : public Worker {
 NumericVector rcpp_parallel_qr(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot, NumericVector bootmean0,
 	NumericVector bootmean1, NumericMatrix databoot, NumericVector alpha, NumericVector M_samp, NumericVector B_resamp,
 	NumericVector w) {
- 
+	
+   int B = Rcpp::as<int>(B_resamp[0]);
    // allocate the matrix we will return
-   NumericVector cover(B_resamp[0],2.0); 
+   NumericVector cover(B,2.0); 
 
    // create the worker
    GPC_qr_mcmc_parallel gpcWorker(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w, cover);
      
    // call it with parallelFor
-   parallelFor(0, B_resamp[0], gpcWorker);
+   
+   parallelFor(0, B, gpcWorker);
 
    return cover;
 }
