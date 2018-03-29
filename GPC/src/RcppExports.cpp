@@ -111,11 +111,11 @@ BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< NumericVector >::type nn(nnSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type data(dataSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type thetaboot(thetabootSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type thetaboot(thetabootSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type bootmean0(bootmean0SEXP);
     Rcpp::traits::input_parameter< NumericVector >::type bootmean1(bootmean1SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type databoot(databootSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type databoot(databootSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type M_samp(M_sampSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type B_resamp(B_resampSEXP);
