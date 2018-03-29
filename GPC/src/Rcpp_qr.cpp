@@ -345,7 +345,7 @@ if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
 // Final sample
 
 NumericVector M_final; M_final[0] = 2*M_samp_[0];
-finalsample = GibbsMCMC2(nn_, data_, thetaboot_, bootmean0, bootmean1, databoot_, alpha_, M_final, w);
+finalsample = GibbsMCMC2(nn_, data_, thetaboot_, bootmean0, bootmean1, alpha_, M_final, w);
 	
 result = Rcpp::List::create(Rcpp::Named("w") = w,Rcpp::Named("t") = t,Rcpp::Named("diff") = diff, Rcpp::Named("list_cis") = finalsample);
 
