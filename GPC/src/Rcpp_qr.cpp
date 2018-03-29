@@ -176,8 +176,7 @@ inline double GibbsMCMC(NumericVector nn, NumericMatrix data, NumericMatrix thet
 }
 
 inline Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot,
-	NumericVector bootmean0, NumericVector bootmean1, NumericMatrix databoot,
-	NumericVector alpha, NumericVector M_samp, NumericVector w) {
+	NumericVector bootmean0, NumericVector bootmean1, NumericVector alpha, NumericVector M_samp, NumericVector w) {
    	
 	List result;
 	int M = int(M_samp[0]);
@@ -202,7 +201,7 @@ inline Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix
 		theta0new(0) = R::rnorm(theta0old(0), 0.5);
 		loglikdiff(0) = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff(0) = loglikdiff(0) -w[0] * fabs(databoot(k,2*i+1)-theta0new(0) - theta1old(0)*databoot(k,2*i)) + w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
+			loglikdiff(0) = loglikdiff(0) -w[0] * fabs(data(k,1)-theta0new(0) - theta1old(0)*data(k,0)) + w[0] * fabs(data(k,1)-theta0old(0) - theta1old(0)*data(k,0)); 
 		}
 		r[0] = R::dnorm(theta0new(0), theta0old(0),.5, 0)/R::dnorm(theta0old(0),theta0new(0),.5, 0);
 		loglikdiff(0) = loglikdiff(0) + log(r(0));
@@ -218,7 +217,7 @@ inline Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix
 		theta1new[0] = R::rnorm(theta1old(0), 0.5);
 		loglikdiff(0) = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff(0) = loglikdiff(0) -w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1new(0)*databoot(k,2*i)) + w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
+			loglikdiff(0) = loglikdiff(0) -w[0] * fabs(data(k,1)-theta0old(0) - theta1new(0)*data(k,0)) + w[0] * fabs(data(k,1)-theta0old(0) - theta1old(0)*data(k,0)); 
 		}
 		r[0] = R::dnorm(theta1new(0), theta1old(0),.5, 0) / R::dnorm(theta1old(0),theta1new(0),.5, 0);
 		loglikdiff(0) = loglikdiff(0) + log(r(0));
