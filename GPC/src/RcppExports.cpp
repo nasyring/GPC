@@ -77,7 +77,7 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-
+/*
 // rcpp_parallel_qr
 arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & bootmean0, SEXP & bootmean1, SEXP & databoot,
     SEXP & alpha, SEXP & M_samp, SEXP & B_resamp, SEXP & w);
@@ -99,6 +99,20 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }    
+*/
+
+// rcpp_parallel_qr
+NumericVector rcpp_parallel_qr(NumericVector thing1);
+RcppExport SEXP GPC_rcpp_parallel_qr(SEXP thing1SEXP){
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type thing1(thing1SEXP);
+    __result = Rcpp::wrap(rcpp_parallel_qr(thing1));
+    return __result;
+END_RCPP
+}    
+
 
 // rcpp_parallel_js_distance
 NumericMatrix rcpp_parallel_js_distance(NumericMatrix mat);
@@ -118,7 +132,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"GPC_GPC_qr_parallel", (DL_FUNC) &GPC_GPC_qr_parallel, 7},
     {"GPC_GPC_linreg", (DL_FUNC) &GPC_GPC_linreg, 7},
     {"GPC_GPC_varmix", (DL_FUNC) &GPC_GPC_varmix, 5},
-    {"GPC_rcpp_parallel_qr", (DL_FUNC) &GPC_rcpp_parallel_qr, 10},
+    {"GPC_rcpp_parallel_qr", (DL_FUNC) &GPC_rcpp_parallel_qr, 1},
     {"GPC_rcpp_parallel_js_distance", (DL_FUNC) &GPC_rcpp_parallel_js_distance, 1},
     {NULL, NULL, 0}
 };
