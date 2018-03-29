@@ -304,7 +304,7 @@ List result;
 List finalsample;
 double eps 			= 0.01; 
 NumericVector nn_ = Rcpp::as<NumericVector>(nn);
-NumericMatrix data_ = Rcpp::as<NumericMatrix>(data);
+/*NumericMatrix data_ = Rcpp::as<NumericMatrix>(data);
 NumericMatrix thetaboot_ = Rcpp::as<NumericMatrix>(theta_boot);
 NumericVector bootmean0(1,0.0);
 NumericVector bootmean1(1,0.0);
@@ -326,7 +326,7 @@ for (int i=0; i<B; i++) {
 }
 bootmean0 = bootmean0/B;
 bootmean1 = bootmean1/B;
-/*
+
 while(go){	
 cover = _GPC_rcpp_parallel_qr(nn_, data_, thetaboot_, bootmean0, bootmean1, databoot_, alpha_, M_samp_, B_resamp_, w);
 sumcover = 0.0;
@@ -347,7 +347,7 @@ finalsample = GibbsMCMC2(nn_, data_, thetaboot_, bootmean0, bootmean1, alpha_, M
 	
 result = Rcpp::List::create(Rcpp::Named("w") = w,Rcpp::Named("t") = t,Rcpp::Named("diff") = diff, Rcpp::Named("list_cis") = finalsample);
 */
-	result = Rcpp::List::create(Rcpp::Named("w") = w);
+	result = Rcpp::List::create(Rcpp::Named("w") = 1.0);
 return result;
 }
 
