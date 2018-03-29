@@ -223,34 +223,50 @@ arma::colvec rcpp_parallel_qr(SEXP & nn, SEXP & data, SEXP & thetaboot, SEXP & b
 
 
 struct GPC_qr_mcmc_parallel : public Worker {
-	const NumericVector thing1;
-	NumericVector thing2;
+
+	const NumericVector nn;
+	const NumericMatrix data;
+	const NumericMatrix thetaboot;
+	const NumericVector bootmean0;
+	const NumericVector bootmean1;
+	const NumericMatrix databoot;
+	const NumericVector alpha;
+	const NumericVector M_samp;
+	const NumericVector B_resamp;
+	const NumericVector w;
+	NumericVector cover;
 
    // initialize with source and destination
-   GPC_qr_mcmc_parallel(const NumericVector thing1, NumericVector thing2) 
-			: thing1(thing1), thing2(thing2) {}   
+   GPC_qr_mcmc_parallel(const NumericVector nn,	const NumericMatrix data, const NumericMatrix thetaboot,
+	const NumericVector bootmean0, const NumericVector bootmean1, const NumericMatrix databoot,
+	const NumericVector alpha, const NumericVector M_samp, const NumericVector B_resamp,
+	const NumericVector w, NumericVector cover) 
+			: nn(nn), data(data), thetaboot(thetaboot), bootmean0(bootmean0), bootmean1(bootmean1)
+			  databoot(databoot), alpha(alpha), M_samp(M_samp), B_resamp(B_resamp), w(w), cover(cover) {}   
 
    // operator
    void operator()(std::size_t begin, std::size_t end) {
 	   for (std::size_t i = begin; i < end; i++) {
-			thing2[i] = 2*thing1[i];
+			cover[i] = 1.0;
 	}
    }
 };
 
 // [[Rcpp::export]]
-NumericVector rcpp_parallel_qr(NumericVector thing1) {
+NumericVector rcpp_parallel_qr(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot, NumericVector bootmean0,
+	NumericVector bootmean1, NumericMatrix databoot, NumericVector alpha, NumericVector M_samp, NumericVector B_resamp,
+	NumericVector w) {
  
    // allocate the matrix we will return
-   NumericVector thing2(thing1.size(),2.0); 
+   NumericVector cover(B_resamp[0],2.0); 
 
    // create the worker
-   GPC_qr_mcmc_parallel gpcWorker(thing1, thing2);
+   GPC_qr_mcmc_parallel gpcWorker(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w, cover);
      
    // call it with parallelFor
-   parallelFor(0, thing1.size(), gpcWorker);
+   parallelFor(0, B_resamp[0], gpcWorker);
 
-   return thing2;
+   return cover;
 }
 
 
