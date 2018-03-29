@@ -326,7 +326,7 @@ for (int i=0; i<B; i++) {
 }
 bootmean0 = bootmean0/B;
 bootmean1 = bootmean1/B;
-
+/*
 while(go){	
 cover = _GPC_rcpp_parallel_qr(nn_, data_, thetaboot_, bootmean0, bootmean1, databoot_, alpha_, M_samp_, B_resamp_, w);
 sumcover = 0.0;
@@ -346,7 +346,8 @@ NumericVector M_final; M_final[0] = 2*M_samp_[0];
 finalsample = GibbsMCMC2(nn_, data_, thetaboot_, bootmean0, bootmean1, alpha_, M_final, w);
 	
 result = Rcpp::List::create(Rcpp::Named("w") = w,Rcpp::Named("t") = t,Rcpp::Named("diff") = diff, Rcpp::Named("list_cis") = finalsample);
-
+*/
+	result = Rcpp::List::create(Rcpp::Named("w") = w);
 return result;
 }
 
