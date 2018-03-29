@@ -104,6 +104,7 @@ NumericMatrix rcpp_parallel_js_distance(NumericMatrix mat) {
 }
 
 // helper function for Gibbs sampling
+
 inline double GibbsMCMC(RVector<double> nn, RMatrix<double> data, RMatrix<double> thetaboot,
 	RVector<double> bootmean0, RVector<double> bootmean1, RMatrix<double> databoot,
 	RVector<double> alpha, RVector<double> M_samp, RVector<double> w, std::size_t i) {
@@ -280,7 +281,7 @@ struct GPC_qr_mcmc_parallel : public Worker {
    // operator
 void operator()(std::size_t begin, std::size_t end) {
 		for (std::size_t i = begin; i < end; i++) {
-			cover(i) = GibbsMCMC(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, w, i);	
+			cover[i] = GibbsMCMC(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, w, i);	
 		}
 	}
 };
