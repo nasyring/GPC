@@ -312,7 +312,7 @@ NumericMatrix databoot_ = Rcpp::as<NumericMatrix>(data_boot);
 NumericVector alpha_ = Rcpp::as<NumericVector>(alpha);
 NumericVector M_samp_ = Rcpp::as<NumericMatrix>(M_samp);
 NumericVector B_resamp_ = Rcpp::as<NumericVector>(B_resamp);
-NumericVector w(1,0.0);
+NumericVector w(1,0.5);
 double diff;
 bool go 			= TRUE;
 int t				=1; 
