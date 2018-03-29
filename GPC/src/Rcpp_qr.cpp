@@ -242,7 +242,7 @@ inline double GibbsMCMC(NumericVector nn, NumericMatrix data, NumericMatrix thet
 	NumericVector l0(1,0.0);
 	NumericVector l1(1,0.0);
 	NumericVector u0(1,0.0);
-	NumericVector u1(1,0.0);*/
+	NumericVector u1(1,0.0);
 	theta0old = thetaboot(i,0);
 	theta1old = thetaboot(i,1);
 	
