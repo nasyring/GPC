@@ -24,3 +24,7 @@ rcpp_parallel_qr <- function(nn, data, thetaboot, bootmean0, bootmean1, databoot
 rcpp_parallel_js_distance <- function(mat){
     .Call(`GPC_rcpp_parallel_js_distance`, mat)   
 }
+
+GibbsMCMC2 <- function(nn, data, thetaboot, bootmean0, bootmean1, alpha, M_samp, w){
+    .Call(`GPC_`, GibbsMCMC2, nn, data, thetaboot, bootmean0, bootmean1, alpha, M_samp, w)    
+}
