@@ -241,8 +241,7 @@ struct GPC_qr_mcmc_parallel : public Worker {
 	const NumericVector bootmean0, const NumericVector bootmean1, const NumericMatrix databoot,
 	const NumericVector alpha, const NumericVector M_samp, const NumericVector B_resamp,
 	const NumericVector w, NumericVector cover) 
-			: nn(nn), data(data), thetaboot(thetaboot), bootmean0(bootmean0), bootmean1(bootmean1)
-			  databoot(databoot), alpha(alpha), M_samp(M_samp), B_resamp(B_resamp), w(w), cover(cover) {}   
+			: nn(nn), data(data), thetaboot(thetaboot), bootmean0(bootmean0), bootmean1(bootmean1), databoot(databoot), alpha(alpha), M_samp(M_samp), B_resamp(B_resamp), w(w), cover(cover) {}   
 
    // operator
    void operator()(std::size_t begin, std::size_t end) {
