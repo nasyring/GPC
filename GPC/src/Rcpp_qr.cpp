@@ -239,7 +239,7 @@ struct GPC_qr_mcmc_parallel : public Worker {
 };
 
 // [[Rcpp::export]]
-arma::colvec rcpp_parallel_qr(SEXP & thing1) {
+NumericVector rcpp_parallel_qr(SEXP & thing1) {
 
    NumericVector thing1_ = Rcpp::as<NumericVector>(thing1);
  
@@ -301,7 +301,7 @@ bootmean0 = bootmean0/B;
 bootmean1 = bootmean1/B;
 
 // create the worker
-cover = Rcpp::as<arma::colvec>(_GPC_rcpp_parallel_qr(n, ddata, thetaboot, bootmean0, bootmean1, databoot, aalpha, M, B, w));
+//cover = Rcpp::as<arma::colvec>(_GPC_rcpp_parallel_qr(n, ddata, thetaboot, bootmean0, bootmean1, databoot, aalpha, M, B, w));
 sumcover = 0.0;
 for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
 diff = (sumcover/B) - (1.0-aalpha);
