@@ -253,8 +253,6 @@ void operator()(std::size_t begin, std::size_t end) {
 		NumericVector theta1old(1,0.0);
 		NumericVector theta1new(1,0.0);
 		NumericVector loglikdiff(1,0.0);
-		NumericVector sort0(M,0.0);
-		NumericVector sort1(M,0.0);
 		NumericVector r(1,0.0);
 		NumericVector uu(1,0.0);
 		NumericVector postsamples0(M,0.0);
@@ -300,12 +298,12 @@ void operator()(std::size_t begin, std::size_t end) {
 					postsamples1(j-100) = theta1old(0);	
 				}
 			}
-			sort0 = std::sort(postsamples0.begin(), postsamples0.end());
-			sort1 = std::sort(postsamples1.begin(), postsamples1.end());
-			l0[0] = sort0(0.025*M_samp);
-			u0[0] = sort0(0.975*M_samp);
-			l1[0] = sort1(0.025*M_samp);
-			u1[0] = sort1(0.975*M_samp);
+			std::sort(postsamples0.begin(), postsamples0.end());
+			std::sort(postsamples1.begin(), postsamples1.end());
+			l0[0] = postsamples0(0.025*M);
+			u0[0] = postsamples0(0.975*M);
+			l1[0] = postsamples1(0.025*M);
+			u1[0] = postsamples1(0.975*M);
 			if ( (l1[0] < bootmean1(0)) && (u1[0] > bootmean1(0)) ){
 				cover(i) = 1.0;
 			} else {cover(i) = 0.0;}			
