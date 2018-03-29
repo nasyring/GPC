@@ -321,8 +321,8 @@ int B = int(B_resamp_[0]);
 NumericVector cover;
 	
 for (int i=0; i<B; i++) {
-	bootmean0[0] = bootmean0[0] + thetaboot(i,0);
-	bootmean1[0] = bootmean1[0] + thetaboot(i,1);
+	bootmean0[0] = bootmean0[0] + thetaboot_(i,0);
+	bootmean1[0] = bootmean1[0] + thetaboot_(i,1);
 }
 bootmean0 = bootmean0/B;
 bootmean1 = bootmean1/B;
