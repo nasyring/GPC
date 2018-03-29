@@ -104,9 +104,9 @@ NumericMatrix rcpp_parallel_js_distance(NumericMatrix mat) {
 }
 
 // helper function for Gibbs sampling
-inline double GibbsMCMC(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot,
-	NumericVector bootmean0, NumericVector bootmean1, NumericMatrix databoot,
-	NumericVector alpha, NumericVector M_samp, NumericVector w, std::size_t i) {
+inline double GibbsMCMC(RVector nn, RMatrix data, RMatrix thetaboot,
+	RVector bootmean0, RVector bootmean1, RMatrix databoot,
+	RVector alpha, RVector M_samp, RVector w, std::size_t i) {
    	
 	double cov_ind;
 	int M = int(M_samp[0]);
@@ -245,17 +245,17 @@ inline Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix
 
 struct GPC_qr_mcmc_parallel : public Worker {
 
-	const NumericVector nn;
-	const NumericMatrix data;
-	const NumericMatrix thetaboot;
-	const NumericVector bootmean0;
-	const NumericVector bootmean1;
-	const NumericMatrix databoot;
-	const NumericVector alpha;
-	const NumericVector M_samp;
-	const NumericVector B_resamp;
-	const NumericVector w;
-	NumericVector cover;
+	const RVector nn;
+	const RMatrix data;
+	const RMatrix thetaboot;
+	const RVector bootmean0;
+	const RVector bootmean1;
+	const RMatrix databoot;
+	const RVector alpha;
+	const RVector M_samp;
+	const RVector B_resamp;
+	const RVector w;
+	RVector cover;
 
    // initialize with source and destination
    GPC_qr_mcmc_parallel(const NumericVector nn,	const NumericMatrix data, const NumericMatrix thetaboot,
