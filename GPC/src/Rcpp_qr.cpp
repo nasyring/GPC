@@ -104,11 +104,11 @@ NumericMatrix rcpp_parallel_js_distance(NumericMatrix mat) {
 }
 
 // helper function for Gibbs sampling
-inline double GibbsMCMC(SEXP nn_, SEXP data_, SEXP thetaboot_,
-	SEXP bootmean0_, SEXP bootmean1_, SEXP databoot_,
-	SEXP alpha_, SEXP M_samp_, SEXP w_, std::size_t i) {
+inline double GibbsMCMC(RVector<double> nn, RMatrix<double> data, RMatrix<double> thetaboot,
+	RVector<double> bootmean0, RVector<double> bootmean1, RMatrix<double> databoot,
+	RVector<double> alpha, RVector<double> M_samp, RVector<double> w, std::size_t i) {
    	
-	NumericVector nn = Rcpp::as<NumericVector>(nn_);
+	/*NumericVector nn = Rcpp::as<NumericVector>(nn_);
 	NumericMatrix data = Rcpp::as<NumericMatrix>(data_);
 	NumericMatrix thetaboot = Rcpp::as<NumericMatrix>(thetaboot_);
 	NumericVector bootmean0 = Rcpp::as<NumericVector>(bootmean0_);
@@ -116,7 +116,7 @@ inline double GibbsMCMC(SEXP nn_, SEXP data_, SEXP thetaboot_,
 	NumericMatrix databoot = Rcpp::as<NumericMatrix>(databoot_);
 	NumericVector alpha = Rcpp::as<NumericVector>(alpha_);
 	NumericVector M_samp = Rcpp::as<NumericVector>(M_samp_);
-	NumericVector w = Rcpp::as<NumericVector>(w_);
+	NumericVector w = Rcpp::as<NumericVector>(w_);*/
 	
 	
 	
