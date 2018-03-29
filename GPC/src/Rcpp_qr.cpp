@@ -180,7 +180,7 @@ inline double GibbsMCMC(RVector<double> nn, RMatrix<double> data, RMatrix<double
 	u0[0] = postsamples0(0.975*M);
 	l1[0] = postsamples1(0.025*M);
 	u1[0] = postsamples1(0.975*M);
-	if ( (l1[0] < bootmean1(0)) && (u1[0] > bootmean1(0)) ){
+	if ( (l1[0] < bootmean1.begin()) && (u1[0] > bootmean1.begin()) ){
 		cov_ind = 1.0;
 	} else {cov_ind = 0.0;}
 	
