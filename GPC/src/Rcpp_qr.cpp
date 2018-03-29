@@ -267,8 +267,7 @@ struct GPC_qr_mcmc_parallel : public Worker {
    // operator
 void operator()(std::size_t begin, std::size_t end) {
 		for (std::size_t i = begin; i < end; i++) {
-			cover(i) = GibbsMCMC(nn, data, thetaboot, bootmean0, bootmean1, databoot,
-					alpha, M_samp, B_resamp, w, i);	
+			cover(i) = GibbsMCMC(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, w, i);	
 		}
 	}
 };
