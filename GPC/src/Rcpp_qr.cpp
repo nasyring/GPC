@@ -525,6 +525,30 @@ result = Rcpp::List::create(Rcpp::Named("l0") = l0,Rcpp::Named("u0") = u0,Rcpp::
 return result;
 }
 
+// finds (partial) column maximums
+double findHighest(double A[Cm][], int n, int m, int k)
+{
+     double_maxes[m];
+     if (n <= 0) return;
+     for (int i = 0; i < m; i++)
+     {
+         double_maxes[i] = *std::max_element(A[i]+k, A[i] + n);
+     }
+     return(double_maxes)	
+}
+
+double findSmallest(double A[Cm][], int n, int m, int k)
+{
+     double_mins[m];
+     if (n <= 0) return;
+     for (int i = 0; i < m; i++)
+     {
+         double_mins[i] = *std::min_element(A[i]+k, A[i] + n);
+     }
+     return(double_mins)	
+}
+
+
 
 // [[Rcpp::export]]
 
@@ -554,14 +578,10 @@ arma::colvec sort0		= arma::colvec(M);
 arma::colvec sort1		= arma::colvec(M);
 arma::colvec sort2		= arma::colvec(M);
 arma::colvec sort3		= arma::colvec(M);
-double l0;
-double l1;
-double u0;
-double u1;
-double l2;
-double l3;
-double u2;
-double u3;
+double low [6];
+double hi [6];
+double low_f [6];
+double hi_f [6];
 arma::colvec intvs9080	= arma::colvec(16);
 NumericVector theta0old;
 NumericVector theta0new;
@@ -604,6 +624,7 @@ bool compare( array<double,6> a, array<double,6> b)
     return a[5]<b[5];
 }
 array<array<double,6>, M> mcmc_samps;
+array<array<double,6>, 2*M> mcmc_samps_f;
 
 
 while(go) {
@@ -717,15 +738,9 @@ for (int i=0; i<B; i++) {
 	}
 
 	sort(mcmc_samps.begin(),mcmc_samps.end(),compare);
-	l0 = mcmc_samps[M*0.05][0];
-	u0 = mcmc_samps[M][0];
-	l1 = mcmc_samps[M*0.05][1];
-	u1 = mcmc_samps[M][1];
-	l2 = mcmc_samps[M*0.05][2];
-	u2 = mcmc_samps[M][2];
-	l3 = mcmc_samps[M*0.05][3];
-	u3 = mcmc_samps[M][3];
-	if ( (l3 < bootmean3(0)) && (u3 > bootmean3(0)) && (l2 < bootmean2(0)) && (u2 > bootmean2(0)) && (l1 < bootmean1(0)) && (u1 > bootmean1(0))){
+	low = findSmallest(mcmc_samps, M, 6, int(0.05*M));
+	hi = findHighest(mcmc_samps, M, 6, int(0.05*M));
+	if ( (low[3] < bootmean3(0)) && (hi[3] > bootmean3(0)) && (low[2] < bootmean2(0)) && (hi[2] > bootmean2(0)) && (low[1] < bootmean1(0)) && (hi[1] > bootmean1(0))){
 		cover(i) = 1.0;
 	} else {cover(i) = 0.0;}
 }
@@ -841,44 +856,49 @@ theta4old[0] = bootmean4(0);
 		}else {
 		if(j>999){
 			postsamples4f(j-1000) = theta4old[0];	
-		}	
 		}
+		}
+		if(j>999){
+			mcmc_samps_f[j-100][0] = theta0old[0];
+			mcmc_samps_f[j-100][1] = theta1old[0];
+			mcmc_samps_f[j-100][2] = theta2old[0];
+			mcmc_samps_f[j-100][3] = theta3old[0];
+			mcmc_samps_f[j-100][4] = theta4old[0];
+			mcmc_samps_f[j-100][5] = -w * 0.5*(1/theta4old)*  pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
+		}
+		
 	}
-	sort0 = sort(postsamples0f);
-	sort1 = sort(postsamples1f);
-	sort2 = sort(postsamples2f);
-	sort3 = sort(postsamples3f);
-	double fvar = 0.0;
-	for(int k=0; k<2*M; k++){
-		fvar = fvar+(postsamples4f(k)/(2*M)); 
-	}
-	l0 = sort0(0.025*2*M);
-	u0 = sort0(0.975*2*M);
-	l1 = sort1(0.025*2*M);
-	u1 = sort1(0.975*2*M);
-	l2 = sort2(0.025*2*M);
-	u2 = sort2(0.975*2*M);
-	l3 = sort3(0.025*2*M);
-	u3 = sort3(0.975*2*M);
-	intvs9080(0) = sort0(0.05*2*M);
-	intvs9080(1) = sort0(0.95*2*M);
-	intvs9080(2) = sort1(0.05*2*M);
-	intvs9080(3) = sort1(0.95*2*M);
-	intvs9080(4) = sort2(0.05*2*M);
-	intvs9080(5) = sort2(0.95*2*M);
-	intvs9080(6) = sort3(0.05*2*M);
-	intvs9080(7) = sort3(0.95*2*M);
-	intvs9080(8) = sort0(0.10*2*M);
-	intvs9080(9) = sort0(0.90*2*M);
-	intvs9080(10) = sort1(0.10*2*M);
-	intvs9080(11) = sort1(0.90*2*M);
-	intvs9080(12) = sort2(0.10*2*M);
-	intvs9080(13) = sort2(0.90*2*M);
-	intvs9080(14) = sort3(0.10*2*M);
-	intvs9080(15) = sort3(0.90*2*M);
+	
+	sort(mcmc_samps_f.begin(),mcmc_samps_f.end(),compare);
+	low_f = findSmallest(mcmc_samps_f, 2*M, 6, int(0.05*2*M));
+	hi_f = findHighest(mcmc_samps_f, 2*M, 6, int(0.05*2*M));
+	double low_f80[6];
+	double low_f90[6];
+	double hi_f80[6];
+	double hi_f90[6];
+	low_f80 = findSmallest(mcmc_samps_f, 2*M, 6, int(0.1*2*M));
+	hi_f80 = findHighest(mcmc_samps_f, 2*M, 6, int(0.1*2*M));
+	low_f90 = findSmallest(mcmc_samps_f, 2*M, 6, int(0.2*2*M));
+	hi_f90 = findHighest(mcmc_samps_f, 2*M, 6, int(0.2*2*M));
+	intvs9080(0) = low_f90[0];
+	intvs9080(1) = hi_f90[0];
+	intvs9080(2) = low_f90[1];
+	intvs9080(3) = hi_f90[1];
+	intvs9080(4) = low_f90[2];
+	intvs9080(5) = hi_f90[2];
+	intvs9080(6) = low_f90[3];
+	intvs9080(7) = hi_f90[3];
+	intvs9080(8) = low_f80[0];
+	intvs9080(9) = hi_f80[0];
+	intvs9080(10) = low_f80[1];
+	intvs9080(11) = hi_f80[1];
+	intvs9080(12) = low_f80[2];
+	intvs9080(13) = hi_f80[2];
+	intvs9080(14) = low_f80[3];
+	intvs9080(15) = hi_f80[3];
+	
 
-
-result = Rcpp::List::create(Rcpp::Named("l0") = l0,Rcpp::Named("u0") = u0,Rcpp::Named("l1") = l1,Rcpp::Named("u1") = u1,Rcpp::Named("l2") = l2,Rcpp::Named("u2") = u2,Rcpp::Named("l3") = l3,Rcpp::Named("u3") = u3,Rcpp::Named("w") = w,Rcpp::Named("diff") = diff,Rcpp::Named("t") = t,Rcpp::Named("intvs9080") = intvs9080,Rcpp::Named("postvar")=fvar );
+result = Rcpp::List::create(Rcpp::Named("low") = low_f,Rcpp::Named("hi") = hi_f,Rcpp::Named("w") = w,Rcpp::Named("diff") = diff,Rcpp::Named("t") = t,Rcpp::Named("intvs9080") = intvs9080);
 return result;
 }
 /*
