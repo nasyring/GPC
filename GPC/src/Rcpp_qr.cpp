@@ -525,30 +525,6 @@ result = Rcpp::List::create(Rcpp::Named("l0") = l0,Rcpp::Named("u0") = u0,Rcpp::
 return result;
 }
 
-// finds (partial) column maximums
-double findHighest(double A[Cm][], int n, int m, int k)
-{
-     double_maxes[m];
-     if (n <= 0) return;
-     for (int i = 0; i < m; i++)
-     {
-         double_maxes[i] = *std::max_element(A[i]+k, A[i] + n);
-     }
-     return(double_maxes)	
-}
-
-double findSmallest(double A[Cm][], int n, int m, int k)
-{
-     double_mins[m];
-     if (n <= 0) return;
-     for (int i = 0; i < m; i++)
-     {
-         double_mins[i] = *std::min_element(A[i]+k, A[i] + n);
-     }
-     return(double_mins)	
-}
-
-
 
 // [[Rcpp::export]]
 
@@ -738,8 +714,22 @@ for (int i=0; i<B; i++) {
 	}
 
 	sort(mcmc_samps.begin(),mcmc_samps.end(),compare);
-	low = findSmallest(mcmc_samps, M, 6, int(0.05*M));
-	hi = findHighest(mcmc_samps, M, 6, int(0.05*M));
+	low[0] = mcmc_samps[0][0];low[1] = mcmc_samps[0][1];low[2] = mcmc_samps[0][2];low[3] = mcmc_samps[0][3];low[4] = mcmc_samps[0][4];low[5] = mcmc_samps[0][5];
+	hi[0] = mcmc_samps[0][0];hi[1] = mcmc_samps[0][1];hi[2] = mcmc_samps[0][2];hi[3] = mcmc_samps[0][3];hi[4] = mcmc_samps[0][4];hi[5] = mcmc_samps[0][5];
+	for(int j=int(M*0.05); j<(M); j++) {
+		low[0] = fmin(low[0], mcmc_samps[j][0]);
+		low[1] = fmin(low[1], mcmc_samps[j][1]);
+		low[2] = fmin(low[2], mcmc_samps[j][2]);
+		low[3] = fmin(low[3], mcmc_samps[j][3]);
+		low[4] = fmin(low[4], mcmc_samps[j][4]);
+		low[5] = fmin(low[5], mcmc_samps[j][5]);
+		hi[0] = fmax(hi[0], mcmc_samps[j][0]);
+		hi[1] = fmax(hi[1], mcmc_samps[j][1]);
+		hi[2] = fmax(hi[2], mcmc_samps[j][2]);
+		hi[3] = fmax(hi[3], mcmc_samps[j][3]);
+		hi[4] = fmax(hi[4], mcmc_samps[j][4]);
+		hi[5] = fmax(hi[5], mcmc_samps[j][5]);
+	}
 	if ( (low[3] < bootmean3(0)) && (hi[3] > bootmean3(0)) && (low[2] < bootmean2(0)) && (hi[2] > bootmean2(0)) && (low[1] < bootmean1(0)) && (hi[1] > bootmean1(0))){
 		cover(i) = 1.0;
 	} else {cover(i) = 0.0;}
@@ -870,16 +860,75 @@ theta4old[0] = bootmean4(0);
 	}
 	
 	sort(mcmc_samps_f.begin(),mcmc_samps_f.end(),compare);
-	low_f = findSmallest(mcmc_samps_f, 2*M, 6, int(0.05*2*M));
-	hi_f = findHighest(mcmc_samps_f, 2*M, 6, int(0.05*2*M));
-	double low_f80[6];
-	double low_f90[6];
-	double hi_f80[6];
-	double hi_f90[6];
-	low_f80 = findSmallest(mcmc_samps_f, 2*M, 6, int(0.1*2*M));
-	hi_f80 = findHighest(mcmc_samps_f, 2*M, 6, int(0.1*2*M));
-	low_f90 = findSmallest(mcmc_samps_f, 2*M, 6, int(0.2*2*M));
-	hi_f90 = findHighest(mcmc_samps_f, 2*M, 6, int(0.2*2*M));
+	low_f[0] = mcmc_samps_f[0][0];low_f[1] = mcmc_samps_f[0][1];low_f[2] = mcmc_samps_f[0][2];low_f[3] = mcmc_samps_f[0][3];low_f[4] = mcmc_samps_f[0][4];low_f[5] = mcmc_samps_f[0][5];
+	hi_f[0] = mcmc_samps_f[0][0];hi_f[1] = mcmc_samps_f[0][1];hi_f[2] = mcmc_samps_f[0][2];hi_f[3] = mcmc_samps_f[0][3];hi_f[4] = mcmc_samps_f[0][4];hi_f[5] = mcmc_samps_f[0][5];
+	low_f90[0] = low_f[0];
+	low_f90[1] = low_f[1];
+	low_f90[2] = low_f[2];
+	low_f90[3] = low_f[3];
+	low_f90[4] = low_f[4];
+	low_f90[5] = low_f[5];
+	hi_f90[0] = hi_f[0];
+	hi_f90[1] = hi_f[1];
+	hi_f90[2] = hi_f[2];
+	hi_f90[3] = hi_f[3];
+	hi_f90[4] = hi_f[4];
+	hi_f90[5] = hi_f[5];
+	low_f80[0] = low_f[0];
+	low_f80[1] = low_f[1]; 
+	low_f80[2] = low_f[2];
+	low_f80[3] = low_f[3];
+	low_f80[4] = low_f[4];
+	low_f80[5] = low_f[5];
+	hi_f80[0] = hi_f[0];
+	hi_f80[1] = hi_f[1];
+	hi_f80[2] = hi_f[2];
+	hi_f80[3] = hi_f[3];
+	hi_f80[4] = hi_f[4];
+	hi_f80[5] = hi_f[5];
+	for(int j=int(2*M*0.05); j<(2*M); j++) {
+		low_f[0] = fmin(low_f[0], mcmc_samps_f[j][0]);
+		low_f[1] = fmin(low_f[1], mcmc_samps_f[j][1]);
+		low_f[2] = fmin(low_f[2], mcmc_samps_f[j][2]);
+		low_f[3] = fmin(low_f[3], mcmc_samps_f[j][3]);
+		low_f[4] = fmin(low_f[4], mcmc_samps_f[j][4]);
+		low_f[5] = fmin(low_f[5], mcmc_samps_f[j][5]);
+		hi_f[0] = fmin(hi_f[0], mcmc_samps_f[j][0]);
+		hi_f[1] = fmin(hi_f[1], mcmc_samps_f[j][1]);
+		hi_f[2] = fmin(hi_f[2], mcmc_samps_f[j][2]);
+		hi_f[3] = fmin(hi_f[3], mcmc_samps_f[j][3]);
+		hi_f[4] = fmin(hi_f[4], mcmc_samps_f[j][4]);
+		hi_f[5] = fmin(hi_f[5], mcmc_samps_f[j][5]);
+	}
+	for(int j=int(2*M*0.1); j<(2*M); j++) {
+		low_f90[0] = fmin(low_f90[0], mcmc_samps_f[j][0]);
+		low_f90[1] = fmin(low_f90[1], mcmc_samps_f[j][1]);
+		low_f90[2] = fmin(low_f90[2], mcmc_samps_f[j][2]);
+		low_f90[3] = fmin(low_f90[3], mcmc_samps_f[j][3]);
+		low_f90[4] = fmin(low_f90[4], mcmc_samps_f[j][4]);
+		low_f90[5] = fmin(low_f90[5], mcmc_samps_f[j][5]);
+		hi_f90[0] = fmax(hi_f90[0], mcmc_samps_f[j][0]);
+		hi_f90[1] = fmax(hi_f90[1], mcmc_samps_f[j][1]);
+		hi_f90[2] = fmax(hi_f90[2], mcmc_samps_f[j][2]);
+		hi_f90[3] = fmax(hi_f90[3], mcmc_samps_f[j][3]);
+		hi_f90[4] = fmax(hi_f90[4], mcmc_samps_f[j][4]);
+		hi_f90[5] = fmax(hi_f90[5], mcmc_samps_f[j][5]);
+	}
+	for(int j=int(2*M*0.2); j<(2*M); j++) {
+		low_f80[0] = fmin(low_f80[0], mcmc_samps_f[j][0]);
+		low_f80[1] = fmin(low_f80[1], mcmc_samps_f[j][1]);
+		low_f80[2] = fmin(low_f80[2], mcmc_samps_f[j][2]);
+		low_f80[3] = fmin(low_f80[3], mcmc_samps_f[j][3]);
+		low_f80[4] = fmin(low_f80[4], mcmc_samps_f[j][4]);
+		low_f80[5] = fmin(low_f80[5], mcmc_samps_f[j][5]);
+		hi_f80[0] = fmax(hi_f80[0], mcmc_samps_f[j][0]);
+		hi_f80[1] = fmax(hi_f80[1], mcmc_samps_f[j][1]);
+		hi_f80[2] = fmax(hi_f80[2], mcmc_samps_f[j][2]);
+		hi_f80[3] = fmax(hi_f80[3], mcmc_samps_f[j][3]);
+		hi_f80[4] = fmax(hi_f80[4], mcmc_samps_f[j][4]);
+		hi_f80[5] = fmax(hi_f80[5], mcmc_samps_f[j][5]);
+	}
+
 	intvs9080(0) = low_f90[0];
 	intvs9080(1) = hi_f90[0];
 	intvs9080(2) = low_f90[1];
