@@ -539,7 +539,7 @@ double w			= 0.8;
 arma::mat thetaboot     	= Rcpp::as<arma::mat>(theta_boot);
 arma::mat ddata			= Rcpp::as<arma::mat>(data);
 arma::mat databoot 		= Rcpp::as<arma::mat>(data_boot);
-int M				= Rcpp::as<int>(M_samp);
+const int M				= Rcpp::as<int>(M_samp);
 arma::colvec postsamples0	= arma::colvec(M);
 arma::colvec postsamples1	= arma::colvec(M);
 arma::colvec postsamples2	= arma::colvec(M);
@@ -595,8 +595,7 @@ bootmean1 = bootmean1/B;
 bootmean2 = bootmean2/B;
 bootmean3 = bootmean3/B;
 bootmean4 = bootmean4/B;
-bool compare( array<double,6> a, array<double,6> b)
-{
+bool compare( array<double,6> a, array<double,6> b){
     return a[5]<b[5];
 }
 array<array<double,6>, M> mcmc_samps;
