@@ -525,9 +525,7 @@ result = Rcpp::List::create(Rcpp::Named("l0") = l0,Rcpp::Named("u0") = u0,Rcpp::
 return result;
 }
 
-bool compare( double a[6], double b[6]){
-    return a[5]<b[5];
-}
+
 // [[Rcpp::export]]
 
 Rcpp::List GPC_linreg(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) { 
@@ -701,18 +699,27 @@ for (int i=0; i<B; i++) {
 			if(j>99){
 			postsamples4(j-100) = theta4old[0];	
 		}
+		mcmc_samps[j-100][5] = 0;
 		if(j>99){
 			mcmc_samps[j-100][0] = theta0old[0];
 			mcmc_samps[j-100][1] = theta1old[0];
 			mcmc_samps[j-100][2] = theta2old[0];
 			mcmc_samps[j-100][3] = theta3old[0];
 			mcmc_samps[j-100][4] = theta4old[0];
-			mcmc_samps[j-100][5] = -w * 0.5*(1/theta4old)*pow(ddata(databoot(k, i),0)-theta0old*ddata(databoot(k, i),1)-theta1old*ddata(databoot(k, i),2)-theta2old*ddata(databoot(k, i),3)-theta3old*ddata(databoot(k, i),4),2);
+			for(int k=0; k<n; k++){
+				mcmc_samps[j-100][5] = mcmc_samps[j-100][5] -w * 0.5*(1/theta4old)*pow(ddata(databoot(k, i),0)-theta0old*ddata(databoot(k, i),1)-theta1old*ddata(databoot(k, i),2)-theta2old*ddata(databoot(k, i),3)-theta3old*ddata(databoot(k, i),4),2);
+			}
 		}
 		}
 	}
-
-	sort(mcmc_samps.begin(),mcmc_samps.end(),compare);
+	std::qsort(mcmc_samps, M, sizeof(*mcmc_samps),
+        [](const void *arg1, const void *arg2)->double
+        {
+            double const *lhs = static_cast<double const*>(arg1);
+            double const *rhs = static_cast<double const*>(arg2);
+            return (lhs[5] < rhs[5]) ? -1
+                :  ((rhs[5] < lhs[5]) ? 1);
+        });
 	low[0] = mcmc_samps[0][0];low[1] = mcmc_samps[0][1];low[2] = mcmc_samps[0][2];low[3] = mcmc_samps[0][3];low[4] = mcmc_samps[0][4];low[5] = mcmc_samps[0][5];
 	hi[0] = mcmc_samps[0][0];hi[1] = mcmc_samps[0][1];hi[2] = mcmc_samps[0][2];hi[3] = mcmc_samps[0][3];hi[4] = mcmc_samps[0][4];hi[5] = mcmc_samps[0][5];
 	for(int j=int(M*0.05); j<(M); j++) {
@@ -847,18 +854,28 @@ theta4old[0] = bootmean4(0);
 			postsamples4f(j-1000) = theta4old[0];	
 		}
 		}
+		mcmc_samps_f[j-100][5] = 0;
 		if(j>999){
 			mcmc_samps_f[j-100][0] = theta0old[0];
 			mcmc_samps_f[j-100][1] = theta1old[0];
 			mcmc_samps_f[j-100][2] = theta2old[0];
 			mcmc_samps_f[j-100][3] = theta3old[0];
 			mcmc_samps_f[j-100][4] = theta4old[0];
-			mcmc_samps_f[j-100][5] = -w * 0.5*(1/theta4old)*  pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
+			for(int k=0; k<n; k++){
+				mcmc_samps_f[j-100][5] = mcmc_samps_f[j-100][5] -w * 0.5*(1/theta4old)*  pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
+			}
 		}
 		
 	}
 	
-	sort(mcmc_samps_f.begin(),mcmc_samps_f.end(),compare);
+	std::qsort(mcmc_samps_f, 2*M, sizeof(*mcmc_samps_f),
+        [](const void *arg1, const void *arg2)->double
+        {
+            double const *lhs = static_cast<double const*>(arg1);
+            double const *rhs = static_cast<double const*>(arg2);
+            return (lhs[5] < rhs[5]) ? -1
+                :  ((rhs[5] < lhs[5]) ? 1);
+        });
 	low_f[0] = mcmc_samps_f[0][0];low_f[1] = mcmc_samps_f[0][1];low_f[2] = mcmc_samps_f[0][2];low_f[3] = mcmc_samps_f[0][3];low_f[4] = mcmc_samps_f[0][4];low_f[5] = mcmc_samps_f[0][5];
 	hi_f[0] = mcmc_samps_f[0][0];hi_f[1] = mcmc_samps_f[0][1];hi_f[2] = mcmc_samps_f[0][2];hi_f[3] = mcmc_samps_f[0][3];hi_f[4] = mcmc_samps_f[0][4];hi_f[5] = mcmc_samps_f[0][5];
 	low_f90[0] = low_f[0];
