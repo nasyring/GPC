@@ -570,6 +570,7 @@ NumericVector theta3new;
 NumericVector theta4old;
 NumericVector theta4new;	
 NumericVector loglikdiff;
+NumericVector loglik;
 arma::colvec r			= arma::colvec(1);r.fill(0.0);
 arma::colvec uu 		= arma::colvec(1);
 arma::colvec cover		= arma::colvec(B);
@@ -707,8 +708,9 @@ for (int i=0; i<B; i++) {
 			mcmc_samps[j-100][3] = theta3old[0];
 			mcmc_samps[j-100][4] = theta4old[0];
 			for(int k=0; k<n; k++){
-				mcmc_samps[j-100][5] = mcmc_samps[j-100][5] -w * 0.5*(1/theta4old)*pow(ddata(databoot(k, i),0)-theta0old*ddata(databoot(k, i),1)-theta1old*ddata(databoot(k, i),2)-theta2old*ddata(databoot(k, i),3)-theta3old*ddata(databoot(k, i),4),2);
+				loglik = loglik -w * 0.5*(1/theta4old)*pow(ddata(databoot(k, i),0)-theta0old*ddata(databoot(k, i),1)-theta1old*ddata(databoot(k, i),2)-theta2old*ddata(databoot(k, i),3)-theta3old*ddata(databoot(k, i),4),2);
 			}
+			mcmc_samps[j-100][5] = loglik[0];
 		}
 		}
 	}
@@ -718,7 +720,7 @@ for (int i=0; i<B; i++) {
             double const *lhs = static_cast<double const*>(arg1);
             double const *rhs = static_cast<double const*>(arg2);
             return (lhs[5] < rhs[5]) ? -1
-                :  ((rhs[5] < lhs[5]) ? 1);
+                :  (rhs[5] < lhs[5]) ? 1;
         });
 	low[0] = mcmc_samps[0][0];low[1] = mcmc_samps[0][1];low[2] = mcmc_samps[0][2];low[3] = mcmc_samps[0][3];low[4] = mcmc_samps[0][4];low[5] = mcmc_samps[0][5];
 	hi[0] = mcmc_samps[0][0];hi[1] = mcmc_samps[0][1];hi[2] = mcmc_samps[0][2];hi[3] = mcmc_samps[0][3];hi[4] = mcmc_samps[0][4];hi[5] = mcmc_samps[0][5];
@@ -854,6 +856,7 @@ theta4old[0] = bootmean4(0);
 			postsamples4f(j-1000) = theta4old[0];	
 		}
 		}
+		loglik[0] = 0.0;
 		mcmc_samps_f[j-100][5] = 0;
 		if(j>999){
 			mcmc_samps_f[j-100][0] = theta0old[0];
@@ -862,8 +865,9 @@ theta4old[0] = bootmean4(0);
 			mcmc_samps_f[j-100][3] = theta3old[0];
 			mcmc_samps_f[j-100][4] = theta4old[0];
 			for(int k=0; k<n; k++){
-				mcmc_samps_f[j-100][5] = mcmc_samps_f[j-100][5] -w * 0.5*(1/theta4old)*  pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
+				loglik[0] = loglik[0] -w * 0.5*(1/theta4old)*  pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
 			}
+			mcmc_samps_f[j-100][5] = loglik[0];
 		}
 		
 	}
