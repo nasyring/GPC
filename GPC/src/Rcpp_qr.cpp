@@ -525,7 +525,9 @@ result = Rcpp::List::create(Rcpp::Named("l0") = l0,Rcpp::Named("u0") = u0,Rcpp::
 return result;
 }
 
-
+bool compare( double a[6], double b[6]){
+    return a[5]<b[5];
+}
 // [[Rcpp::export]]
 
 Rcpp::List GPC_linreg(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) { 
@@ -595,11 +597,9 @@ bootmean1 = bootmean1/B;
 bootmean2 = bootmean2/B;
 bootmean3 = bootmean3/B;
 bootmean4 = bootmean4/B;
-bool compare( double a[6], double b[6]){
-    return a[5]<b[5];
-}
+
 double mcmc_samps[M][6];
-double mcmc_samps[2*M][6];
+double mcmc_samps_f[2*M][6];
 
 
 while(go) {
