@@ -715,8 +715,7 @@ for (int i=0; i<B; i++) {
 		}
 	}
 	std::qsort(mcmc_samps, M, sizeof(*mcmc_samps),
-        [](const void *arg1, const void *arg2)->double
-        {
+        [](const void *arg1, const void *arg2)->double {
             double const *lhs = static_cast<double const*>(arg1);
             double const *rhs = static_cast<double const*>(arg2);
             return (lhs[5] < rhs[5]) ? -1
@@ -868,7 +867,7 @@ theta4old[0] = bootmean4(0);
 			mcmc_samps_f[j-100][3] = theta3old[0];
 			mcmc_samps_f[j-100][4] = theta4old[0];
 			for(int k=0; k<n; k++){
-				loglik[0] = loglik[0] -w * 0.5*(1/theta4old)*  pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
+				loglik = loglik -w * 0.5*(1/theta4old)*  pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
 			}
 			mcmc_samps_f[j-100][5] = loglik[0];
 		}
