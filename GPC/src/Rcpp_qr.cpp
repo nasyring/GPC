@@ -525,7 +525,10 @@ result = Rcpp::List::create(Rcpp::Named("l0") = l0,Rcpp::Named("u0") = u0,Rcpp::
 return result;
 }
 
-
+inline bool compare(array a, array b)
+{
+    return (a[5] < b[5]);
+}
 // [[Rcpp::export]]
 
 Rcpp::List GPC_linreg(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) { 
@@ -599,7 +602,7 @@ bootmean4 = bootmean4/B;
 std::array<std::array<double, 6>, 2000> mcmc_samps;
 std::array<std::array<double, 6>, 4000> mcmc_samps_f;
 
-/*
+
 while(go) {
 for (int i=0; i<B; i++) {
 	theta0old = thetaboot(i,0);
@@ -713,13 +716,7 @@ for (int i=0; i<B; i++) {
 		}
 		}
 	}
-	std::qsort(mcmc_samps, M, sizeof(*mcmc_samps),
-        [](const void *arg1, const void *arg2)->double {
-            double const *lhs = static_cast<double const*>(arg1);
-            double const *rhs = static_cast<double const*>(arg2);
-            return (lhs[5] < rhs[5]) ? -1
-                :  ((rhs[5] < lhs[5]) ? 1 : 0);
-        });
+	std::sort (mcmc_samps.begin(), mcmc_samps.end(), compare); 
 	
 
 	
@@ -873,14 +870,7 @@ theta4old[0] = bootmean4(0);
 		
 	}
 	
-	std::qsort(mcmc_samps_f, 2*M, sizeof(*mcmc_samps_f),
-        [](const void *arg1, const void *arg2)->double
-        {
-            double const *lhs = static_cast<double const*>(arg1);
-            double const *rhs = static_cast<double const*>(arg2);
-            return (lhs[5] < rhs[5]) ? -1
-                :  ((rhs[5] < lhs[5]) ? 1);
-        });
+	std::sort (mcmc_samps_f.begin(), mcmc_samps.end_f(), compare); 
 	low_f[0] = mcmc_samps_f[0][0];low_f[1] = mcmc_samps_f[0][1];low_f[2] = mcmc_samps_f[0][2];low_f[3] = mcmc_samps_f[0][3];low_f[4] = mcmc_samps_f[0][4];low_f[5] = mcmc_samps_f[0][5];
 	hi_f[0] = mcmc_samps_f[0][0];hi_f[1] = mcmc_samps_f[0][1];hi_f[2] = mcmc_samps_f[0][2];hi_f[3] = mcmc_samps_f[0][3];hi_f[4] = mcmc_samps_f[0][4];hi_f[5] = mcmc_samps_f[0][5];
 	low_f90[0] = low_f[0];
@@ -969,8 +959,6 @@ theta4old[0] = bootmean4(0);
 	
 
 result = Rcpp::List::create(Rcpp::Named("low") = low_f,Rcpp::Named("hi") = hi_f,Rcpp::Named("w") = w,Rcpp::Named("diff") = diff,Rcpp::Named("t") = t,Rcpp::Named("intvs9080") = intvs9080);
-return result;*/
-result = Rcpp::List::create(Rcpp::Named("low") = mcmc_samps, Rcpp::Named("low1") = mcmc_samps[1],Rcpp::Named("low2") = mcmc_samps[1][1]);
 return result;
 	
 }
