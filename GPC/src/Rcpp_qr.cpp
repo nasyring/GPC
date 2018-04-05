@@ -596,11 +596,10 @@ bootmean1 = bootmean1/B;
 bootmean2 = bootmean2/B;
 bootmean3 = bootmean3/B;
 bootmean4 = bootmean4/B;
- double< double[3] > [M] mcmc_samps;
-/*double mcmc_samps[M][6];
-double mcmc_samps_f[2*M][6];
+std::array<std::array<double, 6>, M> mcmc_samps;
+std::array<std::array<double, 6>, 2*M> mcmc_samps_f;
 
-
+/*
 while(go) {
 for (int i=0; i<B; i++) {
 	theta0old = thetaboot(i,0);
