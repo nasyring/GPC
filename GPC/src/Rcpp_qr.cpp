@@ -560,6 +560,10 @@ double low [6];
 double hi [6];
 double low_f [6];
 double hi_f [6];
+double low_f80 [6];
+double hi_f80 [6];
+double low_f90 [6];
+double hi_f90 [6];
 arma::colvec intvs9080	= arma::colvec(16);
 NumericVector theta0old;
 NumericVector theta0new;
@@ -716,9 +720,6 @@ for (int i=0; i<B; i++) {
 		}
 	}
 	std::sort (mcmc_samps.begin(), mcmc_samps.end(), compare); 
-	
-
-	
 	low[0] = mcmc_samps[0][0];low[1] = mcmc_samps[0][1];low[2] = mcmc_samps[0][2];low[3] = mcmc_samps[0][3];low[4] = mcmc_samps[0][4];low[5] = mcmc_samps[0][5];
 	hi[0] = mcmc_samps[0][0];hi[1] = mcmc_samps[0][1];hi[2] = mcmc_samps[0][2];hi[3] = mcmc_samps[0][3];hi[4] = mcmc_samps[0][4];hi[5] = mcmc_samps[0][5];
 	for(int j=int(M*0.05); j<(M); j++) {
@@ -869,7 +870,7 @@ theta4old[0] = bootmean4(0);
 		
 	}
 	
-	std::sort (mcmc_samps_f.begin(), mcmc_samps.end_f(), compare); 
+	std::sort (mcmc_samps_f.begin(), mcmc_samps_f.end(), compare); 
 	low_f[0] = mcmc_samps_f[0][0];low_f[1] = mcmc_samps_f[0][1];low_f[2] = mcmc_samps_f[0][2];low_f[3] = mcmc_samps_f[0][3];low_f[4] = mcmc_samps_f[0][4];low_f[5] = mcmc_samps_f[0][5];
 	hi_f[0] = mcmc_samps_f[0][0];hi_f[1] = mcmc_samps_f[0][1];hi_f[2] = mcmc_samps_f[0][2];hi_f[3] = mcmc_samps_f[0][3];hi_f[4] = mcmc_samps_f[0][4];hi_f[5] = mcmc_samps_f[0][5];
 	low_f90[0] = low_f[0];
