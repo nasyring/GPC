@@ -596,8 +596,8 @@ bootmean1 = bootmean1/B;
 bootmean2 = bootmean2/B;
 bootmean3 = bootmean3/B;
 bootmean4 = bootmean4/B;
-
-double mcmc_samps[M][6];
+ double< double[3] > [M] mcmc_samps;
+/*double mcmc_samps[M][6];
 double mcmc_samps_f[2*M][6];
 
 
@@ -970,7 +970,10 @@ theta4old[0] = bootmean4(0);
 	
 
 result = Rcpp::List::create(Rcpp::Named("low") = low_f,Rcpp::Named("hi") = hi_f,Rcpp::Named("w") = w,Rcpp::Named("diff") = diff,Rcpp::Named("t") = t,Rcpp::Named("intvs9080") = intvs9080);
+return result;*/
+result = Rcpp::List::create(Rcpp::Named("low") = mcmc_samps);
 return result;
+	
 }
 /*
 // [[Rcpp::export]]
