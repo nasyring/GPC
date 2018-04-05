@@ -540,7 +540,6 @@ arma::mat thetaboot     	= Rcpp::as<arma::mat>(theta_boot);
 arma::mat ddata			= Rcpp::as<arma::mat>(data);
 arma::mat databoot 		= Rcpp::as<arma::mat>(data_boot);
 int M				= Rcpp::as<int>(M_samp);
-const int M_			= Rcpp::as<int>(M_samp);
 arma::colvec postsamples0	= arma::colvec(M);
 arma::colvec postsamples1	= arma::colvec(M);
 arma::colvec postsamples2	= arma::colvec(M);
@@ -597,8 +596,8 @@ bootmean1 = bootmean1/B;
 bootmean2 = bootmean2/B;
 bootmean3 = bootmean3/B;
 bootmean4 = bootmean4/B;
-std::array<std::array<double, 6>, M_> mcmc_samps;
-std::array<std::array<double, 6>, 2*M_> mcmc_samps_f;
+std::array<std::array<double, 6>, 2000> mcmc_samps;
+std::array<std::array<double, 6>, 4000> mcmc_samps_f;
 
 /*
 while(go) {
@@ -971,7 +970,7 @@ theta4old[0] = bootmean4(0);
 
 result = Rcpp::List::create(Rcpp::Named("low") = low_f,Rcpp::Named("hi") = hi_f,Rcpp::Named("w") = w,Rcpp::Named("diff") = diff,Rcpp::Named("t") = t,Rcpp::Named("intvs9080") = intvs9080);
 return result;*/
-result = Rcpp::List::create(Rcpp::Named("low") = mcmc_samps);
+result = Rcpp::List::create(Rcpp::Named("low") = mcmc_samps, Rcpp::Named("low1") = mcmc_samps[1],Rcpp::Named("low2") = mcmc_samps[1][1]);
 return result;
 	
 }
