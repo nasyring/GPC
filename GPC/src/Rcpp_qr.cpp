@@ -525,8 +525,7 @@ result = Rcpp::List::create(Rcpp::Named("l0") = l0,Rcpp::Named("u0") = u0,Rcpp::
 return result;
 }
 
-inline bool compare(array a, array b)
-{
+inline bool compare(std::array<double, 6> a, std::array<double, 6> b){
     return (a[5] < b[5]);
 }
 // [[Rcpp::export]]
