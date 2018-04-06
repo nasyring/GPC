@@ -564,6 +564,7 @@ double low_f80 [6];
 double hi_f80 [6];
 double low_f90 [6];
 double hi_f90 [6];
+arma::colvec intvs	= arma::colvec(8);
 arma::colvec intvs9080	= arma::colvec(16);
 NumericVector theta0old;
 NumericVector theta0new;
@@ -939,7 +940,15 @@ theta4old[0] = bootmean4(0);
 		hi_f80[4] = fmax(hi_f80[4], mcmc_samps_f[j][4]);
 		hi_f80[5] = fmax(hi_f80[5], mcmc_samps_f[j][5]);
 	}
-
+	intvs(0) = low_f[0];
+	intvs(1) = hi_f[0];
+	intvs(2) = low_f[1];
+	intvs(3) = hi_f[1];
+	intvs(4) = low_f[2];
+	intvs(5) = hi_f[2];
+	intvs(6) = low_f[3];
+	intvs(7) = hi_f[3];
+	
 	intvs9080(0) = low_f90[0];
 	intvs9080(1) = hi_f90[0];
 	intvs9080(2) = low_f90[1];
@@ -958,7 +967,7 @@ theta4old[0] = bootmean4(0);
 	intvs9080(15) = hi_f80[3];
 	
 
-result = Rcpp::List::create(Rcpp::Named("low") = low_f,Rcpp::Named("hi") = hi_f,Rcpp::Named("w") = w,Rcpp::Named("diff") = diff,Rcpp::Named("t") = t,Rcpp::Named("intvs9080") = intvs9080);
+result = Rcpp::List::create(Rcpp::Named("intvs") = intvs, Rcpp::Named("intvs9080") = intvs9080);
 return result;
 	
 }
