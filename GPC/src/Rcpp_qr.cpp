@@ -607,7 +607,7 @@ bootmean4 = bootmean4/B;
 std::array<std::array<double, 6>, 2000> mcmc_samps;
 std::array<std::array<double, 6>, 4000> mcmc_samps_f;
 
-
+/*
 while(go) {
 for (int i=0; i<B; i++) {
 	theta0old = thetaboot(i,0);
@@ -753,7 +753,7 @@ if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
 	w = fmax(w + (pow(1+t,-0.51)*2*diff),0.6);
 }
 }
-/*
+
 theta0old[0] = bootmean0(0);
 theta1old[0] = bootmean1(0);
 theta2old[0] = bootmean2(0);
