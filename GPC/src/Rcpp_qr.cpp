@@ -619,7 +619,7 @@ for (int i=0; i<B; i++) {
 		theta0new = Rcpp::rnorm(1, theta0old[0], 0.1);
 		loglikdiff = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -w * 0.5*(1/theta4old)*pow(ddata(databoot(k, i),0)-theta0new*ddata(databoot(k, i),1)-theta1old*ddata(databoot(k, i),2)-theta2old*ddata(databoot(k, i),3)-theta3old*ddata(databoot(k, i),4),2) + w* 0.5*(1/theta4old)*pow(ddata(databoot(k, i),0)-theta0old*ddata(databoot(k, i),1)-theta1old*ddata(databoot(k, i),2)-theta2old*ddata(databoot(k, i),3)-theta3old*ddata(databoot(k, i),4),2); 
+			loglikdiff = loglikdiff -w * 0.5*(1/theta4old)*pow(ddata(databoot(k, i)-1,0)-theta0new*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2) + w* 0.5*(1/theta4old)*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2); 
 		}}}/*
 		r = Rcpp::dnorm(theta0new, theta0old[0],.1)/Rcpp::dnorm(theta0old,theta0new[0],.1);
 		loglikdiff[0] = loglikdiff[0] + log(r(0));
