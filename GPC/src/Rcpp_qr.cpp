@@ -720,7 +720,7 @@ for (int i=0; i<B; i++) {
 			mcmc_samps[j-100][5] = loglik[0];
 		}
 		}
-	}/*
+	}}/*
 	std::sort (mcmc_samps.begin(), mcmc_samps.end(), compare); 
 	low[0] = mcmc_samps[0][0];low[1] = mcmc_samps[0][1];low[2] = mcmc_samps[0][2];low[3] = mcmc_samps[0][3];low[4] = mcmc_samps[0][4];low[5] = mcmc_samps[0][5];
 	hi[0] = mcmc_samps[0][0];hi[1] = mcmc_samps[0][1];hi[2] = mcmc_samps[0][2];hi[3] = mcmc_samps[0][3];hi[4] = mcmc_samps[0][4];hi[5] = mcmc_samps[0][5];
