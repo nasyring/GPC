@@ -753,7 +753,7 @@ if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
 	w = fmax(w + (pow(1+t,-0.51)*2*diff),0.6);
 }
 }
-
+/*
 theta0old[0] = bootmean0(0);
 theta1old[0] = bootmean1(0);
 theta2old[0] = bootmean2(0);
@@ -970,7 +970,9 @@ theta4old[0] = bootmean4(0);
 
 result = Rcpp::List::create(Rcpp::Named("intvs") = intvs, Rcpp::Named("intvs9080") = intvs9080);
 return result;
-	
+	*/
+result = Rcpp::List::create(Rcpp::Named("intvs") = 0);
+return result;
 }
 
 // [[Rcpp::export]]
