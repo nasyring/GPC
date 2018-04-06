@@ -752,7 +752,7 @@ if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
 	w = fmax(w + (pow(1+t,-0.51)*2*diff),0.6);
 }
 }
-
+/*
 theta0old[0] = bootmean0(0);
 theta1old[0] = bootmean1(0);
 theta2old[0] = bootmean2(0);
@@ -967,11 +967,11 @@ theta4old[0] = bootmean4(0);
 	intvs9080(15) = hi_f80[3];
 	
 
-result = Rcpp::List::create(Rcpp::Named("intvs") = intvs, Rcpp::Named("intvs9080") = intvs9080);
+result = Rcpp::List::create(Rcpp::Named("l0") = 1,Rcpp::Named("u0") = u0,Rcpp::Named("l1") = l1,Rcpp::Named("u1") = u1,Rcpp::Named("l2") = l2,Rcpp::Named("u2") = u2,Rcpp::Named("l3") = l3,Rcpp::Named("u3") = u3,Rcpp::Named("w") = w,Rcpp::Named("diff") = diff,Rcpp::Named("t") = t,Rcpp::Named("intvs9080") = intvs9080);
 return result;
 	
 }
-/*
+*/
 // [[Rcpp::export]]
 
 Rcpp::List GPC_linreg(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) { 
@@ -1258,10 +1258,12 @@ theta3old[0] = bootmean3(0);
 	intvs9080(15) = sort3(0.90*2*M);
 
 
-result = Rcpp::List::create(Rcpp::Named("l0") = l0,Rcpp::Named("u0") = u0,Rcpp::Named("l1") = l1,Rcpp::Named("u1") = u1,Rcpp::Named("l2") = l2,Rcpp::Named("u2") = u2,Rcpp::Named("l3") = l3,Rcpp::Named("u3") = u3,Rcpp::Named("w") = w,Rcpp::Named("diff") = diff,Rcpp::Named("t") = t,Rcpp::Named("intvs9080") = intvs9080);
-return result;
+
+result = Rcpp::List::create(Rcpp::Named("intvs") = intvs, Rcpp::Named("intvs9080") = intvs9080);
+return result;	
+	
 }
-*/
+
 
 // [[Rcpp::export]]
 
