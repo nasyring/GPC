@@ -706,7 +706,7 @@ for (int i=0; i<B; i++) {
 		}else {
 			if(j>99){
 			postsamples4(j-100) = theta4old[0];}	
-		}
+		}}}/*
 		if(j>99){
 			mcmc_samps[j-100][5] = 0;
 			mcmc_samps[j-100][0] = theta0old[0];
