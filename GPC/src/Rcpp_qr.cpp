@@ -608,7 +608,7 @@ std::array<std::array<double, 6>, 2000> mcmc_samps;
 std::array<std::array<double, 6>, 4000> mcmc_samps_f;
 
 
-//while(go) {
+while(go) {
 for (int i=0; i<B; i++) {
 	theta0old = thetaboot(i,0);
 	theta1old = thetaboot(i,1);
@@ -620,7 +620,7 @@ for (int i=0; i<B; i++) {
 		loglikdiff = 0.0;
 		for(int k=0; k<n; k++){
 			loglikdiff = loglikdiff -w * 0.5*(1/theta4old)*pow(ddata(databoot(k, i)-1,0)-theta0new*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2) + w* 0.5*(1/theta4old)*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2); 
-		}}}/*
+		}
 		r = Rcpp::dnorm(theta0new, theta0old[0],.1)/Rcpp::dnorm(theta0old,theta0new[0],.1);
 		loglikdiff[0] = loglikdiff[0] + log(r(0));
 		loglikdiff[0] = fmin(std::exp(loglikdiff[0]), 1.0);
@@ -706,7 +706,7 @@ for (int i=0; i<B; i++) {
 		}else {
 			if(j>99){
 			postsamples4(j-100) = theta4old[0];}	
-		}}}/*
+		}
 		if(j>99){
 			mcmc_samps[j-100][5] = 0;
 			mcmc_samps[j-100][0] = theta0old[0];
@@ -720,7 +720,7 @@ for (int i=0; i<B; i++) {
 			mcmc_samps[j-100][5] = loglik[0];
 		}
 		}
-	}/*
+	}
 	std::sort (mcmc_samps.begin(), mcmc_samps.end(), compare); 
 	low[0] = mcmc_samps[0][0];low[1] = mcmc_samps[0][1];low[2] = mcmc_samps[0][2];low[3] = mcmc_samps[0][3];low[4] = mcmc_samps[0][4];low[5] = mcmc_samps[0][5];
 	hi[0] = mcmc_samps[0][0];hi[1] = mcmc_samps[0][1];hi[2] = mcmc_samps[0][2];hi[3] = mcmc_samps[0][3];hi[4] = mcmc_samps[0][4];hi[5] = mcmc_samps[0][5];
@@ -970,9 +970,7 @@ theta4old[0] = bootmean4(0);
 
 result = Rcpp::List::create(Rcpp::Named("intvs") = intvs, Rcpp::Named("intvs9080") = intvs9080);
 return result;
-	*/
-result = Rcpp::List::create(Rcpp::Named("intvs") = 0);
-return result;
+	
 }
 
 // [[Rcpp::export]]
