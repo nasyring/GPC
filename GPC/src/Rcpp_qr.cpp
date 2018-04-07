@@ -849,11 +849,11 @@ theta4old[0] = bootmean4(0);
 		low_f[2] = fmin(low_f[2], mcmc_samps_f[j][2]);
 		low_f[3] = fmin(low_f[3], mcmc_samps_f[j][3]);
 		low_f[4] = fmin(low_f[4], mcmc_samps_f[j][4]);
-		hi_f[0] = fmin(hi_f[0], mcmc_samps_f[j][0]);
-		hi_f[1] = fmin(hi_f[1], mcmc_samps_f[j][1]);
-		hi_f[2] = fmin(hi_f[2], mcmc_samps_f[j][2]);
-		hi_f[3] = fmin(hi_f[3], mcmc_samps_f[j][3]);
-		hi_f[4] = fmin(hi_f[4], mcmc_samps_f[j][4]);
+		hi_f[0] = fmax(hi_f[0], mcmc_samps_f[j][0]);
+		hi_f[1] = fmax(hi_f[1], mcmc_samps_f[j][1]);
+		hi_f[2] = fmax(hi_f[2], mcmc_samps_f[j][2]);
+		hi_f[3] = fmax(hi_f[3], mcmc_samps_f[j][3]);
+		hi_f[4] = fmax(hi_f[4], mcmc_samps_f[j][4]);
 	}
 	for(int j=int(2*M*0.1); j<(2*M); j++) {
 		low_f90[0] = fmin(low_f90[0], mcmc_samps_f[j][0]);
