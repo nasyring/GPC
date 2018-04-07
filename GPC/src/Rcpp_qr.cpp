@@ -971,7 +971,7 @@ theta4old[0] = bootmean4(0);
 result = Rcpp::List::create(Rcpp::Named("intvs") = intvs, Rcpp::Named("intvs9080") = intvs9080);
 return result;
 	*/
-result = Rcpp::List::create(Rcpp::Named("sumcover") = sumcover, Rcpp::Named("w") = w);
+result = Rcpp::List::create(Rcpp::Named("low0") = low[0], Rcpp::Named("hi0") = hi[0]);
 return result;	
 }
 
