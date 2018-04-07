@@ -538,7 +538,7 @@ double aalpha 			= Rcpp::as<double>(alpha);
 int n				= Rcpp::as<int>(nn);
 int B 				= Rcpp::as<int>(B_resamp);
 double eps 			= 0.01; 
-double w			= 3.0;
+double w			= 2.5;
 arma::mat thetaboot     	= Rcpp::as<arma::mat>(theta_boot);
 arma::mat ddata			= Rcpp::as<arma::mat>(data);
 arma::mat databoot 		= Rcpp::as<arma::mat>(data_boot);
@@ -718,7 +718,7 @@ sumcover = 0.0;
 for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
 
 diff = (sumcover/B) - (1.0-aalpha);
-if(((abs(diff)<= eps)&&(diff>=0)) || t>9) {
+if(((abs(diff)<= eps)&&(diff>=0)) || t>12) {
 	go = FALSE;
 } else {
 	t = t+1;
