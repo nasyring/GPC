@@ -579,6 +579,7 @@ NumericVector theta4old;
 NumericVector theta4new;	
 NumericVector loglikdiff;
 NumericVector loglik;
+NumericVector loglik_temp;
 arma::colvec r			= arma::colvec(1);r.fill(0.0);
 arma::colvec uu 		= arma::colvec(1);
 arma::colvec cover		= arma::colvec(B);
@@ -714,8 +715,11 @@ for (int i=0; i<B; i++) {
 			mcmc_samps[j-100][2] = theta2old[0];
 			mcmc_samps[j-100][3] = theta3old[0];
 			mcmc_samps[j-100][4] = theta4old[0];
+			loglik[0] = 0.0;
+			loglik_temp[0] = 0.0;
 			for(int k=0; k<n; k++){
-				loglik = loglik -w * 0.5*(1/theta4old)*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2);
+				loglik_temp = pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2);
+				loglik[0] = loglik[0] +  -(w/2.0)*log(6.2832*theta4old[0]) - (w/(2.0*theta4old[0]))*loglik_temp[0];
 			}
 			mcmc_samps[j-100][5] = loglik[0];
 		}
