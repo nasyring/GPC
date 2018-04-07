@@ -552,14 +552,14 @@ arma::colvec sort0		= arma::colvec(M);
 arma::colvec sort1		= arma::colvec(M);
 arma::colvec sort2		= arma::colvec(M);
 arma::colvec sort3		= arma::colvec(M);
-double low [6];
-double hi [6];
-double low_f [6];
-double hi_f [6];
-double low_f80 [6];
-double hi_f80 [6];
-double low_f90 [6];
-double hi_f90 [6];
+double low [5];
+double hi [5];
+double low_f [5];
+double hi_f [5];
+double low_f80 [5];
+double hi_f80 [5];
+double low_f90 [5];
+double hi_f90 [5];
 arma::colvec intvs	= arma::colvec(8);
 arma::colvec intvs9080	= arma::colvec(16);
 NumericVector theta0old;
@@ -604,7 +604,7 @@ std::array<std::array<double, 6>, 2000> mcmc_samps;
 std::array<std::array<double, 6>, 4000> mcmc_samps_f;
 
 
-//while(go) {
+while(go) {
 for (int i=0; i<B; i++) {
 	theta0old = thetaboot(i,0);
 	theta1old = thetaboot(i,1);
@@ -701,21 +701,19 @@ for (int i=0; i<B; i++) {
 	}
 	
 	std::sort (mcmc_samps.begin(), mcmc_samps.end(), compare); 
-	low[0] = bootmean0(0);low[1] = bootmean1(0);low[2] = bootmean2(0);low[3] = bootmean3(0);low[4] = bootmean4(0);low[5] = mcmc_samps[M][5];
-	hi[0] = bootmean0(0);hi[1] = bootmean1(0);hi[2] = bootmean2(0);hi[3] = bootmean3(0);hi[4] = bootmean4(0);hi[5] = mcmc_samps[M][5];
+	low[0] = bootmean0(0);low[1] = bootmean1(0);low[2] = bootmean2(0);low[3] = bootmean3(0);low[4] = bootmean4(0);
+	hi[0] = bootmean0(0);hi[1] = bootmean1(0);hi[2] = bootmean2(0);hi[3] = bootmean3(0);hi[4] = bootmean4(0);
 	for(int j=int(M*0.05); j<(M); j++) {
 		low[0] = fmin(low[0], mcmc_samps[j][0]);
 		low[1] = fmin(low[1], mcmc_samps[j][1]);
 		low[2] = fmin(low[2], mcmc_samps[j][2]);
 		low[3] = fmin(low[3], mcmc_samps[j][3]);
 		low[4] = fmin(low[4], mcmc_samps[j][4]);
-		low[5] = fmin(low[5], mcmc_samps[j][5]);
 		hi[0] = fmax(hi[0], mcmc_samps[j][0]);
 		hi[1] = fmax(hi[1], mcmc_samps[j][1]);
 		hi[2] = fmax(hi[2], mcmc_samps[j][2]);
 		hi[3] = fmax(hi[3], mcmc_samps[j][3]);
 		hi[4] = fmax(hi[4], mcmc_samps[j][4]);
-		hi[5] = fmax(hi[5], mcmc_samps[j][5]);
 	}
 	if ( (low[3] < bootmean3(0)) && (hi[3] > bootmean3(0)) && (low[2] < bootmean2(0)) && (hi[2] > bootmean2(0)) && (low[1] < bootmean1(0)) && (hi[1] > bootmean1(0))){
 		cover(i) = 1.0;
@@ -731,7 +729,7 @@ if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
 	t = t+1;
 	w = fmax(w + (pow(1+t,-0.51)*2*diff),0.6);
 }
-//}
+}
 /*
 theta0old[0] = bootmean0(0);
 theta1old[0] = bootmean1(0);
@@ -950,12 +948,7 @@ theta4old[0] = bootmean4(0);
 result = Rcpp::List::create(Rcpp::Named("intvs") = intvs, Rcpp::Named("intvs9080") = intvs9080);
 return result;
 	*/
-result = Rcpp::List::create(Rcpp::Named("low0") = low[0], Rcpp::Named("hi0") = hi[0], 
-			    Rcpp::Named("low1") = low[1], Rcpp::Named("hi1") = hi[1],
-			    Rcpp::Named("low2") = low[2], Rcpp::Named("hi2") = hi[2],
-			    Rcpp::Named("low3") = low[3], Rcpp::Named("hi3") = hi[3],
-			    Rcpp::Named("low4") = low[4], Rcpp::Named("hi4") = hi[4],
-			    Rcpp::Named("low5") = low[5], Rcpp::Named("hi5") = hi[5],
+result = Rcpp::List::create(Rcpp::Named("w") = w, Rcpp::Named("t") = t,
 			    Rcpp::Named("check") =mcmc_samps);
 return result;	
 }
