@@ -956,7 +956,7 @@ result = Rcpp::List::create(Rcpp::Named("low0") = low[0], Rcpp::Named("hi0") = h
 			    Rcpp::Named("low3") = low[3], Rcpp::Named("hi3") = hi[3],
 			    Rcpp::Named("low4") = low[4], Rcpp::Named("hi4") = hi[4],
 			    Rcpp::Named("low5") = low[5], Rcpp::Named("hi5") = hi[5],
-			    Rcpp::Named("check") =int(M*0.05));
+			    Rcpp::Named("check") =mcmc_samps);
 return result;	
 }
 
