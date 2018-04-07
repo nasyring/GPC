@@ -722,8 +722,8 @@ for (int i=0; i<B; i++) {
 	}
 	
 	std::sort (mcmc_samps.begin(), mcmc_samps.end(), compare); 
-	low[0] = mcmc_samps[0][0];low[1] = mcmc_samps[0][1];low[2] = mcmc_samps[0][2];low[3] = mcmc_samps[0][3];low[4] = mcmc_samps[0][4];low[5] = mcmc_samps[0][5];
-	hi[0] = mcmc_samps[0][0];hi[1] = mcmc_samps[0][1];hi[2] = mcmc_samps[0][2];hi[3] = mcmc_samps[0][3];hi[4] = mcmc_samps[0][4];hi[5] = mcmc_samps[0][5];
+	low[0] = bootmean0(0);low[1] = bootmean1(0);low[2] = bootmean2(0);low[3] = bootmean3(0);low[4] = bootmean4(0);low[5] = bootmean5(0);
+	hi[0] = bootmean0(0);hi[1] = bootmean1(0);hi[2] = bootmean2(0);hi[3] = bootmean3(0);hi[4] = bootmean4(0);hi[5] = bootmean5(0);
 	for(int j=int(M*0.05); j<(M); j++) {
 		low[0] = fmin(low[0], mcmc_samps[j][0]);
 		low[1] = fmin(low[1], mcmc_samps[j][1]);
@@ -971,7 +971,7 @@ theta4old[0] = bootmean4(0);
 result = Rcpp::List::create(Rcpp::Named("intvs") = intvs, Rcpp::Named("intvs9080") = intvs9080);
 return result;
 	*/
-result = Rcpp::List::create(Rcpp::Named("low0") = low[0], Rcpp::Named("hi0") = hi[0]);
+result = Rcpp::List::create(Rcpp::Named("low0") = low[0], Rcpp::Named("hi0") = hi[0], Rcpp::Named("check") =int(M*0.05));
 return result;	
 }
 
