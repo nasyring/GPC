@@ -694,7 +694,7 @@ if(((abs(diff)<= eps)&&(diff>=0)) || t>5) {
 	go = FALSE;
 } else {
 	t = t+1;
-	w = fmax(w + (pow(1+t,-0.51)*5*diff),0.6);
+	w = fmax(w + (pow(1+t,-0.51)*2*diff),0.05);
 }
 }
 
