@@ -1013,7 +1013,7 @@ for (int i=0; i<B; i++) {
 		loglik_temp[0] = 0.0;
 		for(int k=0; k<n; k++){
 			loglik_temp = pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2);
-			loglik[0] = loglik[0] +  -(w/2.0)*log(6.2832*theta4old) - (w/2.0)*(1/theta4old)*loglik_temp[0];
+			loglik[0] = loglik[0] +  -(w/2.0)*log(6.2832*theta4old[0]) - (w/2.0)*(1/theta4old[0])*loglik_temp[0];
 		}
 		mcmc_samps[j][5] = loglik[0];	
 	}
@@ -1133,7 +1133,7 @@ theta4old[0] = bootmean4(0);
 		loglik_temp[0] = 0.0;
 		for(int k=0; k<n; k++){
 			loglik_temp = pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2);
-			loglik[0] = loglik[0] +  -(w/2.0)*log(6.2832*theta4old) - (w/2.0)*(1/theta4old)*loglik_temp[0];
+			loglik[0] = loglik[0] +  -(w/2.0)*log(6.2832*theta4old[0]) - (w/2.0)*(1/theta4old[0])*loglik_temp[0];
 		}
 		mcmc_samps_f[j][5] = loglik[0];	
 	}
