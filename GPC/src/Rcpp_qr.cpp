@@ -538,7 +538,7 @@ double aalpha 			= Rcpp::as<double>(alpha);
 int n				= Rcpp::as<int>(nn);
 int B 				= Rcpp::as<int>(B_resamp);
 double eps 			= 0.01; 
-double w			= 1.2;
+double w			= 1.0;
 arma::mat thetaboot     	= Rcpp::as<arma::mat>(theta_boot);
 arma::mat ddata			= Rcpp::as<arma::mat>(data);
 arma::mat databoot 		= Rcpp::as<arma::mat>(data_boot);
@@ -698,7 +698,7 @@ for (int i=0; i<B; i++) {
 	std::sort (mcmc_samps.begin(), mcmc_samps.end(), compare); 
 	low[0] = bootmean0(0);low[1] = bootmean1(0);low[2] = bootmean2(0);low[3] = bootmean3(0);low[4] = bootmean4(0);
 	hi[0] = bootmean0(0);hi[1] = bootmean1(0);hi[2] = bootmean2(0);hi[3] = bootmean3(0);hi[4] = bootmean4(0);
-	for(int j=int(M*0.05); j<(M); j++) {
+	for(int j=int(M*0.05); j<M; j++) {
 		low[0] = fmin(low[0], mcmc_samps[j][0]);
 		low[1] = fmin(low[1], mcmc_samps[j][1]);
 		low[2] = fmin(low[2], mcmc_samps[j][2]);
@@ -716,7 +716,6 @@ for (int i=0; i<B; i++) {
 }
 sumcover = 0.0;
 for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
-
 diff = (sumcover/B) - (1.0-aalpha);
 if(((abs(diff)<= eps)&&(diff>=0)) || t>12) {
 	go = FALSE;
@@ -906,7 +905,7 @@ theta4old[0] = bootmean4(0);
 	intvs9080(15) = hi_f80[3];
 	
 
-result = Rcpp::List::create(Rcpp::Named("intvs") = intvs, Rcpp::Named("intvs9080") = intvs9080,Rcpp::Named("w") = w, Rcpp::Named("t") = t);
+result = Rcpp::List::create(Rcpp::Named("intvs") = intvs, Rcpp::Named("intvs9080") = intvs9080,Rcpp::Named("w") = w, Rcpp::Named("t") = t, Rcpp::Named("diff") = diff);
 return result;	
 }
 
