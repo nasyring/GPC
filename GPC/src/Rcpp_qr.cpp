@@ -766,7 +766,7 @@ theta3old[0] = bootmean3(0);
 		loglik[0] = 0.0;
 		loglik_temp[0] = 0.0;
 		for(int k=0; k<n; k++){
-			loglik_temp = pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2);
+			loglik_temp = pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2);
 			loglik[0] = loglik[0] +  -(w/2.0)*log(6.2832) - (w/2.0)*loglik_temp[0];
 		}
 		mcmc_samps_f[j][4] = loglik[0];	
