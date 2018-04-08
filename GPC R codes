@@ -1,18 +1,24 @@
-# Title: GPC Algorithm
-# Reference: https://arxiv.org/abs/1509.00922
-# Author: Nicholas Syring
-# Contact: nasyrin@gmail.com
-# 
-# Instructions:
-# 1. Have the quantreg package installed
-# 2. Run all code below up to "# Example"
-# 3. Running the code under "Example" will replicate the GPC results in Table 1 of the reference above.
-#    Make the corresponding changes to the number of data points "n", the number of simulation runs "reps",
-#    the number of bootstrap resamples "B", and the number of posterior samples "M".
+############################################
+## General Posterior Calibration
+## Nick Syring, nasyrin@gmail.com
+## https://arxiv.org/abs/1509.00922
+############################################
 
+
+#### Installing the package via Github
+library(devtools)
+install_github("nasyring/GPC", subdir = "GPC")
+library(GPC)
+
+
+#### Section 4: Quantile Regression
 
 library(quantreg)
 
+# Modifying the number of threads used for parallel computation
+RcppParallel::setThreadOptions(numThreads = 1)
+
+# data-generating process
 rmodel <- function(n, theta) {
 
   X <- rchisq(n, 2) - 2
@@ -21,134 +27,198 @@ rmodel <- function(n, theta) {
 
 }
 
-mh = function(x0, lf, ldprop, rprop, N, B) {
-  x <- matrix(NA, N + B, length(x0))
-  lfx <- rep(NA, N + B)
-  x[1,] <- x0
-  lfx[1] <- lf(x0)
-  ct <- 0
-  for(i in 2:(N + B)) {
+# simulation parameters
+n = 50
+reps = 400
+M = 2000
+B = 200
+eps = .01
+w = .5
+cover = matrix(0,reps,2)
+length = matrix(0,reps,2)
+t = rep(NA,reps)
+diff = rep(NA,reps)
+theta.true <- c(2, 1)
+alpha <- 0.05
+theta.boot = matrix(0, B, 2)
 
-    u <- rprop(x[i-1,])
-    lfu <- lf(u)
-    r <- lfu + ldprop(x[i-1,], u) - lfx[i-1] - ldprop(u, x[i-1,])
-    R <- min(exp(r), 1)
-    if(ifelse(is.na(R), FALSE, runif(1) <= R)) {
-
-      ct <- ct + 1
-      x[i,] <- u
-      lfx[i] <- lfu
-
-    } else {
-
-      x[i,] <- x[i-1,]
-      lfx[i] <- lfx[i-1]
-
-    }
-
-  }
-  x=x[-(1:B),]
-  lfx = lfx[-(1:B)]
-  return(list(x=x, lfx=lfx))
-
-}
-
-get.cr <- function(x, alpha) {
-
-  d <- ncol(x)
-  o <- matrix(0, d, 2)
-  for(j in 1:d) o[j,] <- as.numeric(quantile(x[,j], c(alpha / 2, 1 - alpha / 2)))
-  return(o)
-
-}
-
-get.cr.cov <- function(intv, theta) {
-
-  n <- nrow(intv)
-  o <- rep(NA, n)
-  for(i in 1:n) o[i] <- (intv[i,1] <= theta[i] && intv[i,2] >= theta[i])
-  return(all(o))
-
-}
-
-gpc.qr <- function(n, reps, M, B) {
-
-  theta.true <- c(2, 1)
-  alpha <- 0.05
-  eps <- 1 / B
-  ldprop <- function(x, x0) sum(dnorm(x, x0, 0.3, log=TRUE))
-  rprop <- function(x0) rnorm(2, x0, 0.3)
-  coverage1 <- ww <- rep(0, reps)
-  len1 <- matrix(0, reps, 2)
-  coverage2 <- ww <- rep(0, reps)
-  len2 <- matrix(0, reps, 2)
-  theta.boot = matrix(0, B, 2)
-  for(j in 1:reps) {
-
-    w <- 0.5
+# simulation
+for(j in 1:reps) {
     data <- rmodel(n, theta.true)
     theta.hat <- rq(data[,2] ~ data[,1], tau=0.5)$coef
-    data.star <- gibbs <- list()
+    data.star <- matrix(0,n,B*2)
     cvg <- rep(0, B)
     for(b in 1:B) {
-
-      id <- sample(n, n, replace=TRUE)
-      data.star[[b]] <- data[id,]
-	theta.boot[b,] <- rq(data.star[[b]][,2] ~ data.star[[b]][,1], tau=0.5)$coef
-
+        id <- sample(n, n, replace=TRUE)
+        data.star[,(2*b-1):(2*b)] <- data[id,]
+	theta.boot[b,] <- rq(data.star[,2*b] ~ data.star[,2*b-1], tau=0.5)$coef
     } 
-    go <- TRUE
+   go <- TRUE
     t <- 1
     k <- function(t) (1 + t)**(-0.51)
     while(go) {
-
-      for(b in 1:B) {
-
-        #pp <- exp((w - w.old) * apply(gibbs[[b]], 1, lf[[b]]))
-        #gibbs.sir <- gibbs[[b]][sample(M, M, replace=TRUE, prob=pp),]
-        lf <- function(u) -w * sum(abs(data.star[[b]][,2] - u[1] - u[2] * data.star[[b]][,1]))
-        new.gibbs <- mh(theta.hat, lf, ldprop, rprop, M, 100)$x
-        cvg[b] <- get.cr.cov(matrix(get.cr(new.gibbs, alpha)[2,],1,2), mean(theta.boot[,2]))    
-
-      }
-      diff <- mean(cvg) - (1 - alpha)
-      if(abs(diff) <= eps) go <- FALSE else {
-      	
-        t <- t + 1
-        w <- w + k(t) * diff
-        
-      }
-
+	cover = rcpp_parallel_qr(n,data,theta.boot,mean(theta.boot[,1]),mean(theta.boot[,2]),data.star,alpha,M,B, w) 
+        diff <- mean(cover) - (1 - alpha)
+        if((abs(diff) <= eps)||(t>16)) go <- FALSE else {
+      	    t <- t + 1
+            w <- w + k(t) * diff
+        }
     }
-    ww[j] <- w
-    lf <- function(u) -w * sum(abs(data[,2] - u[1] - u[2] * data[,1]))
-   final.gibbs <- mh(theta.hat, lf, ldprop, rprop, M, 1000)
-
-	final.gibbs = final.gibbs$x
-    intv1 <- get.cr(matrix(final.gibbs[,1],M,1), alpha)
-    coverage1[j] <- get.cr.cov(intv1, theta.true[1])
-    intv2 <- get.cr(matrix(final.gibbs[,2],M,1), alpha)
-    coverage2[j] <- get.cr.cov(intv2, theta.true[2])
-    len1[j,] <- intv1[,2] - intv1[,1]
-    len2[j,] <- intv2[,2] - intv2[,1]
-	print(j)
-  }
-	
-  return(list(w=ww, cvg1=mean(coverage1),cvg2 =mean(coverage2) , len1=mean(len1),len2=mean(len2) ))
-
+    final.gibbs = GibbsMCMC2(n, data, theta.boot, mean(theta.boot[,1]),mean(theta.boot[,2]),alpha,M, w)
+    l0 = final.gibbs$l0
+    u0 = final.gibbs$u0
+    l1 = final.gibbs$l1
+    u1 = final.gibbs$u1
+    cover[j,] = c((l0<theta.true[1] & u0 > theta.true[1]), (l1<theta.true[2] & u1 > theta.true[2]))
+    length[j,] = c(u0-l0, u1-l1)
 }
 
-# Example
+# simulation coverage proportions and credible interval lengths
+colMeans(cover)
+colMeans(length)
 
-t = proc.time()
-n = 100
-reps = 200
-M = 2000
+
+
+
+
+#### Supplemental Material: Linear regression
+
+library(MASS)
+
+# simualtion parameters
+n=50
+reps = 10
+M =2000
 B = 200
-run = gpc.qr(n, reps, M, B)
-(proc.time() - t)/(reps*60)
+alpha=0.05
+coverage1 <- rep(0, reps)
+len1 <- matrix(0, reps, 1)
+coverage2 <- rep(0, reps)
+len2 <- matrix(0, reps, 1)
+coverage3 <- rep(0, reps)
+len3 <- matrix(0, reps, 1)
+coverage4 <- rep(0, reps)
+len4 <- matrix(0, reps, 1)
+theta.boot = matrix(0, B, 5)
+int1 <- matrix(0, reps, 2)
+int2 <- matrix(0, reps, 2)
+int3 <- matrix(0, reps, 2)
+int4 <- matrix(0, reps, 2)
+cover190 <- matrix(0, reps, 1)
+cover290 <- matrix(0, reps, 1)
+cover390 <- matrix(0, reps, 1)
+cover490 <- matrix(0, reps, 1)
+cover180 <- matrix(0, reps, 1)
+cover280 <- matrix(0, reps, 1)
+cover380 <- matrix(0, reps, 1)
+cover480 <- matrix(0, reps, 1)
+ww = rep(NA,reps)
+tt = rep(NA,reps)
+times = rep(NA,reps)
 
-run$cvg1
-run$cvg2
-run$len1
-run$len2
+# simulation
+for(j in 1:reps) {
+  Xs = mvrnorm(n,mu = c(0,0,0),Sigma =  matrix(c(1,0.5,0,0.5,1,0,0,0,1),3,3))  
+  X0 = rep(1,n)
+  B0 = 0
+  B1 = 1
+  B2 = 2
+  B3 = -1
+  Y = rnorm(n,X0*B0 + Xs[,1]*B1 + Xs[,2]*B2 + Xs[,3]*B3,sqrt((abs(Xs[,2])^2)+(abs(Xs[,1])^2)+(abs(Xs[,3])^2)))
+  beta = matrix(c(B0,B1,B2,B3),4,1)
+  X = matrix(cbind(X0,Xs),n,4)
+  linmod = lm(Y~X-1)
+  theta.hat <- c(linmod$coef[1],linmod$coef[2],linmod$coef[3],linmod$coef[4])
+  resid = (Y - X%*%matrix(theta.hat,4,1))
+  boot_indices = matrix(0,n,B)
+    for(b in 1:B) {
+      id <- sample(n, n, replace=TRUE)
+	boot_indices[,b] = id
+	linmod.star = lm(Y[id]~X[id,]-1)
+	theta.boot[b,] <- c(linmod.star$coef[1],linmod.star$coef[2],linmod.star$coef[3],linmod.star$coef[4], (summary(linmod.star)$sigma)^2)
+
+    } 
+   data = cbind(Y,X)
+   t = proc.time()
+   intv = GPC_linreg(n,data,theta.boot,boot_indices,alpha,M,B)
+   times[j] = proc.time()[3]-t[3]
+   ww[j]=intv$w
+   tt[j]=intv$t
+   coverage1[j] = ifelse(all(intv$intvs[1]<=0,intv$intvs[2]>=0),1,0)
+   coverage2[j] = ifelse(all(intv$intvs[3]<=1,intv$intvs[4]>=1),1,0)
+   coverage3[j] = ifelse(all(intv$intvs[5]<=2,intv$intvs[6]>=2),1,0)
+   coverage4[j] = ifelse(all(intv$intvs[7]<=(-1),intv$intvs[8]>=(-1)),1,0)
+   len1[j] = intv$intvs[2] - intv$intvs[1]
+   len2[j] = intv$intvs[4] - intv$intvs[3]
+   len3[j] = intv$intvs[6] - intv$intvs[5]
+   len4[j] = intv$intvs[8] - intv$intvs[7]
+   int1[j,] = c(intv$intvs[1],intv$intvs[2])
+   int2[j,] = c(intv$intvs[3],intv$intvs[4])
+   int3[j,] = c(intv$intvs[5],intv$intvs[6])
+   int4[j,] = c(intv$intvs[7],intv$intvs[8])
+   cover190[j,1] = ifelse(all(intv$intvs9080[1]<=0, intv$intvs9080[2]>=0),1,0)
+   cover290[j,1] = ifelse(all(intv$intvs9080[3]<=1, intv$intvs9080[4]>=1),1,0)
+   cover390[j,1] = ifelse(all(intv$intvs9080[5]<=2, intv$intvs9080[6]>=2),1,0)
+   cover490[j,1] = ifelse(all(intv$intvs9080[7]<=-1, intv$intvs9080[8]>=-1),1,0)
+   cover180[j,1] = ifelse(all(intv$intvs9080[9]<=0, intv$intvs9080[10]>=0),1,0)
+   cover280[j,1] = ifelse(all(intv$intvs9080[11]<=1, intv$intvs9080[12]>=1),1,0)
+   cover380[j,1] = ifelse(all(intv$intvs9080[13]<=2, intv$intvs9080[14]>=2),1,0)
+   cover480[j,1] = ifelse(all(intv$intvs9080[15]<=-1, intv$intvs9080[16]>=-1),1,0)
+}
+
+# simulation results, coverage proportions and interval lengths
+c(mean(coverage1), mean(coverage2), mean(coverage3), mean(coverage4))
+c(mean(len1), mean(len2), mean(len3), mean(len4))
+c(mean(cover190), mean(cover290), mean(cover390), mean(cover490))
+c(mean(cover180), mean(cover280), mean(cover380), mean(cover480))
+
+
+
+
+
+
+
+#### Supplementary Material: Variational Bayesian Posterior
+
+# Data generating process
+rnorm.mix = function(n,mu1,mu2,sd1,sd2,p){
+	label = rbinom(n,1,p)
+	n1 = sum(label)
+	sample1 = rnorm(n1,mu1,sd1)
+	sample2 = rnorm(n-n1,mu2,sd2)
+	return(c(sample1,sample2))
+} 
+
+# simulation parameters
+n=400
+mean1 = -2
+mean2 = 2
+B=200
+reps = 100
+len = matrix(NA,reps,2)
+w = matrix(NA,reps,1)
+cover = matrix(NA,reps,2)
+t = proc.time()
+
+# simulation
+for(i in 1:reps){
+	data = rnorm.mix(n,mean1,mean2,1,1,0.5)
+	data.star = matrix(NA,n,B)
+	for(b in 1:B){
+		id = sample.int(n,n,replace=TRUE)
+		data.star[,b] = data[id]
+	}
+	res = GPC_varmix(n,data,data.star,0.05,B)
+	cover[i,] = c(res$cov1,res$cov2)
+	len[i,] = c(res$intv1[2]-res$intv1[1],res$intv2[2]-res$intv2[1])
+	w[i] = res$w	
+}
+(proc.time() - t)/reps
+
+# simulation results
+colMeans(cover)
+colMeans(len)
+
+
+
+   
