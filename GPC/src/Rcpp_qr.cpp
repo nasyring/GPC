@@ -526,8 +526,8 @@ return result;
 }
 
 
-inline bool compare(std::array<double, 6> a, std::array<double, 6> b){
-    return (a[5] < b[5]);
+inline bool compare(std::array<double, 5> a, std::array<double, 5> b){
+    return (a[4] < b[4]);
 }
 // [[Rcpp::export]]
 
@@ -547,14 +547,14 @@ arma::colvec sort0		= arma::colvec(M);
 arma::colvec sort1		= arma::colvec(M);
 arma::colvec sort2		= arma::colvec(M);
 arma::colvec sort3		= arma::colvec(M);
-double low [5];
-double hi [5];
-double low_f [5];
-double hi_f [5];
-double low_f80 [5];
-double hi_f80 [5];
-double low_f90 [5];
-double hi_f90 [5];
+double low [4];
+double hi [4];
+double low_f [4];
+double hi_f [4];
+double low_f80 [4];
+double hi_f80 [4];
+double low_f90 [4];
+double hi_f90 [4];
 arma::colvec intvs	= arma::colvec(8);
 arma::colvec intvs9080	= arma::colvec(16);
 NumericVector theta0old;
@@ -564,9 +564,7 @@ NumericVector theta1new;
 NumericVector theta2old;
 NumericVector theta2new;
 NumericVector theta3old;
-NumericVector theta3new;
-NumericVector theta4old;
-NumericVector theta4new;	
+NumericVector theta3new;	
 NumericVector loglikdiff;
 NumericVector loglik;
 NumericVector loglik_temp;
@@ -580,7 +578,6 @@ arma::colvec bootmean0		= arma::colvec(1);
 arma::colvec bootmean1		= arma::colvec(1);
 arma::colvec bootmean2		= arma::colvec(1);
 arma::colvec bootmean3		= arma::colvec(1);
-arma::colvec bootmean4		= arma::colvec(1);
 double sumcover = 0.0;
 
 for (int i=0; i<B; i++) {
@@ -588,15 +585,13 @@ for (int i=0; i<B; i++) {
 	bootmean1 = bootmean1 + thetaboot(i,1);
 	bootmean2 = bootmean2 + thetaboot(i,2);
 	bootmean3 = bootmean3 + thetaboot(i,3);
-	bootmean4 = bootmean4 + thetaboot(i,4);
 }
 bootmean0 = bootmean0/B;
 bootmean1 = bootmean1/B;
 bootmean2 = bootmean2/B;
 bootmean3 = bootmean3/B;
-bootmean4 = bootmean4/B;
-std::array<std::array<double, 6>, 2000> mcmc_samps;
-std::array<std::array<double, 6>, 4000> mcmc_samps_f;
+std::array<std::array<double, 5>, 2000> mcmc_samps;
+std::array<std::array<double, 5>, 4000> mcmc_samps_f;
 
 
 while(go) {
@@ -605,12 +600,11 @@ for (int i=0; i<B; i++) {
 	theta1old = thetaboot(i,1);
 	theta2old = thetaboot(i,2);
 	theta3old = thetaboot(i,3);
-	theta4old = thetaboot(i,4);
 	for(int j=0; j<M; j++) {
 		theta0new = Rcpp::rnorm(1, theta0old[0], 0.1);
 		loglikdiff = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -w * 0.5*(1/theta4old)*pow(ddata(databoot(k, i)-1,0)-theta0new*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2) + w* 0.5*(1/theta4old)*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2); 
+			loglikdiff = loglikdiff -w * 0.5*pow(ddata(databoot(k, i)-1,0)-theta0new*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2) + w* 0.5*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2); 
 		}
 		r = Rcpp::dnorm(theta0new, theta0old[0],.1)/Rcpp::dnorm(theta0old,theta0new[0],.1);
 		loglikdiff[0] = loglikdiff[0] + log(r(0));
@@ -625,7 +619,7 @@ for (int i=0; i<B; i++) {
 		theta1new = Rcpp::rnorm(1, theta1old[0], 0.1);
 		loglikdiff = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -w * 0.5*(1/theta4old)*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1new*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2) + w* 0.5*(1/theta4old)*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2); 
+			loglikdiff = loglikdiff -w * 0.5*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1new*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2) + w* 0.5*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2); 
 		}
 		r = Rcpp::dnorm(theta1new, theta1old[0],.1) / Rcpp::dnorm(theta1old,theta1new[0],.1);
 		loglikdiff[0] = loglikdiff[0] + log(r(0));
@@ -640,7 +634,7 @@ for (int i=0; i<B; i++) {
 		theta2new = Rcpp::rnorm(1, theta2old[0], 0.1);
 		loglikdiff = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -w * 0.5*(1/theta4old)*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2new*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2) + w* 0.5*(1/theta4old)*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2); 
+			loglikdiff = loglikdiff -w * 0.5*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2new*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2) + w* 0.5*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2); 
 		}
 		r = Rcpp::dnorm(theta2new, theta2old[0],.1) / Rcpp::dnorm(theta2old,theta2new[0],.1);
 		loglikdiff[0] = loglikdiff[0] + log(r(0));
@@ -655,7 +649,7 @@ for (int i=0; i<B; i++) {
 		theta3new = Rcpp::rnorm(1, theta3old[0], 0.1);
 		loglikdiff = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -w * 0.5*(1/theta4old)*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3new*ddata(databoot(k, i)-1,4),2) + w* 0.5*(1/theta4old)*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2); 
+			loglikdiff = loglikdiff -w * 0.5*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3new*ddata(databoot(k, i)-1,4),2) + w* 0.5*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2); 
 		}
 		r = Rcpp::dnorm(theta3new, theta3old[0],.1) / Rcpp::dnorm(theta3old,theta3new[0],.1);
 		loglikdiff[0] = loglikdiff[0] + log(r(0));
@@ -667,48 +661,27 @@ for (int i=0; i<B; i++) {
       		}else {
 			mcmc_samps[j][3] = theta3old[0];	
 		}
-		theta4new = Rcpp::rnorm(1, theta4old[0], 0.1);
-		if(theta4new[0]>0){
-		loglikdiff = 0.0;
-		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -w * 0.5*(1/theta4new)*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2) + w* 0.5*(1/theta4old)*pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2); 
-		}
-		r = Rcpp::dnorm(theta4new, theta4old[0],0.1) / Rcpp::dnorm(theta4old,theta4new[0],0.1);
-		loglikdiff[0] = loglikdiff[0] + log(r(0));
-		loglikdiff[0] = fmin(std::exp(loglikdiff[0]), 1.0);
-		uu = Rcpp::runif(1);
-      		if((uu(0) <= loglikdiff[0]) ) {
-			mcmc_samps[j][4] = theta4new[0];
-			theta4old = theta4new; 
-      		}else {
-			mcmc_samps[j][4] = theta4old[0];	
-		}
-		}else {
-			mcmc_samps[j][4] = theta4old[0];
-		}	
 		loglik[0] = 0.0;
 		loglik_temp[0] = 0.0;
 		for(int k=0; k<n; k++){
 			loglik_temp = pow(ddata(databoot(k, i)-1,0)-theta0old*ddata(databoot(k, i)-1,1)-theta1old*ddata(databoot(k, i)-1,2)-theta2old*ddata(databoot(k, i)-1,3)-theta3old*ddata(databoot(k, i)-1,4),2);
-			loglik[0] = loglik[0] +  -(w/2.0)*log(6.2832*theta4old[0]) - (w/(2.0*theta4old[0]))*loglik_temp[0];
+			loglik[0] = loglik[0] +  -(w/2.0)*log(6.2832) - (w/2.0)*loglik_temp[0];
 		}
-		mcmc_samps[j][5] = loglik[0];	
+		mcmc_samps[j][4] = loglik[0];	
 	}
 	
 	std::sort (mcmc_samps.begin(), mcmc_samps.end(), compare); 
-	low[0] = bootmean0(0);low[1] = bootmean1(0);low[2] = bootmean2(0);low[3] = bootmean3(0);low[4] = bootmean4(0);
-	hi[0] = bootmean0(0);hi[1] = bootmean1(0);hi[2] = bootmean2(0);hi[3] = bootmean3(0);hi[4] = bootmean4(0);
+	low[0] = bootmean0(0);low[1] = bootmean1(0);low[2] = bootmean2(0);low[3] = bootmean3(0);
+	hi[0] = bootmean0(0);hi[1] = bootmean1(0);hi[2] = bootmean2(0);hi[3] = bootmean3(0);
 	for(int j=int(M*0.05); j<M; j++) {
 		low[0] = fmin(low[0], mcmc_samps[j][0]);
 		low[1] = fmin(low[1], mcmc_samps[j][1]);
 		low[2] = fmin(low[2], mcmc_samps[j][2]);
 		low[3] = fmin(low[3], mcmc_samps[j][3]);
-		low[4] = fmin(low[4], mcmc_samps[j][4]);
 		hi[0] = fmax(hi[0], mcmc_samps[j][0]);
 		hi[1] = fmax(hi[1], mcmc_samps[j][1]);
 		hi[2] = fmax(hi[2], mcmc_samps[j][2]);
 		hi[3] = fmax(hi[3], mcmc_samps[j][3]);
-		hi[4] = fmax(hi[4], mcmc_samps[j][4]);
 	}
 	if ( (low[3] < bootmean3(0)) && (hi[3] > bootmean3(0)) && (low[2] < bootmean2(0)) && (hi[2] > bootmean2(0)) && (low[1] < bootmean1(0)) && (hi[1] > bootmean1(0))){
 		cover(i) = 1.0;
@@ -717,11 +690,11 @@ for (int i=0; i<B; i++) {
 sumcover = 0.0;
 for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
 diff = (sumcover/B) - (1.0-aalpha);
-if(((abs(diff)<= eps)&&(diff>=0)) || t>4) {
+if(((abs(diff)<= eps)&&(diff>=0)) || t>5) {
 	go = FALSE;
 } else {
 	t = t+1;
-	w = fmax(w + (pow(1+t,-0.51)*10*diff),0.6);
+	w = fmax(w + (pow(1+t,-0.51)*5*diff),0.6);
 }
 }
 
@@ -729,12 +702,11 @@ theta0old[0] = bootmean0(0);
 theta1old[0] = bootmean1(0);
 theta2old[0] = bootmean2(0);
 theta3old[0] = bootmean3(0);
-theta4old[0] = bootmean4(0);
 	for(int j=0; j<(2*M); j++) {
 		theta0new = Rcpp::rnorm(1, theta0old[0], 0.1);
 		loglikdiff = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -w * 0.5*(1/theta4old)*  pow(ddata(k,0)-theta0new*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
+			loglikdiff = loglikdiff -w * 0.5*pow(ddata(k,0)-theta0new*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
 		}
 		r = Rcpp::dnorm(theta0new, theta0old[0],.1)/Rcpp::dnorm(theta0old,theta0new[0],.1);
 		loglikdiff[0] = loglikdiff[0] + log(r(0));
@@ -749,7 +721,7 @@ theta4old[0] = bootmean4(0);
 		theta1new = Rcpp::rnorm(1, theta1old[0], 0.1);
 		loglikdiff = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -w * 0.5*(1/theta4old)*  pow(ddata(k,0)-theta0old*ddata(k,1)-theta1new*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
+			loglikdiff = loglikdiff -w * 0.5*pow(ddata(k,0)-theta0old*ddata(k,1)-theta1new*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
 		}
 		r = Rcpp::dnorm(theta1new, theta1old[0],.1) / Rcpp::dnorm(theta1old,theta1new[0],.1);
 		loglikdiff[0] = loglikdiff[0] + log(r(0));
@@ -764,7 +736,7 @@ theta4old[0] = bootmean4(0);
 		theta2new = Rcpp::rnorm(1, theta2old[0], 0.1);
 		loglikdiff = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -w * 0.5*(1/theta4old)*  pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2new*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
+			loglikdiff = loglikdiff -w * 0.5*pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2new*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
 		}
 		r = Rcpp::dnorm(theta2new, theta2old[0],.1) / Rcpp::dnorm(theta2old,theta2new[0],.1);
 		loglikdiff[0] = loglikdiff[0] + log(r(0));
@@ -779,7 +751,7 @@ theta4old[0] = bootmean4(0);
 		theta3new = Rcpp::rnorm(1, theta3old[0], 0.1);
 		loglikdiff = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -w * 0.5*(1/theta4old)*  pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3new*ddata(k,4),2) + w* 0.5*(1/theta4old)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
+			loglikdiff = loglikdiff -w * 0.5*pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3new*ddata(k,4),2) + w* 0.5*pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
 		}
 		r = Rcpp::dnorm(theta3new, theta3old[0],.1) / Rcpp::dnorm(theta3old,theta3new[0],.1);
 		loglikdiff[0] = loglikdiff[0] + log(r(0));
@@ -791,92 +763,63 @@ theta4old[0] = bootmean4(0);
       		}else {
 			mcmc_samps_f[j][3] = theta3old[0];	
 		}
-		theta4new = Rcpp::rnorm(1, theta4old[0], 0.1);
-		if(theta4new[0]>0){
-		loglikdiff = 0.0;
-		for(int k=0; k<n; k++){
-			loglikdiff = loglikdiff -0.5*w*log(theta4new) + 0.5*w*log(theta4old) -w * 0.5*(1/theta4new)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)*pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2); 
-		}
-		r = Rcpp::dnorm(theta4new, theta4old[0],0.1) / Rcpp::dnorm(theta4old,theta4new[0],0.1);
-		loglikdiff[0] = loglikdiff[0] + log(r(0));
-		loglikdiff[0] = fmin(std::exp(loglikdiff[0]), 1.0);
-		uu = Rcpp::runif(1);
-      		if((uu(0) <= loglikdiff[0]) ) {
-			mcmc_samps_f[j][4] = theta4new[0];
-			theta4old = theta4new; 
-      		}else {
-			mcmc_samps_f[j][4] = theta4old[0];	
-		}
-		}else {
-			mcmc_samps_f[j][4] = theta4old[0];	
-		}
 		loglik[0] = 0.0;
 		loglik_temp[0] = 0.0;
 		for(int k=0; k<n; k++){
 			loglik_temp = pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2) + w* 0.5*(1/theta4old)* pow(ddata(k,0)-theta0old*ddata(k,1)-theta1old*ddata(k,2)-theta2old*ddata(k,3)-theta3old*ddata(k,4),2);
-			loglik[0] = loglik[0] +  -(w/2.0)*log(6.2832*theta4old[0]) - (w/(2.0*theta4old[0]))*loglik_temp[0];
+			loglik[0] = loglik[0] +  -(w/2.0)*log(6.2832) - (w/2.0)*loglik_temp[0];
 		}
-		mcmc_samps_f[j][5] = loglik[0];	
+		mcmc_samps_f[j][4] = loglik[0];	
 	}
 	
 	std::sort (mcmc_samps_f.begin(), mcmc_samps_f.end(), compare); 	
-	low_f[0] = bootmean0(0);low_f[1] = bootmean1(0);low_f[2] = bootmean2(0);low_f[3] = bootmean3(0);low_f[4] = bootmean4(0);
-	hi_f[0] = bootmean0(0);hi_f[1] = bootmean1(0);hi_f[2] = bootmean2(0);hi_f[3] = bootmean3(0);hi_f[4] = bootmean4(0);
+	low_f[0] = bootmean0(0);low_f[1] = bootmean1(0);low_f[2] = bootmean2(0);low_f[3] = bootmean3(0);
+	hi_f[0] = bootmean0(0);hi_f[1] = bootmean1(0);hi_f[2] = bootmean2(0);hi_f[3] = bootmean3(0);
 	low_f90[0] = low_f[0];
 	low_f90[1] = low_f[1];
 	low_f90[2] = low_f[2];
 	low_f90[3] = low_f[3];
-	low_f90[4] = low_f[4];
 	hi_f90[0] = hi_f[0];
 	hi_f90[1] = hi_f[1];
 	hi_f90[2] = hi_f[2];
 	hi_f90[3] = hi_f[3];
-	hi_f90[4] = hi_f[4];
 	low_f80[0] = low_f[0];
 	low_f80[1] = low_f[1]; 
 	low_f80[2] = low_f[2];
 	low_f80[3] = low_f[3];
-	low_f80[4] = low_f[4];
 	hi_f80[0] = hi_f[0];
 	hi_f80[1] = hi_f[1];
 	hi_f80[2] = hi_f[2];
 	hi_f80[3] = hi_f[3];
-	hi_f80[4] = hi_f[4];
 	for(int j=int(2*M*0.05); j<(2*M); j++) {
 		low_f[0] = fmin(low_f[0], mcmc_samps_f[j][0]);
 		low_f[1] = fmin(low_f[1], mcmc_samps_f[j][1]);
 		low_f[2] = fmin(low_f[2], mcmc_samps_f[j][2]);
 		low_f[3] = fmin(low_f[3], mcmc_samps_f[j][3]);
-		low_f[4] = fmin(low_f[4], mcmc_samps_f[j][4]);
 		hi_f[0] = fmax(hi_f[0], mcmc_samps_f[j][0]);
 		hi_f[1] = fmax(hi_f[1], mcmc_samps_f[j][1]);
 		hi_f[2] = fmax(hi_f[2], mcmc_samps_f[j][2]);
 		hi_f[3] = fmax(hi_f[3], mcmc_samps_f[j][3]);
-		hi_f[4] = fmax(hi_f[4], mcmc_samps_f[j][4]);
 	}
 	for(int j=int(2*M*0.1); j<(2*M); j++) {
 		low_f90[0] = fmin(low_f90[0], mcmc_samps_f[j][0]);
 		low_f90[1] = fmin(low_f90[1], mcmc_samps_f[j][1]);
 		low_f90[2] = fmin(low_f90[2], mcmc_samps_f[j][2]);
 		low_f90[3] = fmin(low_f90[3], mcmc_samps_f[j][3]);
-		low_f90[4] = fmin(low_f90[4], mcmc_samps_f[j][4]);
 		hi_f90[0] = fmax(hi_f90[0], mcmc_samps_f[j][0]);
 		hi_f90[1] = fmax(hi_f90[1], mcmc_samps_f[j][1]);
 		hi_f90[2] = fmax(hi_f90[2], mcmc_samps_f[j][2]);
 		hi_f90[3] = fmax(hi_f90[3], mcmc_samps_f[j][3]);
-		hi_f90[4] = fmax(hi_f90[4], mcmc_samps_f[j][4]);
 	}
 	for(int j=int(2*M*0.2); j<(2*M); j++) {
 		low_f80[0] = fmin(low_f80[0], mcmc_samps_f[j][0]);
 		low_f80[1] = fmin(low_f80[1], mcmc_samps_f[j][1]);
 		low_f80[2] = fmin(low_f80[2], mcmc_samps_f[j][2]);
 		low_f80[3] = fmin(low_f80[3], mcmc_samps_f[j][3]);
-		low_f80[4] = fmin(low_f80[4], mcmc_samps_f[j][4]);
 		hi_f80[0] = fmax(hi_f80[0], mcmc_samps_f[j][0]);
 		hi_f80[1] = fmax(hi_f80[1], mcmc_samps_f[j][1]);
 		hi_f80[2] = fmax(hi_f80[2], mcmc_samps_f[j][2]);
 		hi_f80[3] = fmax(hi_f80[3], mcmc_samps_f[j][3]);
-		hi_f80[4] = fmax(hi_f80[4], mcmc_samps_f[j][4]);
 	}
 	intvs(0) = low_f[0];
 	intvs(1) = hi_f[0];
