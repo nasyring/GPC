@@ -920,8 +920,8 @@ bootmean1 = bootmean1/B;
 bootmean2 = bootmean2/B;
 bootmean3 = bootmean3/B;
 bootmean4 = bootmean4/B;
-std::array<std::array<double, 5>, 2000> mcmc_samps;
-std::array<std::array<double, 5>, 4000> mcmc_samps_f;
+std::array<std::array<double, 6>, 2000> mcmc_samps;
+std::array<std::array<double, 6>, 4000> mcmc_samps_f;
 
 
 while(go) {
