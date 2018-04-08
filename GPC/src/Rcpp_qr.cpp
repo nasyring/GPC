@@ -717,11 +717,11 @@ for (int i=0; i<B; i++) {
 sumcover = 0.0;
 for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
 diff = (sumcover/B) - (1.0-aalpha);
-if(((abs(diff)<= eps)&&(diff>=0)) || t>12) {
+if(((abs(diff)<= eps)&&(diff>=0)) || t>4) {
 	go = FALSE;
 } else {
 	t = t+1;
-	w = fmax(w + (pow(1+t,-0.51)*5*diff),0.6);
+	w = fmax(w + (pow(1+t,-0.51)*10*diff),0.6);
 }
 }
 
