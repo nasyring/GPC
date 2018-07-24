@@ -1305,7 +1305,7 @@ inline double GibbsMCMCVaR(RVector<double> nn, RVector<double> qq, RVector<doubl
 
 // [[Rcpp::export]]
 Rcpp::List GibbsMCMCVaR2(NumericVector nn, NumericVector qq, NumericVector data, NumericVector thetaboot,
-	NumericVector bootmean, NumericMatrix databoot,
+	NumericVector bootmean,
 	NumericVector alpha, NumericVector M_samp, NumericVector w) {
 
 	
