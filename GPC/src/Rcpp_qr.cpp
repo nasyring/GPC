@@ -1270,7 +1270,7 @@ inline double GibbsMCMCVaR(RVector<double> nn, RVector<double> qq, RVector<doubl
 	NumericVector postsamples(M,0.0);
 	NumericVector l(1,0.0);
 	NumericVector u(1,0.0);
-	thetaold = thetaboot(i);
+	thetaold = thetaboot[i];
 	
 	for(int j=0; j<(M+100); j++) {
 		thetanew(0) = R::rnorm(thetaold(0), 0.5);
@@ -1320,7 +1320,7 @@ Rcpp::List GibbsMCMCVaR2(RVector<double> nn, RVector<double> qq, RVector<double>
 	NumericVector postsamples(M,0.0);
 	NumericVector l(1,0.0);
 	NumericVector u(1,0.0);
-	thetaold = thetaboot(i);
+	thetaold = thetaboot[i];
 	
 	for(int j=0; j<(M+100); j++) {
 		thetanew(0) = R::rnorm(thetaold(0), 0.5);
@@ -1351,7 +1351,7 @@ Rcpp::List GibbsMCMCVaR2(RVector<double> nn, RVector<double> qq, RVector<double>
 	return result;
 }
 
-struct GPC_qr_mcmc_parallel : public Worker {
+struct GPC_var_mcmc_parallel : public Worker {
 
 	const RVector<double> nn;
 	const RVector<double> qq;
