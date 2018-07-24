@@ -1327,7 +1327,7 @@ Rcpp::List GibbsMCMCVaR2(NumericVector nn, NumericVector qq, NumericVector data,
 		thetanew(0) = R::rnorm(thetaold(0), 0.5);
 		loglikdiff(0) = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff(0) = loglikdiff(0) -w[0] * 0.5*(fabs(thetanew(0)-databoot(k,i))-fabs(thetaold(0)-databoot(k,i))); 
+			loglikdiff(0) = loglikdiff(0) -w[0] * 0.5*(fabs(thetanew(0)-data[k])-fabs(thetaold(0)-databoot[k])); 
 		}
 		loglikdiff(0) = (1/n)*loglikdiff(0);
 		loglikdiff(0) = loglikdiff(0) + 0.5*(1-2*qq[0])*(thetanew(0)-thetaold(0));
