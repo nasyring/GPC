@@ -1247,3 +1247,216 @@ return result;
 
 
 }
+
+/*****************************
+Parallel VaR GPC
+*****************************/
+
+// helper function for Gibbs sampling
+
+inline double GibbsMCMCVaR(RVector<double> nn, RVector<double> qq, RVector<double> data, RVector<double> thetaboot,
+	RVector<double> bootmean, RMatrix<double> databoot,
+	RVector<double> alpha, RVector<double> M_samp, RVector<double> w, std::size_t i) {
+   	
+
+	double cov_ind;
+	int M = int(M_samp[0]);
+	int n = int(nn[0]);
+   	NumericVector thetaold(1,0.0);
+	NumericVector thetanew(1,0.0);
+	NumericVector loglikdiff(1,0.0);
+	NumericVector r(1,0.0);
+	NumericVector uu(1,0.0);
+	NumericVector postsamples(M,0.0);
+	NumericVector l(1,0.0);
+	NumericVector u(1,0.0);
+	thetaold = thetaboot(i,0);
+	
+	for(int j=0; j<(M+100); j++) {
+		thetanew(0) = R::rnorm(thetaold(0), 0.5);
+		loglikdiff(0) = 0.0;
+		for(int k=0; k<n; k++){
+			loglikdiff(0) = loglikdiff(0) -w[0] * 0.5(fabs(thetanew(0)-databoot(k,i))-fabs(thetaold(0)-databoot(k,i))); 
+		}
+		loglikdiff(0) = (1/n)*loglikdiff(0);
+		loglikdiff(0) = loglikdiff(0) + 0.5*(1-2*qq[0])*(thetanew(0)-thetaold(0));
+		r[0] = R::dnorm(thetanew(0), thetaold(0),.5, 0)/R::dnorm(thetaold(0),thetanew(0),.5, 0);
+		loglikdiff(0) = loglikdiff(0) + log(r(0));
+		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		uu[0] = R::runif(0.0,1.0);
+      		if((uu(0) <= loglikdiff(0)) && (j>99)) {
+			postsamples(j-100) = thetanew(0);
+			thetaold(0) = thetanew(0); 
+      		}
+		else if(j>99){
+			postsamples(j-100) = thetaold(0);	
+		}
+	}
+	std::sort(postsamples.begin(), postsamples.end());
+	u[0] = postsamples((1-0.5*alpha)*M);
+	l[0] = postsamples((0.5*alpha)*M);
+	if ( (l[0] < bootmean[0]) && (u[0] > bootmean[0]) ){
+		cov_ind = 1.0;
+	} else {cov_ind = 0.0;}
+	
+	return cov_ind;
+	
+}
+
+// [[Rcpp::export]]
+Rcpp::List GibbsMCMCVaR2(RVector<double> nn, RVector<double> qq, RVector<double> data, RVector<double> thetaboot,
+	RVector<double> bootmean, RMatrix<double> databoot,
+	RVector<double> alpha, RVector<double> M_samp, RVector<double> w, std::size_t i) {
+   	
+
+	double cov_ind;
+	int M = int(M_samp[0]);
+	int n = int(nn[0]);
+   	NumericVector thetaold(1,0.0);
+	NumericVector thetanew(1,0.0);
+	NumericVector loglikdiff(1,0.0);
+	NumericVector r(1,0.0);
+	NumericVector uu(1,0.0);
+	NumericVector postsamples(M,0.0);
+	NumericVector l(1,0.0);
+	NumericVector u(1,0.0);
+	thetaold = thetaboot(i,0);
+	
+	for(int j=0; j<(M+100); j++) {
+		thetanew(0) = R::rnorm(thetaold(0), 0.5);
+		loglikdiff(0) = 0.0;
+		for(int k=0; k<n; k++){
+			loglikdiff(0) = loglikdiff(0) -w[0] * 0.5(fabs(thetanew(0)-databoot(k,i))-fabs(thetaold(0)-databoot(k,i))); 
+		}
+		loglikdiff(0) = (1/n)*loglikdiff(0);
+		loglikdiff(0) = loglikdiff(0) + 0.5*(1-2*qq[0])*(thetanew(0)-thetaold(0));
+		r[0] = R::dnorm(thetanew(0), thetaold(0),.5, 0)/R::dnorm(thetaold(0),thetanew(0),.5, 0);
+		loglikdiff(0) = loglikdiff(0) + log(r(0));
+		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		uu[0] = R::runif(0.0,1.0);
+      		if((uu(0) <= loglikdiff(0)) && (j>99)) {
+			postsamples(j-100) = thetanew(0);
+			thetaold(0) = thetanew(0); 
+      		}
+		else if(j>99){
+			postsamples(j-100) = thetaold(0);	
+		}
+	}
+	std::sort(postsamples.begin(), postsamples.end());
+	u[0] = postsamples((1-0.5*alpha)*M);
+	l[0] = postsamples((0.5*alpha)*M);
+	
+	result = Rcpp::List::create(Rcpp::Named("l") = l[0],Rcpp::Named("u") = u[0]);
+
+	return result;
+}
+
+struct GPC_qr_mcmc_parallel : public Worker {
+
+	const RVector<double> nn;
+	const RVector<double> qq;
+	const RVector<double> data;
+	const RVector<double> thetaboot;
+	const RVector<double> bootmean;
+	const RMatrix<double> databoot;
+	const RVector<double> alpha;
+	const RVector<double> M_samp;
+	const RVector<double> B_resamp;
+	const RVector<double> w;
+	RVector<double> cover;
+
+   // initialize with source and destination
+   GPC_var_mcmc_parallel(const NumericVector nn, const NumericVector qq, const NumericVector data, const NumericVector thetaboot,
+	const NumericVector bootmean, const NumericMatrix databoot,
+	const NumericVector alpha, const NumericVector M_samp, const NumericVector B_resamp,
+	const NumericVector w, NumericVector cover) 
+			: nn(nn), qq(qq), data(data), thetaboot(thetaboot), bootmean(bootmean), databoot(databoot), alpha(alpha), M_samp(M_samp), B_resamp(B_resamp), w(w), cover(cover) {}   
+
+   // operator
+void operator()(std::size_t begin, std::size_t end) {
+		for (std::size_t i = begin; i < end; i++) {
+			cover[i] = GibbsMCMCVaR(nn, qq, data, thetaboot, bootmean, databoot, alpha, M_samp, w, i);	
+		}
+	}
+};
+
+// [[Rcpp::export]]
+NumericVector rcpp_parallel_var(NumericVector nn, NumericVector qq, NumericVector data, NumericVector thetaboot, NumericVector bootmean,
+	NumericMatrix databoot, NumericVector alpha, NumericVector M_samp, NumericVector B_resamp,
+	NumericVector w) {
+	
+   int B = int(B_resamp[0]);
+   // allocate the matrix we will return
+   NumericVector cover(B,2.0); 
+
+   // create the worker
+   GPC_var_mcmc_parallel gpcWorker(nn, qq, data, thetaboot, bootmean, databoot, alpha, M_samp, B_resamp, w, cover);
+     
+   // call it with parallelFor
+   
+   parallelFor(0, B, gpcWorker);
+
+   return cover;
+}
+
+
+
+
+
+// [[Rcpp::export]]
+Rcpp::List GPC_var_parallel(SEXP & nn, SEXP & qq, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) {
+
+RNGScope scp;
+Rcpp::Function _GPC_rcpp_parallel_var("rcpp_parallel_var");
+List result;
+List finalsample;
+double eps 			= 0.01; 
+NumericVector nn_ = Rcpp::as<NumericVector>(nn);
+NumericVector qq_ = Rcpp::as<NumericVector>(qq);
+NumericMatrix data_ = Rcpp::as<NumericVector>(data);
+NumericMatrix thetaboot_ = Rcpp::as<NumericVector>(theta_boot);
+NumericVector bootmean(1,0.0);
+NumericMatrix databoot_ = Rcpp::as<NumericMatrix>(data_boot);
+NumericVector alpha_ = Rcpp::as<NumericVector>(alpha);
+NumericVector M_samp_ = Rcpp::as<NumericVector>(M_samp);
+NumericVector B_resamp_ = Rcpp::as<NumericVector>(B_resamp);
+NumericVector w(1,0.5);
+double diff;
+bool go 			= TRUE;
+int t				=1; 
+double sumcover;
+int B = int(B_resamp_[0]);
+NumericVector cover;
+	
+for (int i=0; i<B; i++) {
+	bootmean[0] = bootmean[0] + thetaboot_(i);
+}
+bootmean = bootmean/B;
+
+while(go){	
+cover = _GPC_rcpp_parallel_var(nn_, qq_, data_, thetaboot_, bootmean, databoot_, alpha_, M_samp_, B_resamp_, w);
+sumcover = 0.0;
+for(int s = 0; s<B; s++){sumcover = sumcover + cover(s);}
+diff = (sumcover/B) - (1.0-alpha_[0]);
+if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
+   go = FALSE;
+} else {
+   t = t+1;
+   w[0] = fmax(w[0] + (pow(1+t,-0.51)*diff),0.1);
+} 
+}
+
+// Final sample
+
+NumericVector M_final; M_final[0] = 2*M_samp_[0];
+finalsample = GibbsMCMCVaR2(nn_, qq_, data_, thetaboot_, bootmean, alpha_, M_final, w);
+	
+result = Rcpp::List::create(Rcpp::Named("w") = w,Rcpp::Named("t") = t,Rcpp::Named("diff") = diff, Rcpp::Named("list_cis") = finalsample);
+	
+return result;
+}
+
+
+
+
+
