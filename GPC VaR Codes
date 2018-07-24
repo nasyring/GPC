@@ -1,0 +1,86 @@
+############################################
+## General Posterior Calibration for VaR
+## Nick Syring, nasyrin@gmail.com
+## arXiv link coming...
+############################################
+
+
+#### Installing the package via Github
+library(devtools)
+install_github("nasyring/GPC", subdir = "GPC")
+library(GPC)
+
+
+#### Value at Risk simulation
+
+# Modifying the number of threads used for parallel computation
+RcppParallel::setThreadOptions(numThreads = 1)
+
+# data-generating process
+F_inv_pareto2 <- function(u,mu, sigma, a){
+	  return(sigma*(((1/u)^(1/aa))-1)+mu)
+}
+rmodel <- function(n, mu, sigma, a) {
+
+  unifs <- runif(n)
+	X <- apply(matrix(unifs,n,1),2,F_inv_pareto2, mu, sigma, a) 
+  return(X)
+
+}
+
+# simulation parameters
+n <- 50
+reps <- 400
+M <- 2000
+B <- 200
+eps <- .01
+w <- .05
+cover <- rep(0,reps)
+length <- rep(0,reps)
+t <- rep(NA,reps)
+diff <- rep(NA,reps)
+mu <- 2
+sigma <- 3
+a <- 2
+alpha <- 0.05
+qq <- .995
+theta.true <- F_inv_pareto2(qq, mu, sigma, a) 
+theta.boot <- rep(0, B)
+
+# simulation
+for(j in 1:reps) {
+    data <- rmodel(n, theta.true)
+    theta.hat <- as.numeric(quantile(data, qq))
+    data.star <- matrix(0,n,B)
+    cvg <- rep(0, B)
+    for(b in 1:B) {
+        id <- sample(n, n, replace=TRUE)
+        data.star[,b] <- data[id,]
+	      theta.boot[b] <- as.numeric(quantile(data.star[,b], qq))
+    } 
+   go <- TRUE
+    t <- 1
+    k <- function(t) (1 + t)**(-0.51)
+    while(go) {
+	cover = rcpp_parallel_var(n,qq,data,theta.boot,mean(theta.boot),data.star,alpha,M,B, w) 
+        diff <- mean(cover) - (1 - alpha)
+        if((abs(diff) <= eps)||(t>16)) go <- FALSE else {
+      	    t <- t + 1
+            w <- max(w + k(t) * diff,w/2)
+        }
+    }
+    final.gibbs <- GibbsMCMCVaR2(n, qq, data, theta.boot, mean(theta.boot),alpha,M, w)
+    l <- final.gibbs$l
+    u <- final.gibbs$u
+    cover[j] <- l<theta.true & u0 > theta.true
+    length[j] <- u-l
+    print(c(j, t, w, mean(cover[1:j])))
+}
+
+# simulation coverage proportions and credible interval lengths
+colMeans(cover)
+colMeans(length)
+
+
+
+   
