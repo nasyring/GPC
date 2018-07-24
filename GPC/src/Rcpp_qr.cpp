@@ -1283,6 +1283,9 @@ inline double GibbsMCMCVaR(RVector<double> nn, RVector<double> qq, RVector<doubl
 		r[0] = R::dnorm(thetanew(0), thetaold(0),.5, 0)/R::dnorm(thetaold(0),thetanew(0),.5, 0);
 		loglikdiff(0) = loglikdiff(0) + log(r(0));
 		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		if(thetanew(0)<0){
+			loglikdiff(0) = 0;
+		}
 		uu[0] = R::runif(0.0,1.0);
       		if((uu(0) <= loglikdiff(0)) && (j>99)) {
 			postsamples(j-100) = thetanew(0);
@@ -1334,6 +1337,9 @@ Rcpp::List GibbsMCMCVaR2(NumericVector nn, NumericVector qq, NumericVector data,
 		r[0] = R::dnorm(thetanew(0), thetaold(0),.5, 0)/R::dnorm(thetaold(0),thetanew(0),.5, 0);
 		loglikdiff(0) = loglikdiff(0) + log(r(0));
 		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		if(thetanew(0)<0){
+			loglikdiff(0) = 0;
+		}
 		uu[0] = R::runif(0.0,1.0);
       		if((uu(0) <= loglikdiff(0)) && (j>99)) {
 			postsamples(j-100) = thetanew(0);
