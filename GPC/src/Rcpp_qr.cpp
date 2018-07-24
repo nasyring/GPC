@@ -1270,13 +1270,13 @@ inline double GibbsMCMCVaR(RVector<double> nn, RVector<double> qq, RVector<doubl
 	NumericVector postsamples(M,0.0);
 	NumericVector l(1,0.0);
 	NumericVector u(1,0.0);
-	thetaold = thetaboot(i,0);
+	thetaold = thetaboot(i);
 	
 	for(int j=0; j<(M+100); j++) {
 		thetanew(0) = R::rnorm(thetaold(0), 0.5);
 		loglikdiff(0) = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff(0) = loglikdiff(0) -w[0] * 0.5(fabs(thetanew(0)-databoot(k,i))-fabs(thetaold(0)-databoot(k,i))); 
+			loglikdiff(0) = loglikdiff(0) -w[0] * 0.5*(fabs(thetanew(0)-databoot(k,i))-fabs(thetaold(0)-databoot(k,i))); 
 		}
 		loglikdiff(0) = (1/n)*loglikdiff(0);
 		loglikdiff(0) = loglikdiff(0) + 0.5*(1-2*qq[0])*(thetanew(0)-thetaold(0));
@@ -1293,8 +1293,8 @@ inline double GibbsMCMCVaR(RVector<double> nn, RVector<double> qq, RVector<doubl
 		}
 	}
 	std::sort(postsamples.begin(), postsamples.end());
-	u[0] = postsamples((1-0.5*alpha)*M);
-	l[0] = postsamples((0.5*alpha)*M);
+	u[0] = postsamples((1-0.5*alpha[0])*M);
+	l[0] = postsamples((0.5*alpha[0])*M);
 	if ( (l[0] < bootmean[0]) && (u[0] > bootmean[0]) ){
 		cov_ind = 1.0;
 	} else {cov_ind = 0.0;}
@@ -1320,13 +1320,13 @@ Rcpp::List GibbsMCMCVaR2(RVector<double> nn, RVector<double> qq, RVector<double>
 	NumericVector postsamples(M,0.0);
 	NumericVector l(1,0.0);
 	NumericVector u(1,0.0);
-	thetaold = thetaboot(i,0);
+	thetaold = thetaboot(i);
 	
 	for(int j=0; j<(M+100); j++) {
 		thetanew(0) = R::rnorm(thetaold(0), 0.5);
 		loglikdiff(0) = 0.0;
 		for(int k=0; k<n; k++){
-			loglikdiff(0) = loglikdiff(0) -w[0] * 0.5(fabs(thetanew(0)-databoot(k,i))-fabs(thetaold(0)-databoot(k,i))); 
+			loglikdiff(0) = loglikdiff(0) -w[0] * 0.5*(fabs(thetanew(0)-databoot(k,i))-fabs(thetaold(0)-databoot(k,i))); 
 		}
 		loglikdiff(0) = (1/n)*loglikdiff(0);
 		loglikdiff(0) = loglikdiff(0) + 0.5*(1-2*qq[0])*(thetanew(0)-thetaold(0));
@@ -1343,8 +1343,8 @@ Rcpp::List GibbsMCMCVaR2(RVector<double> nn, RVector<double> qq, RVector<double>
 		}
 	}
 	std::sort(postsamples.begin(), postsamples.end());
-	u[0] = postsamples((1-0.5*alpha)*M);
-	l[0] = postsamples((0.5*alpha)*M);
+	u[0] = postsamples((1-0.5*alpha[0])*M);
+	l[0] = postsamples((0.5*alpha[0])*M);
 	
 	result = Rcpp::List::create(Rcpp::Named("l") = l[0],Rcpp::Named("u") = u[0]);
 
