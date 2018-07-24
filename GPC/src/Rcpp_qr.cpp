@@ -1304,11 +1304,12 @@ inline double GibbsMCMCVaR(RVector<double> nn, RVector<double> qq, RVector<doubl
 }
 
 // [[Rcpp::export]]
-Rcpp::List GibbsMCMCVaR2(RVector<double> nn, RVector<double> qq, RVector<double> data, RVector<double> thetaboot,
-	RVector<double> bootmean, RMatrix<double> databoot,
-	RVector<double> alpha, RVector<double> M_samp, RVector<double> w, std::size_t i) {
-   	
+Rcpp::List GibbsMCMCVaR2(NumericVector nn, NumericVector qq, NumericVector data, NumericVector thetaboot,
+	NumericVector bootmean, NumericMatrix databoot,
+	NumericVector alpha, NumericVector M_samp, NumericVector w) {
 
+	
+        List result;
 	double cov_ind;
 	int M = int(M_samp[0]);
 	int n = int(nn[0]);
@@ -1320,7 +1321,7 @@ Rcpp::List GibbsMCMCVaR2(RVector<double> nn, RVector<double> qq, RVector<double>
 	NumericVector postsamples(M,0.0);
 	NumericVector l(1,0.0);
 	NumericVector u(1,0.0);
-	thetaold = thetaboot[i];
+	thetaold[0] = bootmean[0];
 	
 	for(int j=0; j<(M+100); j++) {
 		thetanew(0) = R::rnorm(thetaold(0), 0.5);
