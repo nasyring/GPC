@@ -18,7 +18,7 @@ RcppParallel::setThreadOptions(numThreads = 1)
 
 # data-generating process
 F_inv_pareto2 <- function(u,mu, sigma, a){
-	  return(sigma*(((1/u)^(1/aa))-1)+mu)
+	  return(sigma*(((1/(1-u))^(1/a))-1)+mu)
 }
 rmodel <- function(n, mu, sigma, a) {
 
@@ -49,7 +49,7 @@ theta.boot <- rep(0, B)
 
 # simulation
 for(j in 1:reps) {
-    data <- rmodel(n, theta.true)
+    data <- rmodel(n, mu, sigma, a)
     theta.hat <- as.numeric(quantile(data, qq))
     data.star <- matrix(0,n,B)
     cvg <- rep(0, B)
