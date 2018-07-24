@@ -9,6 +9,10 @@ GPC_qr_parallel <- function(nn, data, theta_boot, data_boot, alpha, M_samp, B_re
     .Call(`GPC_GPC_qr_parallel`,  nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp)
 }
 
+GPC_var_parallel <- function(nn, qq, data, theta_boot, data_boot, alpha, M_samp, B_resamp) {
+    .Call(`GPC_GPC_var_parallel`,  nn, qq, data, theta_boot, data_boot, alpha, M_samp, B_resamp)
+}
+
 GPC_linreg <- function(nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp) {
     .Call(`GPC_GPC_linreg`,  nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp)
 }
@@ -21,10 +25,18 @@ rcpp_parallel_qr <- function(nn, data, thetaboot, bootmean0, bootmean1, databoot
     .Call(`GPC_rcpp_parallel_qr`,  nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w)   
 }
 
+rcpp_parallel_var <- function(nn, qq, data, thetaboot, bootmean, databoot, alpha, M_samp, B_resamp, w){
+    .Call(`GPC_rcpp_parallel_var`,  nn, qq, data, thetaboot, bootmean, databoot, alpha, M_samp, B_resamp, w)   
+}
+
 rcpp_parallel_js_distance <- function(mat){
     .Call(`GPC_rcpp_parallel_js_distance`, mat)   
 }
 
 GibbsMCMC2 <- function(nn, data, thetaboot, bootmean0, bootmean1, alpha, M_samp, w){
     .Call(`GPC_GibbsMCMC2`, nn, data, thetaboot, bootmean0, bootmean1, alpha, M_samp, w)    
+}
+
+GibbsMCMCVaR2 <- function(nn, qq, data, thetaboot, bootmean, alpha, M_samp, w){
+    .Call(`GPC_GibbsMCMCVaR2`, nn, qq, data, thetaboot, bootmean, alpha, M_samp, w)    
 }
