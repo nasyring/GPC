@@ -1279,7 +1279,7 @@ inline double GibbsMCMCVaR(RVector<double> nn, RVector<double> qq, RVector<doubl
 			loglikdiff(0) = loglikdiff(0) -w[0] * 0.5*(fabs(thetanew(0)-databoot(k,i))-fabs(thetaold(0)-databoot(k,i))); 
 		}
 		loglikdiff(0) = (1/n)*loglikdiff(0);
-		loglikdiff(0) = loglikdiff(0) + 0.5*(1-2*qq[0])*(thetanew(0)-thetaold(0));
+		loglikdiff(0) = loglikdiff(0) + 0.5*w[0]*(1-2*qq[0])*(thetanew(0)-thetaold(0));
 		r[0] = R::dnorm(thetanew(0), thetaold(0),.5, 0)/R::dnorm(thetaold(0),thetanew(0),.5, 0);
 		loglikdiff(0) = loglikdiff(0) + log(r(0));
 		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
@@ -1287,7 +1287,7 @@ inline double GibbsMCMCVaR(RVector<double> nn, RVector<double> qq, RVector<doubl
 		if(thetanew(0)<0){
 			uu[0] = 1.0;
 		}
-      		if((uu(0) <= loglikdiff(0)) && (j>99)) {
+      		if((uu(0) < loglikdiff(0)) && (j>99)) {
 			postsamples(j-100) = thetanew(0);
 			thetaold(0) = thetanew(0); 
       		}
@@ -1333,7 +1333,7 @@ Rcpp::List GibbsMCMCVaR2(NumericVector nn, NumericVector qq, NumericVector data,
 			loglikdiff(0) = loglikdiff(0) -w[0] * 0.5*(fabs(thetanew(0)-data[k])-fabs(thetaold(0)-data[k])); 
 		}
 		loglikdiff(0) = (1/n)*loglikdiff(0);
-		loglikdiff(0) = loglikdiff(0) + 0.5*(1-2*qq[0])*(thetanew(0)-thetaold(0));
+		loglikdiff(0) = loglikdiff(0) + 0.5*w[0]*(1-2*qq[0])*(thetanew(0)-thetaold(0));
 		r[0] = R::dnorm(thetanew(0), thetaold(0),.5, 0)/R::dnorm(thetaold(0),thetanew(0),.5, 0);
 		loglikdiff(0) = loglikdiff(0) + log(r(0));
 		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
@@ -1341,7 +1341,7 @@ Rcpp::List GibbsMCMCVaR2(NumericVector nn, NumericVector qq, NumericVector data,
 		if(thetanew(0)<0){
 			uu[0] = 1.0;
 		}
-      		if((uu(0) <= loglikdiff(0)) && (j>99)) {
+      		if((uu(0) < loglikdiff(0)) && (j>99)) {
 			postsamples(j-100) = thetanew(0);
 			thetaold(0) = thetanew(0); 
       		}
