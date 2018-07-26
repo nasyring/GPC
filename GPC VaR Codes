@@ -49,6 +49,7 @@ theta.boot <- rep(0, B)
 
 # simulation
 for(j in 1:reps) {
+    w <- .05
     data <- rmodel(n, mu, sigma, a)
     theta.hat <- as.numeric(quantile(data, qq))
     data.star <- matrix(0,n,B)
