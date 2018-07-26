@@ -75,7 +75,7 @@ for(j in 1:reps) {
     u <- final.gibbs$u
     cover[j] <- l<theta.true & u > theta.true
     length[j] <- u-l
-    print(c(j, t, w, mean(cover[1:j])))
+    print(c(j, t, w, mean(length[1:j]), mean(cover[1:j])))
 }
 
 # simulation coverage proportions and credible interval lengths
