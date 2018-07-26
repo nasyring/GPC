@@ -29,13 +29,13 @@ rmodel <- function(n, mu, sigma, a) {
 }
 
 # simulation parameters
-n <- 100
-reps <- 400
+n <- 1000
+reps <- 100
 M <- 2000
 B <- 200
 eps <- .01
 w <- .05
-cover <- rep(0,reps)
+coverage <- rep(0,reps)
 length <- rep(0,reps)
 t <- rep(NA,reps)
 diff <- rep(NA,reps)
@@ -73,13 +73,13 @@ for(j in 1:reps) {
     final.gibbs <- GibbsMCMCVaR2(n, qq, data, theta.boot, mean(theta.boot),alpha,M, w)
     l <- final.gibbs$l
     u <- final.gibbs$u
-    cover[j] <- l<theta.true & u > theta.true
+    coverage[j] <- l<theta.true & u > theta.true
     length[j] <- u-l
-    print(c(j, t, w, mean(length[1:j]), mean(cover[1:j])))
+    print(c(j, t, w, mean(length[1:j]), mean(coverage[1:j])))
 }
 
 # simulation coverage proportions and credible interval lengths
-mean(cover)
+mean(coverage)
 mean(length)
 
 
