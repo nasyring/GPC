@@ -1270,29 +1270,28 @@ inline double GibbsMCMCVaR(RVector<double> nn, RVector<double> qq, RVector<doubl
 	NumericVector postsamples(M,0.0);
 	NumericVector l(1,0.0);
 	NumericVector u(1,0.0);
-	thetaold = thetaboot[i];
+	thetaold = bootmean[0];
 	
 	for(int j=0; j<(M+100); j++) {
-		thetanew(0) = R::rnorm(thetaold(0), 0.5);
-		loglikdiff(0) = 0.0;
-		for(int k=0; k<n; k++){
-			loglikdiff(0) = loglikdiff(0) -w[0] * 0.5*(fabs(thetanew(0)-databoot(k,i))-fabs(thetaold(0)-databoot(k,i))); 
+		thetanew(0) = R::rnorm(thetaold(0), 0.2);
+		if(thetanew(0)>0){
+		  loglikdiff(0) = 0.0;
+		  for(int k=0; k<n; k++){
+		  	loglikdiff(0) = loglikdiff(0) -w[0] * 0.5*(fabs(thetanew(0)-databoot(k,i))-fabs(thetaold(0)-databoot(k,i))); 
+		  }
+		  loglikdiff(0) = (1/n)*loglikdiff(0);
+		  loglikdiff(0) = loglikdiff(0) + 0.5*w[0]*(1-2*qq[0])*(thetanew(0)-thetaold(0));
+		  r[0] = R::dnorm(thetanew(0), thetaold(0),.2, 0)/R::dnorm(thetaold(0),thetanew(0),.2, 0);
+		  loglikdiff(0) = loglikdiff(0) + log(r(0));
+		  loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		  uu[0] = R::runif(0.0,1.0);		
+      		  if((uu(0) < loglikdiff(0)) && (j>99)) {
+			  postsamples(j-100) = thetanew(0);
+			  thetaold(0) = thetanew(0); 
+      		  }
 		}
-		loglikdiff(0) = (1/n)*loglikdiff(0);
-		loglikdiff(0) = loglikdiff(0) + 0.5*w[0]*(1-2*qq[0])*(thetanew(0)-thetaold(0));
-		r[0] = R::dnorm(thetanew(0), thetaold(0),.5, 0)/R::dnorm(thetaold(0),thetanew(0),.5, 0);
-		loglikdiff(0) = loglikdiff(0) + log(r(0));
-		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
-		uu[0] = R::runif(0.0,1.0);		
-		if(thetanew(0)<0){
-			uu[0] = 1.0;
-		}
-      		if((uu(0) < loglikdiff(0)) && (j>99)) {
-			postsamples(j-100) = thetanew(0);
-			thetaold(0) = thetanew(0); 
-      		}
-		else if(j>99){
-			postsamples(j-100) = thetaold(0);	
+	        else if(j>99){
+			postsamples(j-100) = thetaold(0);
 		}
 	}
 	std::sort(postsamples.begin(), postsamples.end());
@@ -1327,24 +1326,23 @@ Rcpp::List GibbsMCMCVaR2(NumericVector nn, NumericVector qq, NumericVector data,
 	thetaold[0] = bootmean[0];
 	
 	for(int j=0; j<(M+100); j++) {
-		thetanew(0) = R::rnorm(thetaold(0), 0.5);
-		loglikdiff(0) = 0.0;
-		for(int k=0; k<n; k++){
-			loglikdiff(0) = loglikdiff(0) -w[0] * 0.5*(fabs(thetanew(0)-data[k])-fabs(thetaold(0)-data[k])); 
+		thetanew(0) = R::rnorm(thetaold(0), 0.2);
+		if(thetanew(0)>0){
+		  loglikdiff(0) = 0.0;
+		  for(int k=0; k<n; k++){
+		        loglikdiff(0) = loglikdiff(0) -w[0] * 0.5*(fabs(thetanew(0)-data[k])-fabs(thetaold(0)-data[k])); 
+		  }
+		  loglikdiff(0) = (1/n)*loglikdiff(0);
+		  loglikdiff(0) = loglikdiff(0) + 0.5*w[0]*(1-2*qq[0])*(thetanew(0)-thetaold(0));
+		  r[0] = R::dnorm(thetanew(0), thetaold(0),.2, 0)/R::dnorm(thetaold(0),thetanew(0),.2, 0);
+		  loglikdiff(0) = loglikdiff(0) + log(r(0));
+		  loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		  uu[0] = R::runif(0.0,1.0);
+      		  if((uu(0) < loglikdiff(0)) && (j>99)) {
+			  postsamples(j-100) = thetanew(0);
+			  thetaold(0) = thetanew(0); 
+		  }
 		}
-		loglikdiff(0) = (1/n)*loglikdiff(0);
-		loglikdiff(0) = loglikdiff(0) + 0.5*w[0]*(1-2*qq[0])*(thetanew(0)-thetaold(0));
-		r[0] = R::dnorm(thetanew(0), thetaold(0),.5, 0)/R::dnorm(thetaold(0),thetanew(0),.5, 0);
-		loglikdiff(0) = loglikdiff(0) + log(r(0));
-		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
-		uu[0] = R::runif(0.0,1.0);
-		if(thetanew(0)<0){
-			uu[0] = 1.0;
-		}
-      		if((uu(0) < loglikdiff(0)) && (j>99)) {
-			postsamples(j-100) = thetanew(0);
-			thetaold(0) = thetanew(0); 
-      		}
 		else if(j>99){
 			postsamples(j-100) = thetaold(0);	
 		}
