@@ -29,7 +29,7 @@ rmodel <- function(n, mu, sigma, a) {
 }
 
 # simulation parameters
-n <- 50
+n <- 100
 reps <- 400
 M <- 2000
 B <- 200
@@ -49,7 +49,6 @@ theta.boot <- rep(0, B)
 
 # simulation
 for(j in 1:reps) {
-    w <- .05
     data <- rmodel(n, mu, sigma, a)
     theta.hat <- as.numeric(quantile(data, qq))
     data.star <- matrix(0,n,B)
@@ -61,7 +60,7 @@ for(j in 1:reps) {
     } 
    go <- TRUE
     t <- 1
-    k <- function(t) (1 + t)**(-0.51)
+    k <- function(t) .1*(1 + t)**(-0.51)
     while(go) {
 	cover = rcpp_parallel_var(n,qq,data,theta.boot,mean(theta.boot),data.star,alpha,M,B, w) 
         diff <- mean(cover) - (1 - alpha)
@@ -73,14 +72,14 @@ for(j in 1:reps) {
     final.gibbs <- GibbsMCMCVaR2(n, qq, data, theta.boot, mean(theta.boot),alpha,M, w)
     l <- final.gibbs$l
     u <- final.gibbs$u
-    cover[j] <- l<theta.true & u0 > theta.true
+    cover[j] <- l<theta.true & u > theta.true
     length[j] <- u-l
     print(c(j, t, w, mean(cover[1:j])))
 }
 
 # simulation coverage proportions and credible interval lengths
-colMeans(cover)
-colMeans(length)
+mean(cover)
+mean(length)
 
 
 
