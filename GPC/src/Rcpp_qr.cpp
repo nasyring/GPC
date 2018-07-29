@@ -1286,7 +1286,9 @@ inline double GibbsMCMCVaR(RVector<double> nn, RVector<double> qq, RVector<doubl
       		  if((uu(0) < loglikdiff(0)) && (j>99)) {
 			  postsamples(j-100) = thetanew(0);
 			  thetaold(0) = thetanew(0); 
-      		  }
+      		  }else if(uu(0) < loglikdiff(0)){
+		  	  thetaold(0) = thetanew(0);   
+		  }
 		}
 	        else if(j>99){
 			postsamples(j-100) = thetaold(0);
@@ -1337,6 +1339,8 @@ Rcpp::List GibbsMCMCVaR2(NumericVector nn, NumericVector qq, NumericVector data,
       		  if((uu(0) < loglikdiff(0)) && (j>99)) {
 			  postsamples(j-100) = thetanew(0);
 			  thetaold(0) = thetanew(0); 
+		  }else if(uu(0) < loglikdiff(0)){
+		  	  thetaold(0) = thetanew(0);   
 		  }
 		}
 		else if(j>99){
