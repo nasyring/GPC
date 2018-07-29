@@ -1277,12 +1277,11 @@ inline double GibbsMCMCVaR(RVector<double> nn, RVector<double> qq, RVector<doubl
 		if(thetanew(0)>0){
 		  loglikdiff(0) = 0.0;
 		  for(int k=0; k<n; k++){
-		  	loglikdiff(0) = loglikdiff(0) -w[0] * 0.5*(fabs(thetanew(0)-databoot(k,i))-fabs(thetaold(0)-databoot(k,i))); 
+		  	loglikdiff(0) = loglikdiff(0) + fabs(thetanew(0)-databoot(k,i))-fabs(thetaold(0)-databoot(k,i)); 
 		  }
-		  loglikdiff(0) = loglikdiff(0) + n*0.5*w[0]*(1-2*qq[0])*(thetanew(0)-thetaold(0));
-		  r[0] = R::dnorm(thetanew(0), thetaold(0),.2, 0)/R::dnorm(thetaold(0),thetanew(0),.2, 0);
-		  loglikdiff(0) = loglikdiff(0) + log(r(0));
-		  loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		  loglikdiff(0) = -0.5*w[0]*loglikdiff(0) - n*0.5*w[0]*(1-2*qq[0])*(thetanew(0)-thetaold(0));
+		  r[0] = R::dnorm(thetaold(0),thetanew(0),.2, 0)/R::dnorm(thetanew(0), thetaold(0),.2, 0);
+		  loglikdiff(0) = fmin(std::exp(loglikdiff(0))*r[0], 1.0);
 		  uu[0] = R::runif(0.0,1.0);		
       		  if((uu(0) < loglikdiff(0)) && (j>99)) {
 			  postsamples(j-100) = thetanew(0);
@@ -1329,12 +1328,11 @@ Rcpp::List GibbsMCMCVaR2(NumericVector nn, NumericVector qq, NumericVector data,
 		if(thetanew(0)>0){
 		  loglikdiff(0) = 0.0;
 		  for(int k=0; k<n; k++){
-		        loglikdiff(0) = loglikdiff(0) -w[0] * 0.5*(fabs(thetanew(0)-data[k])-fabs(thetaold(0)-data[k])); 
+		        loglikdiff(0) = loglikdiff(0) + fabs(thetanew(0)-data[k])-fabs(thetaold(0)-data[k]); 
 		  }
-		  loglikdiff(0) = loglikdiff(0) + n*0.5*w[0]*(1-2*qq[0])*(thetanew(0)-thetaold(0));
+		  loglikdiff(0) = -0.5*w[0]*loglikdiff(0) - n*0.5*w[0]*(1-2*qq[0])*(thetanew(0)-thetaold(0));
 		  r[0] = R::dnorm(thetanew(0), thetaold(0),.2, 0)/R::dnorm(thetaold(0),thetanew(0),.2, 0);
-		  loglikdiff(0) = loglikdiff(0) + log(r(0));
-		  loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		  loglikdiff(0) = fmin(std::exp(loglikdiff(0))*r[0], 1.0);
 		  uu[0] = R::runif(0.0,1.0);
       		  if((uu(0) < loglikdiff(0)) && (j>99)) {
 			  postsamples(j-100) = thetanew(0);
@@ -1349,7 +1347,7 @@ Rcpp::List GibbsMCMCVaR2(NumericVector nn, NumericVector qq, NumericVector data,
 	u[0] = postsamples((1-0.5*alpha[0])*M);
 	l[0] = postsamples((0.5*alpha[0])*M);
 	
-	result = Rcpp::List::create(Rcpp::Named("l") = l[0],Rcpp::Named("u") = u[0]);
+	result = Rcpp::List::create(Rcpp::Named("l") = l[0],Rcpp::Named("u") = u[0],Rcpp::Named("samples") = postsamples);
 
 	return result;
 }
