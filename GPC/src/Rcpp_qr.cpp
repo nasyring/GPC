@@ -1272,25 +1272,25 @@ inline double GibbsMCMCVaR(RVector<double> nn, RVector<double> qq, RVector<doubl
 	NumericVector u(1,0.0);
 	thetaold = bootmean[0];
 	
-	for(int j=0; j<(M+100); j++) {
-		thetanew(0) = R::rnorm(thetaold(0), 0.2);
+	for(int j=0; j<M; j++) {
+		thetanew(0) = R::rnorm(thetaold(0), 1.0);
 		if(thetanew(0)>0){
 		  loglikdiff(0) = 0.0;
 		  for(int k=0; k<n; k++){
 		  	loglikdiff(0) = loglikdiff(0) + fabs(thetanew(0)-databoot(k,i))-fabs(thetaold(0)-databoot(k,i)); 
 		  }
 		  loglikdiff(0) = -0.5*w[0]*loglikdiff(0) - n*0.5*w[0]*(1-2*qq[0])*(thetanew(0)-thetaold(0));
-		  r[0] = R::dnorm(thetaold(0),thetanew(0),.2, 0)/R::dnorm(thetanew(0), thetaold(0),.2, 0);
+		  r[0] = R::dnorm(thetaold(0),thetanew(0),1.0, 0)/R::dnorm(thetanew(0), thetaold(0),1.0, 0);
 		  loglikdiff(0) = fmin(std::exp(loglikdiff(0))*r[0], 1.0);
 		  uu[0] = R::runif(0.0,1.0);		
-      		  if((uu(0) < loglikdiff(0)) && (j>99)) {
-			  postsamples(j-100) = thetanew(0);
+      		  if(uu(0) < loglikdiff(0)) {
+			  postsamples(j) = thetanew(0);
 			  thetaold(0) = thetanew(0); 
-      		  }else if(uu(0) < loglikdiff(0)){
-		  	  thetaold(0) = thetanew(0);   
+      		  }else {
+		  	  postsamples(j) = thetaold(0);  
 		  }
-		}else if(j>99){
-			postsamples(j-100) = thetaold(0);
+		}else {
+			postsamples(j) = thetaold(0);
 		}
 	}
 	std::sort(postsamples.begin(), postsamples.end());
@@ -1311,7 +1311,6 @@ Rcpp::List GibbsMCMCVaR2(NumericVector nn, NumericVector qq, NumericVector data,
 
 	
         List result;
-	double cov_ind;
 	int M = int(M_samp[0]);
 	int n = int(nn[0]);
    	NumericVector thetaold(1,0.0);
@@ -1319,37 +1318,34 @@ Rcpp::List GibbsMCMCVaR2(NumericVector nn, NumericVector qq, NumericVector data,
 	NumericVector loglikdiff(1,0.0);
 	NumericVector r(1,0.0);
 	NumericVector uu(1,0.0);
-	NumericVector postsamples(M,0.0);
+	NumericVector postsamples(M+200,0.0);
 	NumericVector l(1,0.0);
 	NumericVector u(1,0.0);
 	thetaold[0] = bootmean[0];
 	
-	for(int j=0; j<(M+100); j++) {
-		thetanew(0) = R::rnorm(thetaold(0), 0.2);
+	for(int j=0; j<(M+200); j++) {
+		thetanew(0) = R::rnorm(thetaold(0), 1.0);
 		if(thetanew(0)>0){
 		  loglikdiff(0) = 0.0;
 		  for(int k=0; k<n; k++){
 		        loglikdiff(0) = loglikdiff(0) + fabs(thetanew(0)-data[k])-fabs(thetaold(0)-data[k]); 
 		  }
 		  loglikdiff(0) = -0.5*w[0]*loglikdiff(0) - n*0.5*w[0]*(1-2*qq[0])*(thetanew(0)-thetaold(0));
-		  r[0] = R::dnorm(thetanew(0), thetaold(0),.2, 0)/R::dnorm(thetaold(0),thetanew(0),.2, 0);
+		  r[0] = R::dnorm(thetanew(0), thetaold(0),1.0, 0)/R::dnorm(thetaold(0),thetanew(0),1.0, 0);
 		  loglikdiff(0) = fmin(std::exp(loglikdiff(0))*r[0], 1.0);
 		  uu[0] = R::runif(0.0,1.0);
-      		  if((uu(0) < loglikdiff(0)) && (j>99)) {
-			  postsamples(j-100) = thetanew(0);
+      		  if(uu(0) < loglikdiff(0)) {
+			  postsamples(j) = thetanew(0);
 			  thetaold(0) = thetanew(0); 
-		  }else if(uu(0) < loglikdiff(0)){
-		  	  thetaold(0) = thetanew(0);   
+		  }else {
+		  	  postsamples(j) = thetaold(0);   
 		  }
-		}else if(j>99){
-			postsamples(j-100) = thetaold(0);	
+		}else {
+			postsamples(j) = thetaold(0);	
 		}
 	}
-	std::sort(postsamples.begin(), postsamples.end());
-	u[0] = postsamples((1-0.5*alpha[0])*M);
-	l[0] = postsamples((0.5*alpha[0])*M);
 	
-	result = Rcpp::List::create(Rcpp::Named("l") = l[0],Rcpp::Named("u") = u[0],Rcpp::Named("samples") = postsamples);
+	result = Rcpp::List::create(Rcpp::Named("samples") = postsamples);
 
 	return result;
 }
