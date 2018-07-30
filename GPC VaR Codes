@@ -31,10 +31,10 @@ rmodel <- function(n, mu, sigma, a) {
 # simulation parameters
 n <- 1000
 reps <- 100
-M <- 2000
+M <- 5000
 B <- 200
 eps <- .01
-w <- .2
+w <- .04
 coverage <- rep(0,reps)
 length <- rep(0,reps)
 boot.coverage <- rep(0,reps)
@@ -51,7 +51,7 @@ theta.boot <- rep(0, B)
 
 # simulation
 for(j in 1:reps) {
-    w <- .2
+    w <- .04
     data <- rmodel(n, mu, sigma, a)
     theta.hat <- as.numeric(quantile(data, qq))
     data.star <- matrix(0,n,B)
@@ -67,15 +67,15 @@ for(j in 1:reps) {
     while(go) {
 	cover = rcpp_parallel_var(n,qq,data,theta.boot,mean(theta.boot),data.star,alpha,M,B, w) 
         diff <- mean(cover) - (1 - alpha)
-        if((abs(diff) <= eps)||(t>10)) go <- FALSE else {
+        if((abs(diff) <= eps)||(t>6)) go <- FALSE else {
       	    t <- t + 1
-            w <- max(w + k(t) * diff,.01)
+            w <- max(w + k(t) * diff,.005)
         }
     }
-    final.gibbs <- GibbsMCMCVaR2(n, qq, data, theta.boot, mean(theta.boot),alpha,M, w)
-    sorted <- sort(final.gibbs$samples[201:(M+200)])    
-    l <- sorted[(alpha/2)*M]
-    u <- sorted[(1-alpha/2)*M]
+    final.gibbs <- GibbsMCMCVaR2(n, qq, data, theta.boot, mean(theta.boot),alpha,2*M, w)
+    sorted <- sort(final.gibbs$samples[201:(2*M+200)])    
+    l <- sorted[(alpha/2)*2*M]
+    u <- sorted[(1-alpha/2)*2*M]
     coverage[j] <- l<theta.true & u > theta.true
     length[j] <- u-l
     sorted_boot = sort(theta.boot)
