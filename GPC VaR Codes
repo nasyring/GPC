@@ -30,7 +30,7 @@ rmodel <- function(n, mu, sigma, a) {
 
 # simulation parameters
 n <- 1000
-reps <- 100
+reps <- 1000
 M <- 5000
 B <- 200
 eps <- .01
@@ -51,7 +51,7 @@ theta.boot <- rep(0, B)
 
 # simulation
 for(j in 1:reps) {
-    w <- .04
+    w <- .03
     data <- rmodel(n, mu, sigma, a)
     theta.hat <- as.numeric(quantile(data, qq))
     data.star <- matrix(0,n,B)
@@ -69,7 +69,7 @@ for(j in 1:reps) {
         diff <- mean(cover) - (1 - alpha)
         if((abs(diff) <= eps)||(t>6)) go <- FALSE else {
       	    t <- t + 1
-            w <- max(w + k(t) * diff,.005)
+            w <- max(w + k(t) * diff,.002)
         }
     }
     final.gibbs <- GibbsMCMCVaR2(n, qq, data, theta.boot, mean(theta.boot),alpha,2*M, w)
