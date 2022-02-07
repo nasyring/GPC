@@ -202,6 +202,8 @@ Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetab
 	NumericVector l1(1,0.0);
 	NumericVector u0(1,0.0);
 	NumericVector u1(1,0.0);
+	NumericVector acc0(1,0.0);
+	NumericVector acc1(1,0.0);
 	theta0old = bootmean0;
 	theta1old = bootmean1;
 	
@@ -219,6 +221,7 @@ Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetab
 			postsamples0(j-100) = theta0new(0);
 			postsamples0u(j-100) = theta0new(0);
 			theta0old(0) = theta0new(0); 
+			acc0(0) = acc0(0)+1.0;
       		}
 		else if(j>99){
 			postsamples0(j-100) = theta0old(0);
@@ -237,6 +240,7 @@ Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetab
 			postsamples1(j-100) = theta1new(0);
 			postsamples1u(j-100) = theta1new(0);
 			theta1old(0) = theta1new(0); 
+			acc1(0) = acc1(0)+1.0;
       		}
 		else if(j>99){
 			postsamples1(j-100) = theta1old(0);
@@ -250,7 +254,7 @@ Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetab
 	l1[0] = postsamples1(0.025*M);
 	u1[0] = postsamples1(0.975*M);
 	
-	result = Rcpp::List::create(Rcpp::Named("l0") = l0[0],Rcpp::Named("u0") = u0[0],Rcpp::Named("l1") = l1[0],Rcpp::Named("u1") = u1[0],Rcpp::Named("postsamples0") = postsamples0u,Rcpp::Named("postsamples1") = postsamples1u);
+	result = Rcpp::List::create(Rcpp::Named("l0") = l0[0],Rcpp::Named("u0") = u0[0],Rcpp::Named("l1") = l1[0],Rcpp::Named("u1") = u1[0],Rcpp::Named("postsamples0") = postsamples0u,Rcpp::Named("postsamples1") = postsamples1u, Rcpp::Named("acceptance_rate0") = acc0(0)/M_samp[0], Rcpp::Named("acceptance_rate1") = acc1(0)/M_samp[0]);
 
 	return result;
 }
