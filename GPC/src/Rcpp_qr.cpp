@@ -106,7 +106,7 @@ NumericMatrix rcpp_parallel_js_distance(NumericMatrix mat) {
 // helper function for Gibbs sampling
 
 inline double GibbsMCMC(RVector<double> nn, RMatrix<double> data, RMatrix<double> thetaboot,
-	RVector<double> bootmean0, RVector<double> bootmean1, RMatrix<double> databoot,
+	RVector<double> bootmean0, RVector<double> bootmean1, RVector<double> propvar, RMatrix<double> databoot,
 	RVector<double> alpha, RVector<double> M_samp, RVector<double> w, std::size_t i) {
    	
 
@@ -133,12 +133,12 @@ inline double GibbsMCMC(RVector<double> nn, RMatrix<double> data, RMatrix<double
 	theta1old = thetaboot(i,1);
 	
 	for(int j=0; j<(M+100); j++) {
-		theta0new(0) = R::rnorm(theta0old(0), 0.5);
+		theta0new(0) = R::rnorm(theta0old(0), propvar(0));
 		loglikdiff(0) = 0.0;
 		for(int k=0; k<n; k++){
 			loglikdiff(0) = loglikdiff(0) -w[0] * fabs(databoot(k,2*i+1)-theta0new(0) - theta1old(0)*databoot(k,2*i)) + w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
 		}
-		r[0] = R::dnorm(theta0new(0), theta0old(0),.5, 0)/R::dnorm(theta0old(0),theta0new(0),.5, 0);
+		r[0] = R::dnorm(theta0new(0), theta0old(0),propvar(0), 0)/R::dnorm(theta0old(0),theta0new(0),propvar(0), 0);
 		loglikdiff(0) = loglikdiff(0) + log(r(0));
 		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
 		uu[0] = R::runif(0.0,1.0);
@@ -149,12 +149,12 @@ inline double GibbsMCMC(RVector<double> nn, RMatrix<double> data, RMatrix<double
 		else if(j>99){
 			postsamples0(j-100) = theta0old(0);	
 		}
-		theta1new[0] = R::rnorm(theta1old(0), 0.5);
+		theta1new[0] = R::rnorm(theta1old(0), propvar(0));
 		loglikdiff(0) = 0.0;
 		for(int k=0; k<n; k++){
 			loglikdiff(0) = loglikdiff(0) -w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1new(0)*databoot(k,2*i)) + w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
 		}
-		r[0] = R::dnorm(theta1new(0), theta1old(0),.5, 0) / R::dnorm(theta1old(0),theta1new(0),.5, 0);
+		r[0] = R::dnorm(theta1new(0), theta1old(0),propvar(0), 0) / R::dnorm(theta1old(0),theta1new(0),propvar(0), 0);
 		loglikdiff(0) = loglikdiff(0) + log(r(0));
 		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
 		uu[0] = R::runif(0.0,1.0);
@@ -294,6 +294,7 @@ struct GPC_qr_mcmc_parallel : public Worker {
 	const RMatrix<double> thetaboot;
 	const RVector<double> bootmean0;
 	const RVector<double> bootmean1;
+	const RVector<double> propvar;
 	const RMatrix<double> databoot;
 	const RVector<double> alpha;
 	const RVector<double> M_samp;
@@ -303,22 +304,22 @@ struct GPC_qr_mcmc_parallel : public Worker {
 
    // initialize with source and destination
    GPC_qr_mcmc_parallel(const NumericVector nn,	const NumericMatrix data, const NumericMatrix thetaboot,
-	const NumericVector bootmean0, const NumericVector bootmean1, const NumericMatrix databoot,
+	const NumericVector bootmean0, const NumericVector bootmean1, const NumericVector propvar, const NumericMatrix databoot,
 	const NumericVector alpha, const NumericVector M_samp, const NumericVector B_resamp,
 	const NumericVector w, NumericVector cover) 
-			: nn(nn), data(data), thetaboot(thetaboot), bootmean0(bootmean0), bootmean1(bootmean1), databoot(databoot), alpha(alpha), M_samp(M_samp), B_resamp(B_resamp), w(w), cover(cover) {}   
+			: nn(nn), data(data), thetaboot(thetaboot), bootmean0(bootmean0), bootmean1(bootmean1), propvar(propvar), databoot(databoot), alpha(alpha), M_samp(M_samp), B_resamp(B_resamp), w(w), cover(cover) {}   
 
    // operator
 void operator()(std::size_t begin, std::size_t end) {
 		for (std::size_t i = begin; i < end; i++) {
-			cover[i] = GibbsMCMC(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, w, i);	
+			cover[i] = GibbsMCMC(nn, data, thetaboot, bootmean0, bootmean1, propvar, databoot, alpha, M_samp, w, i);	
 		}
 	}
 };
 
 // [[Rcpp::export]]
 NumericVector rcpp_parallel_qr(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot, NumericVector bootmean0,
-	NumericVector bootmean1, NumericMatrix databoot, NumericVector alpha, NumericVector M_samp, NumericVector B_resamp,
+	NumericVector bootmean1, NumericVector propvar, NumericMatrix databoot, NumericVector alpha, NumericVector M_samp, NumericVector B_resamp,
 	NumericVector w) {
 	
    int B = int(B_resamp[0]);
@@ -326,7 +327,7 @@ NumericVector rcpp_parallel_qr(NumericVector nn, NumericMatrix data, NumericMatr
    NumericVector cover(B,2.0); 
 
    // create the worker
-   GPC_qr_mcmc_parallel gpcWorker(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w, cover);
+   GPC_qr_mcmc_parallel gpcWorker(nn, data, thetaboot, bootmean0, bootmean1, propvar, databoot, alpha, M_samp, B_resamp, w, cover);
      
    // call it with parallelFor
    
