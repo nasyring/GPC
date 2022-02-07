@@ -5,8 +5,8 @@ GPC_qr <- function(nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp) {
     .Call(`GPC_GPC_qr`, nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp)
 }
 
-GPC_qr_parallel <- function(nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp) {
-    .Call(`GPC_GPC_qr_parallel`,  nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp)
+GPC_qr_parallel <- function(nn, data, theta_boot, prop0, prop1, data_boot, alpha, M_samp, B_resamp) {
+    .Call(`GPC_GPC_qr_parallel`,  nn, data, theta_boot, prop0, prop1, data_boot, alpha, M_samp, B_resamp)
 }
 
 GPC_var_parallel <- function(nn, qq, data, theta_boot, data_boot, alpha, M_samp, B_resamp) {
