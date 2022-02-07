@@ -206,8 +206,35 @@ Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetab
 	NumericVector acc1(1,0.0);
 	theta0old = bootmean0;
 	theta1old = bootmean1;
-	
 	for(int j=0; j<(M+100); j++) {
+		theta0new(0) = R::rnorm(theta0old(0), prop1[0]);
+		theta1new[0] = R::rnorm(theta1old(0), prop2[0]);
+		loglikdiff(0) = 0.0;
+		for(int k=0; k<n; k++){
+			loglikdiff(0) = loglikdiff(0) -w[0] * fabs(data(k,1)-theta0new(0) - theta1new(0)*data(k,0)) + w[0] * fabs(data(k,1)-theta0old(0) - theta1old(0)*data(k,0)); 
+		}
+		r[0] = (R::dnorm(theta0new(0), theta0old(0),prop1[0], 0)/R::dnorm(theta0old(0),theta0new(0),prop1[0], 0))*(R::dnorm(theta1new(0), theta1old(0),prop2[0], 0)/R::dnorm(theta1old(0),theta1new(0),prop2[0], 0));
+		loglikdiff(0) = loglikdiff(0) + log(r(0));
+		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		uu[0] = R::runif(0.0,1.0);
+      		if((uu(0) <= loglikdiff(0)) && (j>99)) {
+			postsamples0(j-100) = theta0new(0);
+			postsamples0u(j-100) = theta0new(0);
+			theta0old(0) = theta0new(0); 
+			acc0(0) = acc0(0)+1.0;
+			postsamples1(j-100) = theta1new(0);
+			postsamples1u(j-100) = theta1new(0);
+			theta1old(0) = theta1new(0); 
+			acc1(0) = acc1(0)+1.0;
+      		}
+		else if(j>99){
+			postsamples0(j-100) = theta0old(0);
+			postsamples0u(j-100) = theta0old(0);
+			postsamples1(j-100) = theta1old(0);
+			postsamples1u(j-100) = theta1old(0);
+		}
+	}	
+/*	for(int j=0; j<(M+100); j++) {
 		theta0new(0) = R::rnorm(theta0old(0), prop1[0]);
 		loglikdiff(0) = 0.0;
 		for(int k=0; k<n; k++){
@@ -247,6 +274,7 @@ Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetab
 			postsamples1u(j-100) = theta1old(0);
 		}
 	}
+	*/
 	std::sort(postsamples0.begin(), postsamples0.end());
 	std::sort(postsamples1.begin(), postsamples1.end());
 	l0[0] = postsamples0(0.025*M);
