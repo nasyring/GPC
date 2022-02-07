@@ -26,7 +26,7 @@ END_RCPP
 }
 
 // GPC_qr_parallel
-Rcpp::List GPC_qr_parallel(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp);
+Rcpp::List GPC_qr_parallel(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & prop0, SEXP & prop1, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp);
 RcppExport SEXP GPC_GPC_qr_parallel(SEXP nnSEXP, SEXP dataSEXP, SEXP theta_bootSEXP, SEXP data_bootSEXP, SEXP alphaSEXP, SEXP M_sampSEXP, SEXP B_resampSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
@@ -34,11 +34,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< SEXP & >::type nn(nnSEXP);
     Rcpp::traits::input_parameter< SEXP & >::type data(dataSEXP);
     Rcpp::traits::input_parameter< SEXP & >::type theta_boot(theta_bootSEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type prop0(prop0SEXP);
+    Rcpp::traits::input_parameter< SEXP & >::type prop1(prop1SEXP);
     Rcpp::traits::input_parameter< SEXP & >::type data_boot(data_bootSEXP);
     Rcpp::traits::input_parameter< SEXP & >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< SEXP & >::type M_samp(M_sampSEXP);
     Rcpp::traits::input_parameter< SEXP & >::type B_resamp(B_resampSEXP);
-    __result = Rcpp::wrap(GPC_qr_parallel(nn, data, theta_boot, data_boot, alpha, M_samp, B_resamp));
+    __result = Rcpp::wrap(GPC_qr_parallel(nn, data, theta_boot, prop0, prop1, data_boot, alpha, M_samp, B_resamp));
     return __result;
 END_RCPP
 }
@@ -203,7 +205,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"GPC_GPC_qr", (DL_FUNC) &GPC_GPC_qr, 7},
-    {"GPC_GPC_qr_parallel", (DL_FUNC) &GPC_GPC_qr_parallel, 7},
+    {"GPC_GPC_qr_parallel", (DL_FUNC) &GPC_GPC_qr_parallel, 9},
     {"GPC_GPC_var_parallel", (DL_FUNC) &GPC_GPC_var_parallel, 8},
     {"GPC_GPC_linreg", (DL_FUNC) &GPC_GPC_linreg, 7},
     {"GPC_GPC_varmix", (DL_FUNC) &GPC_GPC_varmix, 5},
