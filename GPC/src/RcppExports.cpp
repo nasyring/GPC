@@ -147,8 +147,8 @@ END_RCPP
 
 
 Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot,
-	NumericVector bootmean0, NumericVector bootmean1, NumericVector alpha, NumericVector M_samp, NumericVector w);
-RcppExport SEXP GPC_GibbsMCMC2(SEXP nnSEXP, SEXP dataSEXP, SEXP thetabootSEXP, SEXP bootmean0SEXP, SEXP bootmean1SEXP, SEXP alphaSEXP, SEXP M_sampSEXP, SEXP wSEXP){
+	NumericVector bootmean0, NumericVector bootmean1,NumericVector prop1, NumericVector prop2, NumericVector alpha, NumericVector M_samp, NumericVector w);
+RcppExport SEXP GPC_GibbsMCMC2(SEXP nnSEXP, SEXP dataSEXP, SEXP thetabootSEXP, SEXP bootmean0SEXP, SEXP bootmean1SEXP, SEXP prop1SEXP, SEXP prop2SEXP, SEXP alphaSEXP, SEXP M_sampSEXP, SEXP wSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -157,10 +157,12 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericMatrix >::type thetaboot(thetabootSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type bootmean0(bootmean0SEXP);
     Rcpp::traits::input_parameter< NumericVector >::type bootmean1(bootmean1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type prop1(prop1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type prop2(prop1SEXP);
     Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type M_samp(M_sampSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
-    __result = Rcpp::wrap(GibbsMCMC2(nn, data, thetaboot, bootmean0, bootmean1, alpha, M_samp, w));
+    __result = Rcpp::wrap(GibbsMCMC2(nn, data, thetaboot, bootmean0, bootmean1, prop1, prop2, alpha, M_samp, w));
     return __result;
 END_RCPP
 }
@@ -208,7 +210,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"GPC_rcpp_parallel_qr", (DL_FUNC) &GPC_rcpp_parallel_qr, 10},
     {"GPC_rcpp_parallel_var", (DL_FUNC) &GPC_rcpp_parallel_var, 10},
     {"GPC_rcpp_parallel_js_distance", (DL_FUNC) &GPC_rcpp_parallel_js_distance, 1},
-    {"GPC_GibbsMCMC2", (DL_FUNC) &GPC_GibbsMCMC2, 8},
+    {"GPC_GibbsMCMC2", (DL_FUNC) &GPC_GibbsMCMC2, 10},
     {"GPC_GibbsMCMCVaR2", (DL_FUNC) &GPC_GibbsMCMCVaR2, 8},
     {NULL, NULL, 0}
 };
