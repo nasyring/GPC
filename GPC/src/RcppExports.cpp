@@ -27,7 +27,7 @@ END_RCPP
 
 // GPC_qr_parallel
 Rcpp::List GPC_qr_parallel(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & prop0, SEXP & prop1, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp);
-RcppExport SEXP GPC_GPC_qr_parallel(SEXP nnSEXP, SEXP dataSEXP, SEXP theta_bootSEXP, SEXP data_bootSEXP, SEXP alphaSEXP, SEXP M_sampSEXP, SEXP B_resampSEXP){
+RcppExport SEXP GPC_GPC_qr_parallel(SEXP nnSEXP, SEXP dataSEXP, SEXP theta_bootSEXP, SEXP prop0SEXP, SEXP prop1SEXP, SEXP data_bootSEXP, SEXP alphaSEXP, SEXP M_sampSEXP, SEXP B_resampSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
