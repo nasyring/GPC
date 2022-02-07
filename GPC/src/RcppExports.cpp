@@ -101,9 +101,9 @@ END_RCPP
 
 // rcpp_parallel_qr
 NumericVector rcpp_parallel_qr(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot, NumericVector bootmean0,
-	NumericVector bootmean1, NumericMatrix databoot, NumericVector alpha, NumericVector M_samp, NumericVector B_resamp,
+	NumericVector bootmean1, NumericVector propvar, NumericMatrix databoot, NumericVector alpha, NumericVector M_samp, NumericVector B_resamp,
 	NumericVector w);
-RcppExport SEXP GPC_rcpp_parallel_qr(SEXP nnSEXP, SEXP dataSEXP, SEXP thetabootSEXP, SEXP bootmean0SEXP, SEXP bootmean1SEXP, SEXP databootSEXP,
+RcppExport SEXP GPC_rcpp_parallel_qr(SEXP nnSEXP, SEXP dataSEXP, SEXP thetabootSEXP, SEXP bootmean0SEXP, SEXP bootmean1SEXP, SEXP propvarSEXP, SEXP databootSEXP,
                                     SEXP alphaSEXP, SEXP M_sampSEXP, SEXP B_resampSEXP, SEXP wSEXP){
 BEGIN_RCPP
     Rcpp::RObject __result;
@@ -113,12 +113,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericMatrix >::type thetaboot(thetabootSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type bootmean0(bootmean0SEXP);
     Rcpp::traits::input_parameter< NumericVector >::type bootmean1(bootmean1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type propvar(propvarSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type databoot(databootSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type M_samp(M_sampSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type B_resamp(B_resampSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
-    __result = Rcpp::wrap(rcpp_parallel_qr(nn, data, thetaboot, bootmean0, bootmean1, databoot, alpha, M_samp, B_resamp, w));
+    __result = Rcpp::wrap(rcpp_parallel_qr(nn, data, thetaboot, bootmean0, bootmean1, propvar, databoot, alpha, M_samp, B_resamp, w));
     return __result;
 END_RCPP
 }    
@@ -209,7 +210,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"GPC_GPC_var_parallel", (DL_FUNC) &GPC_GPC_var_parallel, 8},
     {"GPC_GPC_linreg", (DL_FUNC) &GPC_GPC_linreg, 7},
     {"GPC_GPC_varmix", (DL_FUNC) &GPC_GPC_varmix, 5},
-    {"GPC_rcpp_parallel_qr", (DL_FUNC) &GPC_rcpp_parallel_qr, 10},
+    {"GPC_rcpp_parallel_qr", (DL_FUNC) &GPC_rcpp_parallel_qr, 11},
     {"GPC_rcpp_parallel_var", (DL_FUNC) &GPC_rcpp_parallel_var, 10},
     {"GPC_rcpp_parallel_js_distance", (DL_FUNC) &GPC_rcpp_parallel_js_distance, 1},
     {"GPC_GibbsMCMC2", (DL_FUNC) &GPC_GibbsMCMC2, 10},
