@@ -312,7 +312,7 @@ NumericVector rcpp_parallel_qr(NumericVector nn, NumericMatrix data, NumericMatr
 
 
 // [[Rcpp::export]]
-Rcpp::List GPC_qr_parallel(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) {
+Rcpp::List GPC_qr_parallel(SEXP & nn, SEXP & data, SEXP & theta_boot, SEXP & prop0, SEXP & prop1,  SEXP & data_boot, SEXP & alpha, SEXP & M_samp, SEXP & B_resamp) {
 
 RNGScope scp;
 Rcpp::Function _GPC_rcpp_parallel_qr("rcpp_parallel_qr");
@@ -328,6 +328,8 @@ NumericMatrix databoot_ = Rcpp::as<NumericMatrix>(data_boot);
 NumericVector alpha_ = Rcpp::as<NumericVector>(alpha);
 NumericVector M_samp_ = Rcpp::as<NumericVector>(M_samp);
 NumericVector B_resamp_ = Rcpp::as<NumericVector>(B_resamp);
+NumericVector prop0_ = Rcpp::as<NumericVector>(prop0);
+NumericVector prop1_ = Rcpp::as<NumericVector>(prop1);
 NumericVector w(1,0.5);
 double diff;
 bool go 			= TRUE;
@@ -359,7 +361,7 @@ if(((abs(diff)<= eps)&&(diff>=0)) || t>16) {
 // Final sample
 
 NumericVector M_final; M_final[0] = 2*M_samp_[0];
-finalsample = GibbsMCMC2(nn_, data_, thetaboot_, bootmean0, bootmean1, alpha_, M_final, w);
+finalsample = GibbsMCMC2(nn_, data_, thetaboot_, bootmean0, bootmean1, prop0_, prop1_, alpha_, M_final, w);
 	
 result = Rcpp::List::create(Rcpp::Named("w") = w,Rcpp::Named("t") = t,Rcpp::Named("diff") = diff, Rcpp::Named("list_cis") = finalsample);
 	
