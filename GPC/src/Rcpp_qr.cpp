@@ -133,12 +133,12 @@ inline double GibbsMCMC(RVector<double> nn, RMatrix<double> data, RMatrix<double
 	theta1old = thetaboot(i,1);
 	
 	for(int j=0; j<(M+100); j++) {
-		theta0new(0) = R::rnorm(theta0old(0), propvar(0));
+		theta0new(0) = R::rnorm(theta0old(0), propvar[0]);
 		loglikdiff(0) = 0.0;
 		for(int k=0; k<n; k++){
 			loglikdiff(0) = loglikdiff(0) -w[0] * fabs(databoot(k,2*i+1)-theta0new(0) - theta1old(0)*databoot(k,2*i)) + w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
 		}
-		r[0] = R::dnorm(theta0new(0), theta0old(0),propvar(0), 0)/R::dnorm(theta0old(0),theta0new(0),propvar(0), 0);
+		r[0] = R::dnorm(theta0new(0), theta0old(0),propvar[0], 0)/R::dnorm(theta0old(0),theta0new(0),propvar[0], 0);
 		loglikdiff(0) = loglikdiff(0) + log(r(0));
 		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
 		uu[0] = R::runif(0.0,1.0);
@@ -149,12 +149,12 @@ inline double GibbsMCMC(RVector<double> nn, RMatrix<double> data, RMatrix<double
 		else if(j>99){
 			postsamples0(j-100) = theta0old(0);	
 		}
-		theta1new[0] = R::rnorm(theta1old(0), propvar(0));
+		theta1new[0] = R::rnorm(theta1old(0), propvar[0]);
 		loglikdiff(0) = 0.0;
 		for(int k=0; k<n; k++){
 			loglikdiff(0) = loglikdiff(0) -w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1new(0)*databoot(k,2*i)) + w[0] * fabs(databoot(k,2*i+1)-theta0old(0) - theta1old(0)*databoot(k,2*i)); 
 		}
-		r[0] = R::dnorm(theta1new(0), theta1old(0),propvar(0), 0) / R::dnorm(theta1old(0),theta1new(0),propvar(0), 0);
+		r[0] = R::dnorm(theta1new(0), theta1old(0),propvar[0], 0) / R::dnorm(theta1old(0),theta1new(0),propvar[0], 0);
 		loglikdiff(0) = loglikdiff(0) + log(r(0));
 		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
 		uu[0] = R::runif(0.0,1.0);
