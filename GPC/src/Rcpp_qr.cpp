@@ -196,6 +196,8 @@ Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetab
 	NumericVector uu(1,0.0);
 	NumericVector postsamples0(M,0.0);
 	NumericVector postsamples1(M,0.0);
+	NumericVector postsamples0u(M,0.0);
+	NumericVector postsamples1u(M,0.0);
 	NumericVector l0(1,0.0);
 	NumericVector l1(1,0.0);
 	NumericVector u0(1,0.0);
@@ -215,10 +217,12 @@ Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetab
 		uu[0] = R::runif(0.0,1.0);
       		if((uu(0) <= loglikdiff(0)) && (j>99)) {
 			postsamples0(j-100) = theta0new(0);
+			postsamples0u(j-100) = theta0new(0);
 			theta0old(0) = theta0new(0); 
       		}
 		else if(j>99){
-			postsamples0(j-100) = theta0old(0);	
+			postsamples0(j-100) = theta0old(0);
+			postsamples0u(j-100) = theta0old(0);
 		}
 		theta1new[0] = R::rnorm(theta1old(0), 0.5);
 		loglikdiff(0) = 0.0;
@@ -231,10 +235,12 @@ Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetab
 		uu[0] = R::runif(0.0,1.0);
       		if((uu(0) <= loglikdiff(0)) && (j>99)) {
 			postsamples1(j-100) = theta1new(0);
+			postsamples1u(j-100) = theta1new(0);
 			theta1old(0) = theta1new(0); 
       		}
 		else if(j>99){
-			postsamples1(j-100) = theta1old(0);	
+			postsamples1(j-100) = theta1old(0);
+			postsamples1u(j-100) = theta1old(0);
 		}
 	}
 	std::sort(postsamples0.begin(), postsamples0.end());
@@ -244,7 +250,7 @@ Rcpp::List GibbsMCMC2(NumericVector nn, NumericMatrix data, NumericMatrix thetab
 	l1[0] = postsamples1(0.025*M);
 	u1[0] = postsamples1(0.975*M);
 	
-	result = Rcpp::List::create(Rcpp::Named("l0") = l0[0],Rcpp::Named("u0") = u0[0],Rcpp::Named("l1") = l1[0],Rcpp::Named("u1") = u1[0],Rcpp::Named("postsamples0") = postsamples0,Rcpp::Named("postsamples1") = postsamples1);
+	result = Rcpp::List::create(Rcpp::Named("l0") = l0[0],Rcpp::Named("u0") = u0[0],Rcpp::Named("l1") = l1[0],Rcpp::Named("u1") = u1[0],Rcpp::Named("postsamples0") = postsamples0u,Rcpp::Named("postsamples1") = postsamples1u);
 
 	return result;
 }
