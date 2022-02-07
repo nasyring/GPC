@@ -33,8 +33,8 @@ rcpp_parallel_js_distance <- function(mat){
     .Call(`GPC_rcpp_parallel_js_distance`, mat)   
 }
 
-GibbsMCMC2 <- function(nn, data, thetaboot, bootmean0, bootmean1, alpha, M_samp, w){
-    .Call(`GPC_GibbsMCMC2`, nn, data, thetaboot, bootmean0, bootmean1, alpha, M_samp, w)    
+GibbsMCMC2 <- function(nn, data, thetaboot, bootmean0, bootmean1, prop1, prop2, alpha, M_samp, w){
+    .Call(`GPC_GibbsMCMC2`, nn, data, thetaboot, bootmean0, bootmean1, prop1, prop2, alpha, M_samp, w)    
 }
 
 GibbsMCMCVaR2 <- function(nn, qq, data, thetaboot, bootmean, alpha, M_samp, w){
