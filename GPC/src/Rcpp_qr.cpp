@@ -1631,7 +1631,7 @@ Rcpp::List GibbsMCMC2class(NumericVector nn, NumericMatrix data, NumericMatrix t
 		loglikdiff(0) = 0.0;
 		for(int k=0; k<n; k++){
 			lossnew(0) = 0.0;lossold(0) = 0.0;
-			lossnew(0) = 1.0- data(k,1)*(theta0new(0) + thetanew(0)*data(k,0));
+			lossnew(0) = 1.0- data(k,1)*(theta0new(0) + theta1new(0)*data(k,0));
 			if(lossnew(0)<0.0){
 				lossnew(0) = 0.0;
 			}
