@@ -25,6 +25,10 @@ rcpp_parallel_qr <- function(nn, data, thetaboot, bootmean0, bootmean1, propvar,
     .Call(`GPC_rcpp_parallel_qr`,  nn, data, thetaboot, bootmean0, bootmean1, propvar, databoot, alpha, M_samp, B_resamp, w)   
 }
 
+rcpp_parallel_class <- function(nn, data, thetaboot, bootmean0, bootmean1, propvar, databoot, alpha, M_samp, B_resamp, w){
+    .Call(`GPC_rcpp_parallel_class`,  nn, data, thetaboot, bootmean0, bootmean1, propvar, databoot, alpha, M_samp, B_resamp, w)   
+}
+
 rcpp_parallel_var <- function(nn, qq, data, thetaboot, bootmean, databoot, alpha, M_samp, B_resamp, w){
     .Call(`GPC_rcpp_parallel_var`,  nn, qq, data, thetaboot, bootmean, databoot, alpha, M_samp, B_resamp, w)   
 }
@@ -35,6 +39,10 @@ rcpp_parallel_js_distance <- function(mat){
 
 GibbsMCMC2 <- function(nn, data, thetaboot, bootmean0, bootmean1, prop1, prop2, alpha, M_samp, w){
     .Call(`GPC_GibbsMCMC2`, nn, data, thetaboot, bootmean0, bootmean1, prop1, prop2, alpha, M_samp, w)    
+}
+
+GibbsMCMC2class <- function(nn, data, thetaboot, bootmean0, bootmean1, prop1, prop2, alpha, M_samp, w){
+    .Call(`GPC_GibbsMCMC2class`, nn, data, thetaboot, bootmean0, bootmean1, prop1, prop2, alpha, M_samp, w)    
 }
 
 GibbsMCMCVaR2 <- function(nn, qq, data, thetaboot, bootmean, alpha, M_samp, w){
