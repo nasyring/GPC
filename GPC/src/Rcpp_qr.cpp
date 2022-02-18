@@ -1642,19 +1642,19 @@ Rcpp::List GibbsMCMC2class(NumericVector nn, NumericMatrix data, NumericMatrix t
 		theta1new(0) = R::rnorm(theta1old(0), prop2[0]);
 		loglikdiff(0) = 0.0;
 		for(int k=0; k<n; k++){
-			if(databoot(k,1)==1.0){
+			if(data(k,1)==1.0){
 				lossnew(0) = 0.0;lossold(0) = 0.0;
-				if(theta0new(0) + theta1new(0)*databoot(k,0)< 0.0){
+				if(theta0new(0) + theta1new(0)*data(k,0)< 0.0){
 					lossnew(0) = 1.0;
 				}
-				if(theta0old(0) + theta1old(0)*databoot(k,0)< 0.0){
+				if(theta0old(0) + theta1old(0)*data(k,0)< 0.0){
 					lossold(0) = 1.0;
 				}
 			}else {
-				if(theta0new(0) + theta1new(0)*databoot(k,0)>= 0.0){
+				if(theta0new(0) + theta1new(0)*data(k,0)>= 0.0){
 					lossnew(0) = 1.0;
 				}
-				if(theta0old(0) + theta1old(0)*databoot(k,0)>= 0.0){
+				if(theta0old(0) + theta1old(0)*data(k,0)>= 0.0){
 					lossold(0) = 1.0;
 				}
 			}
