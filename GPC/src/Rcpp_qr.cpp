@@ -1692,19 +1692,19 @@ Rcpp::List GibbsMCMC2class(NumericVector nn, NumericMatrix data, NumericMatrix t
 		for(int k=0; k<n; k++){
 			lossnew(0) = 0.0;lossold(0) = 0.0;
 			
-			if(databoot(k,2*i+1)==(-1.0)){
-				if(theta0new(0) + theta1new(0)*databoot(k,2*i) <= 0.0){
-					lossnew(0) = 0.5 - (theta0new(0) + theta1new(0)*databoot(k,2*i));	
-				}else if(theta0new(0) + theta1new(0)*databoot(k,2*i) < 1.0){
-					lossnew(0) = 0.5 * pow((1- (theta0new(0) + theta1new(0)*databoot(k,2*i))),2.0);	
+			if(data(k,1)==(-1.0)){
+				if(theta0new(0) + theta1new(0)*data(k,0) <= 0.0){
+					lossnew(0) = 0.5 - (theta0new(0) + theta1new(0)*data(k,0));	
+				}else if(theta0new(0) + theta1new(0)*data(k,0) < 1.0){
+					lossnew(0) = 0.5 * pow((1- (theta0new(0) + theta1new(0)*data(k,0))),2.0);	
 				}else {
 					lossnew(0) = 0.0;
 				}				
 			}else {
-				if(theta0new(0) + theta1new(0)*databoot(k,2*i) > 0.0){
-					lossnew(0) = 0.5 + (theta0new(0) + theta1new(0)*databoot(k,2*i));	
-				}else if(theta0new(0) + theta1new(0)*databoot(k,2*i) > (-1.0)){
-					lossnew(0) = 0.5 * pow((1+ (theta0new(0) + theta1new(0)*databoot(k,2*i))),2.0);	
+				if(theta0new(0) + theta1new(0)*data(k,0) > 0.0){
+					lossnew(0) = 0.5 + (theta0new(0) + theta1new(0)*data(k,0));	
+				}else if(theta0new(0) + theta1new(0)*data(k,0) > (-1.0)){
+					lossnew(0) = 0.5 * pow((1+ (theta0new(0) + theta1new(0)*data(k,0))),2.0);	
 				}else {
 					lossnew(0) = 0.0;
 				}				
@@ -1720,10 +1720,10 @@ Rcpp::List GibbsMCMC2class(NumericVector nn, NumericMatrix data, NumericMatrix t
 					lossold(0) = 0.0;
 				}				
 			}else {
-				if(theta0old(0) + theta1old(0)*databoot(k,2*i) > 0.0){
-					lossold(0) = 0.5 + (theta0old(0) + theta1old(0)*databoot(k,2*i));	
-				}else if(theta0old(0) + theta1old(0)*databoot(k,2*i) > (-1.0)){
-					lossold(0) = 0.5 * pow((1+ (theta0old(0) + theta1old(0)*databoot(k,2*i))),2.0);	
+				if(theta0old(0) + theta1old(0)*data(k,0) > 0.0){
+					lossold(0) = 0.5 + (theta0old(0) + theta1old(0)*data(k,0));	
+				}else if(theta0old(0) + theta1old(0)*data(k,0) > (-1.0)){
+					lossold(0) = 0.5 * pow((1+ (theta0old(0) + theta1old(0)*data(k,0))),2.0);	
 				}else {
 					lossold(0) = 0.0;
 				}				
