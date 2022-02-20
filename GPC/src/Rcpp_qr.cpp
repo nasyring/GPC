@@ -1504,6 +1504,178 @@ inline double GibbsMCMCclass(RVector<double> nn, RMatrix<double> data, RMatrix<d
 	RVector<double> bootmean0, RVector<double> bootmean1, RVector<double> propvar, RMatrix<double> databoot,
 	RVector<double> alpha, RVector<double> M_samp, RVector<double> w, std::size_t i) {
    	
+	double cov_ind;
+	int M = int(M_samp[0]);
+	int n = int(nn[0]);
+   	NumericVector theta0old(1,0.0);
+	NumericVector theta0new(1,0.0);
+	NumericVector theta1old(1,0.0);
+	NumericVector theta1new(1,0.0);
+	NumericVector loglikdiff(1,0.0);
+	NumericVector lossnew(1,0.0);
+	NumericVector lossold(1,0.0);
+	NumericVector r(1,0.0);
+	NumericVector uu(1,0.0);
+	NumericVector postsamples0(M,0.0);
+	NumericVector postsamples1(M,0.0);
+	NumericVector l0(1,0.0);
+	NumericVector l1(1,0.0);
+	NumericVector u0(1,0.0);
+	NumericVector u1(1,0.0);
+	theta0old = thetaboot(i,0);
+	theta1old = thetaboot(i,1);
+	
+	for(int j=0; j<(M+100); j++) {
+		theta0new(0) = R::rnorm(theta0old(0), propvar[0]);
+		loglikdiff(0) = 0.0;
+		for(int k=0; k<n; k++){
+			lossnew(0) = 0.0;lossold(0) = 0.0;
+			lossnew(0) = 1.0 - databoot(k,2*i+1)*(theta0new(0) + theta1old(0)*databoot(k,2*i));
+			if(lossnew(0) < 0){
+				lossnew(0) = 0.0;
+			}
+			lossold(0) = 1.0 - databoot(k,2*i+1)*(theta0old(0) + theta1old(0)*databoot(k,2*i));
+			if(lossold(0) < 0){
+				lossold(0) = 0.0;
+			}
+			loglikdiff(0) = loglikdiff(0) -w[0] * (lossnew(0)-lossold(0)); 
+		}
+		loglikdiff(0) = loglikdiff(0) -w[0] * 10.0*(fabs(theta0new(0)) - fabs(theta0old(0)));
+		r[0] = R::dnorm(theta0new(0), theta0old(0),propvar[0], 0)/R::dnorm(theta0old(0),theta0new(0),propvar[0], 0);
+		loglikdiff(0) = loglikdiff(0) + log(r(0));
+		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		uu[0] = R::runif(0.0,1.0);
+      		if((uu(0) <= loglikdiff(0)) && (j>99)) {
+			postsamples0(j-100) = theta0new(0);
+			theta0old(0) = theta0new(0); 
+      		}
+		else if(j>99){
+			postsamples0(j-100) = theta0old(0);	
+		}
+		theta1new[0] = R::rnorm(theta1old(0), propvar[0]);
+		loglikdiff(0) = 0.0;
+		for(int k=0; k<n; k++){
+			lossnew(0) = 0.0;lossold(0) = 0.0;
+			lossnew(0) = 1.0 - databoot(k,2*i+1)*(theta0old(0) + theta1new(0)*databoot(k,2*i));
+			if(lossnew(0) < 0){
+				lossnew(0) = 0.0;
+			}
+			lossold(0) = 1.0 - databoot(k,2*i+1)*(theta0old(0) + theta1old(0)*databoot(k,2*i));
+			if(lossold(0) < 0){
+				lossold(0) = 0.0;
+			}
+			loglikdiff(0) = loglikdiff(0) -w[0] * (lossnew(0)-lossold(0)); 
+		}		
+		loglikdiff(0) = loglikdiff(0) -w[0] * 10.0*(fabs(theta1new(0)) - fabs(theta1old(0)));
+		r[0] = R::dnorm(theta1new(0), theta1old(0),propvar[0], 0) / R::dnorm(theta1old(0),theta1new(0),propvar[0], 0);
+		loglikdiff(0) = loglikdiff(0) + log(r(0));
+		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		uu[0] = R::runif(0.0,1.0);
+      		if((uu(0) <= loglikdiff(0)) && (j>99)) {
+			postsamples1(j-100) = theta1new(0);
+			theta1old(0) = theta1new(0); 
+      		}
+		else if(j>99){
+			postsamples1(j-100) = theta1old(0);	
+		}
+	}
+	std::sort(postsamples0.begin(), postsamples0.end());
+	std::sort(postsamples1.begin(), postsamples1.end());
+	l0[0] = postsamples0(0.025*M);
+	u0[0] = postsamples0(0.975*M);
+	l1[0] = postsamples1(0.025*M);
+	u1[0] = postsamples1(0.975*M);
+	if ( (l1[0] < bootmean1[0]) && (u1[0] > bootmean1[0]) ){
+		cov_ind = 1.0;
+	} else {cov_ind = 0.0;}
+	
+	return cov_ind;
+	
+}
+
+// [[Rcpp::export]]
+Rcpp::List GibbsMCMC2class(NumericVector nn, NumericMatrix data, NumericMatrix thetaboot,
+	NumericVector bootmean0, NumericVector bootmean1, NumericVector prop1, NumericVector prop2, NumericVector alpha, NumericVector M_samp, NumericVector w) {
+   	
+	List result;
+	int M = int(M_samp[0]);
+	int n = int(nn[0]);
+   	NumericVector theta0old(1,0.0);
+	NumericVector theta0new(1,0.0);
+	NumericVector theta1old(1,0.0);
+	NumericVector theta1new(1,0.0);
+	NumericVector loglikdiff(1,0.0);
+	NumericVector lossnew(1,0.0);
+	NumericVector lossold(1,0.0);
+	NumericVector r(1,0.0);
+	NumericVector uu(1,0.0);
+	NumericVector postsamples0(M,0.0);
+	NumericVector postsamples1(M,0.0);
+	NumericVector postsamples0u(M,0.0);
+	NumericVector postsamples1u(M,0.0);
+	NumericVector l0(1,0.0);
+	NumericVector l1(1,0.0);
+	NumericVector u0(1,0.0);
+	NumericVector u1(1,0.0);
+	NumericVector acc0(1,0.0);
+	NumericVector acc1(1,0.0);
+	theta0old = bootmean0;
+	theta1old = bootmean1;
+	for(int j=0; j<(M+100); j++) {
+		theta0new(0) = R::rnorm(theta0old(0), prop1[0]);
+		theta1new(0) = R::rnorm(theta1old(0), prop2[0]);
+		loglikdiff(0) = 0.0;
+		for(int k=0; k<n; k++){
+			lossnew(0) = 0.0;lossold(0) = 0.0;
+			lossnew(0) = 1.0 - data(k,1)*(theta0new(0) + theta1new(0)*data(k,0));
+			if(lossnew(0) < 0){
+				lossnew(0) = 0.0;
+			}
+			lossold(0) = 1.0 - data(k,1)*(theta0old(0) + theta1old(0)*data(k,0));
+			if(lossold(0) < 0){
+				lossold(0) = 0.0;
+			}
+			loglikdiff(0) = loglikdiff(0) -w[0] * (lossnew(0)-lossold(0)); 
+		}
+		loglikdiff(0) = loglikdiff(0) -w[0] * 10.0*(fabs(theta0new(0)) - fabs(theta0old(0))+fabs(theta1new(0)) - fabs(theta1old(0)));
+		r[0] = (R::dnorm(theta0new(0), theta0old(0),prop1[0], 0)/R::dnorm(theta0old(0),theta0new(0),prop1[0], 0))*(R::dnorm(theta1new(0), theta1old(0),prop2[0], 0)/R::dnorm(theta1old(0),theta1new(0),prop2[0], 0));
+		loglikdiff(0) = loglikdiff(0) + log(r(0));
+		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
+		uu[0] = R::runif(0.0,1.0);
+      		if((uu(0) <= loglikdiff(0)) && (j>99)) {
+			postsamples0(j-100) = theta0new(0);
+			postsamples0u(j-100) = theta0new(0);
+			theta0old(0) = theta0new(0); 
+			acc0(0) = acc0(0)+1.0;
+			postsamples1(j-100) = theta1new(0);
+			postsamples1u(j-100) = theta1new(0);
+			theta1old(0) = theta1new(0); 
+			acc1(0) = acc1(0)+1.0;
+      		}
+		else if(j>99){
+			postsamples0(j-100) = theta0old(0);
+			postsamples0u(j-100) = theta0old(0);
+			postsamples1(j-100) = theta1old(0);
+			postsamples1u(j-100) = theta1old(0);
+		}
+	}	
+	std::sort(postsamples0.begin(), postsamples0.end());
+	std::sort(postsamples1.begin(), postsamples1.end());
+	l0[0] = postsamples0(0.025*M);
+	u0[0] = postsamples0(0.975*M);
+	l1[0] = postsamples1(0.025*M);
+	u1[0] = postsamples1(0.975*M);
+	
+	result = Rcpp::List::create(Rcpp::Named("l0") = l0[0],Rcpp::Named("u0") = u0[0],Rcpp::Named("l1") = l1[0],Rcpp::Named("u1") = u1[0],Rcpp::Named("postsamples0") = postsamples0u,Rcpp::Named("postsamples1") = postsamples1u, Rcpp::Named("acceptance_rate0") = acc0(0)/M_samp[0], Rcpp::Named("acceptance_rate1") = acc1(0)/M_samp[0]);
+
+	return result;
+}
+
+/*
+inline double GibbsMCMCclass(RVector<double> nn, RMatrix<double> data, RMatrix<double> thetaboot,
+	RVector<double> bootmean0, RVector<double> bootmean1, RVector<double> propvar, RMatrix<double> databoot,
+	RVector<double> alpha, RVector<double> M_samp, RVector<double> w, std::size_t i) {
+   	
 
 	
 	
@@ -1764,7 +1936,7 @@ Rcpp::List GibbsMCMC2class(NumericVector nn, NumericMatrix data, NumericMatrix t
 
 	return result;
 }
-
+*/
 struct GPC_class_mcmc_parallel : public Worker {
 
 	const RVector<double> nn;
