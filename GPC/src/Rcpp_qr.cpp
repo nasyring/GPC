@@ -1535,7 +1535,7 @@ inline double GibbsMCMCclass(RVector<double> nn, RMatrix<double> data, RMatrix<d
 		for(int k=0; k<n; k++){
 			lossnew(0) = 0.0;lossold(0) = 0.0;
 			
-			if(databoot(k,2*i+1)==(-1.0)){
+			if(databoot(k,2*i+1)==(1.0)){
 				if(theta0new(0) + theta1old(0)*databoot(k,2*i) <= 0.0){
 					lossnew(0) = 0.5 - (theta0new(0) + theta1old(0)*databoot(k,2*i));	
 				}else if(theta0new(0) + theta1old(0)*databoot(k,2*i) < 1.0){
@@ -1554,7 +1554,7 @@ inline double GibbsMCMCclass(RVector<double> nn, RMatrix<double> data, RMatrix<d
 			}
 			
 			
-			if(databoot(k,2*i+1)==(-1.0)){
+			if(databoot(k,2*i+1)==(1.0)){
 				if(theta0old(0) + theta1old(0)*databoot(k,2*i) <= 0.0){
 					lossold(0) = 0.5 - (theta0old(0) + theta1old(0)*databoot(k,2*i));	
 				}else if(theta0old(0) + theta1old(0)*databoot(k,2*i) < 1.0){
@@ -1591,7 +1591,7 @@ inline double GibbsMCMCclass(RVector<double> nn, RMatrix<double> data, RMatrix<d
 		for(int k=0; k<n; k++){
 			lossnew(0) = 0.0;lossold(0) = 0.0;
 			
-			if(databoot(k,2*i+1)==(-1.0)){
+			if(databoot(k,2*i+1)==(1.0)){
 				if(theta0old(0) + theta1new(0)*databoot(k,2*i) <= 0.0){
 					lossnew(0) = 0.5 - (theta0old(0) + theta1new(0)*databoot(k,2*i));	
 				}else if(theta0old(0) + theta1new(0)*databoot(k,2*i) < 1.0){
@@ -1610,7 +1610,7 @@ inline double GibbsMCMCclass(RVector<double> nn, RMatrix<double> data, RMatrix<d
 			}
 			
 			
-			if(databoot(k,2*i+1)==(-1.0)){
+			if(databoot(k,2*i+1)==(1.0)){
 				if(theta0old(0) + theta1old(0)*databoot(k,2*i) <= 0.0){
 					lossold(0) = 0.5 - (theta0old(0) + theta1old(0)*databoot(k,2*i));	
 				}else if(theta0old(0) + theta1old(0)*databoot(k,2*i) < 1.0){
