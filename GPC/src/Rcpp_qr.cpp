@@ -1540,7 +1540,6 @@ inline double GibbsMCMCclass(RVector<double> nn, RMatrix<double> data, RMatrix<d
 			}
 			loglikdiff(0) = loglikdiff(0) -w[0] * (lossnew(0)-lossold(0)); 
 		}
-		loglikdiff(0) = loglikdiff(0) -w[0] * 10.0*(fabs(theta0new(0)) - fabs(theta0old(0)));
 		r[0] = R::dnorm(theta0new(0), theta0old(0),propvar[0], 0)/R::dnorm(theta0old(0),theta0new(0),propvar[0], 0);
 		loglikdiff(0) = loglikdiff(0) + log(r(0));
 		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
@@ -1566,7 +1565,6 @@ inline double GibbsMCMCclass(RVector<double> nn, RMatrix<double> data, RMatrix<d
 			}
 			loglikdiff(0) = loglikdiff(0) -w[0] * (lossnew(0)-lossold(0)); 
 		}		
-		loglikdiff(0) = loglikdiff(0) -w[0] * 10.0*(fabs(theta1new(0)) - fabs(theta1old(0)));
 		r[0] = R::dnorm(theta1new(0), theta1old(0),propvar[0], 0) / R::dnorm(theta1old(0),theta1new(0),propvar[0], 0);
 		loglikdiff(0) = loglikdiff(0) + log(r(0));
 		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
@@ -1637,7 +1635,6 @@ Rcpp::List GibbsMCMC2class(NumericVector nn, NumericMatrix data, NumericMatrix t
 			}
 			loglikdiff(0) = loglikdiff(0) -w[0] * (lossnew(0)-lossold(0)); 
 		}
-		loglikdiff(0) = loglikdiff(0) -w[0] * 10.0*(fabs(theta0new(0)) - fabs(theta0old(0))+fabs(theta1new(0)) - fabs(theta1old(0)));
 		r[0] = (R::dnorm(theta0new(0), theta0old(0),prop1[0], 0)/R::dnorm(theta0old(0),theta0new(0),prop1[0], 0))*(R::dnorm(theta1new(0), theta1old(0),prop2[0], 0)/R::dnorm(theta1old(0),theta1new(0),prop2[0], 0));
 		loglikdiff(0) = loglikdiff(0) + log(r(0));
 		loglikdiff(0) = fmin(std::exp(loglikdiff(0)), 1.0);
