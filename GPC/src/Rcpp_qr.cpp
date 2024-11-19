@@ -4,6 +4,8 @@
 #include <RcppParallel.h>
 #include <Rcpp.h>
 #include <math.h>
+#include <array>
+
 using namespace RcppParallel;
 using namespace Rcpp;
 using namespace arma;
